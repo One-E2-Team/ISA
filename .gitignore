@@ -34,3 +34,8 @@
 
 ### Eclipse ###
 **/bin/
+
+### npm/node ###
+**/node_modules/
+**/.cache/
+**/dist/
