@@ -22,7 +22,7 @@ public class Complaint {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
