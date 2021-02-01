@@ -1,7 +1,9 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,11 +23,11 @@ public class RatedHealthWorker {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "healthWorkerId")
 	private HealthWorker healthWorker;
 

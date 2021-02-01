@@ -30,7 +30,7 @@ public class Examination {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWokrer;
 
@@ -44,7 +44,7 @@ public class Examination {
 	@Column(name = "date", nullable = false)
 	private Date date;
 
-	@Column(name = "date", nullable = false)
+	@Column(name = "startTime", nullable = false)
 	private Date startTime;
 
 	@Column(name = "endTime", nullable = false)

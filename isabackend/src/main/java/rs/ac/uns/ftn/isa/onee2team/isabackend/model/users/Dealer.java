@@ -1,16 +1,15 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.users;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
 
 @Entity
 @DiscriminatorValue("DEALER")
@@ -18,14 +17,13 @@ public class Dealer extends User {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicinesWithQuantity")
-	@MapKeyJoinColumn(name = "id")
-	private Map<Medicine, Integer> medicinesWithQuantity;
+	private List<MedicineWithQuantity> medicinesWithQuantity;
 
-	public Map<Medicine, Integer> getMedicinesWithQuantity() {
+	public List<MedicineWithQuantity> getMedicinesWithQuantity() {
 		return medicinesWithQuantity;
 	}
 
-	public void setMedicinesWithQuantity(Map<Medicine, Integer> medicinesWithQuantity) {
+	public void setMedicinesWithQuantity(List<MedicineWithQuantity> medicinesWithQuantity) {
 		this.medicinesWithQuantity = medicinesWithQuantity;
 	}
 }
