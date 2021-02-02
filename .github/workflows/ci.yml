@@ -60,6 +60,8 @@ jobs:
           java-package: jre # optional, default is jdk
           # The architecture (x86, x64) of the package.
           architecture: x64 # optional, default is x64
+      - name: printenv
+        run: printenv
       - name: SonarCloud frontend Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
