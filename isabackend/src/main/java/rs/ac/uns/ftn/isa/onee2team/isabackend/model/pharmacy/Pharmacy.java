@@ -13,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 
 @Entity
 @Table(name = "pharmacies")
@@ -34,6 +35,9 @@ public class Pharmacy {
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pharmacies")
 	private Set<Dermatologist> dermatologists;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subscribedPharmacies")
+	private Set<Patient> subscribedPatients;
 
 	public Long getId() {
 		return id;
@@ -65,5 +69,21 @@ public class Pharmacy {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Set<Dermatologist> getDermatologists() {
+		return dermatologists;
+	}
+
+	public void setDermatologists(Set<Dermatologist> dermatologists) {
+		this.dermatologists = dermatologists;
+	}
+
+	public Set<Patient> getSubscribedPatients() {
+		return subscribedPatients;
+	}
+
+	public void setSubscribedPatients(Set<Patient> subscribedPatients) {
+		this.subscribedPatients = subscribedPatients;
 	}
 }

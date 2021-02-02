@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
@@ -30,14 +29,14 @@ public class Examination {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWokrer;
 
 	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Patient patient;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 
