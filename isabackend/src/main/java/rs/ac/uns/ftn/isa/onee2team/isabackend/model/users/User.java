@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.users;
 
 import javax.persistence.Column;
+
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
