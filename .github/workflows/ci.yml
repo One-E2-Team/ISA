@@ -62,8 +62,8 @@ jobs:
           architecture: x64 # optional, default is x64
       - name: java execution rights
         run: |
-          ls /opt/hostedtoolcache/jre/15.0.2/x64
-          chmod 755 /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
+          ls /opt/hostedtoolcache/jre/15.0.2/x64/bin
+          chmod a+x /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
       - name: SonarCloud frontend Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
