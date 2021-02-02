@@ -60,14 +60,15 @@ jobs:
           java-package: jre # optional, default is jdk
           # The architecture (x86, x64) of the package.
           architecture: x64 # optional, default is x64
-      - name: java execution rights
+      - name: java home env var
         run: |
-          printenv
-          echo "--------------------------------------------------------------------"
-          ls /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
-          chmod a+x /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
-          java
-          /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
+          export JAVA_HOME=/opt/hostedtoolcache/jre/15.0.2/x64/
+          #printenv
+          #echo "--------------------------------------------------------------------"
+          #ls /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
+          #chmod a+x /opt/hostedtoolcache/jre/15.0.2/x64/bin/java
+          #java
+          #/opt/hostedtoolcache/jre/15.0.2/x64/bin/java
       - name: SonarCloud frontend Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
