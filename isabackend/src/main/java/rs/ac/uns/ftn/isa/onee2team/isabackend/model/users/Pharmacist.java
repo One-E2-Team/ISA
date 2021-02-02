@@ -9,7 +9,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @Entity
 public class Pharmacist extends HealthWorker {
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = true)
 	@JoinColumn(name = "pharmacistsPharmacyId")
 	private Pharmacy pharmacy;
 

@@ -19,13 +19,13 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation
 @DiscriminatorValue("PATIENT")
 public class Patient extends User {
 
-	@Column(name = "points", nullable = false)
+	@Column(name = "points", nullable = true)
 	private Integer points;
 
-	@Column(name = "isActiveAccount", nullable = false)
+	@Column(name = "isActiveAccount", nullable = true)
 	private Boolean isActiveAccount;
 
-	@Column(name = "penalties", nullable = false)
+	@Column(name = "penalties", nullable = true)
 	private Integer penalties;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
