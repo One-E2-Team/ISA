@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.procurement;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyJoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
 
 @Entity
 @Table(name = "orders")
@@ -29,10 +28,9 @@ public class Order {
 	@Column(name = "expireDate", nullable = false)
 	private Date expireDate;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicinesWithQuantity")
-	@MapKeyJoinColumn(name = "id")
-	private Map<Medicine, Integer> medicinesWithQuantity;
+	private List<MedicineWithQuantity> medicinesWithQuantity;
 
 	public Long getId() {
 		return id;
@@ -50,11 +48,11 @@ public class Order {
 		this.expireDate = expireDate;
 	}
 
-	public Map<Medicine, Integer> getMedicinesWithQuantity() {
+	public List<MedicineWithQuantity> getMedicinesWithQuantity() {
 		return medicinesWithQuantity;
 	}
 
-	public void setMedicinesWithQuantity(Map<Medicine, Integer> medicinesWithQuantity) {
+	public void setMedicinesWithQuantity(List<MedicineWithQuantity> medicinesWithQuantity) {
 		this.medicinesWithQuantity = medicinesWithQuantity;
 	}
 }

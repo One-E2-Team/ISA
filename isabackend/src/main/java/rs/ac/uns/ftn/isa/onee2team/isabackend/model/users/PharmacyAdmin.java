@@ -11,8 +11,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @DiscriminatorValue("PHARMACY_ADMIN")
 public class PharmacyAdmin extends User {
 
-	@OneToOne(optional = false)
-	@JoinColumn(name = "pharmacyId")
+	@OneToOne(optional = true)
+	@JoinColumn(name = "adminsPharmacyId")
 	private Pharmacy pharmacy;
 
 	public Pharmacy getPharmacy() {

@@ -26,11 +26,11 @@ public class MedicineReservation {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "id")
 	private Medicine medicine;
 	
-	@OneToOne(optional = true)
+	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 

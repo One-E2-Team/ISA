@@ -2,13 +2,15 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.calendar;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -23,11 +25,11 @@ public class WorkingCalendar {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWorker;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 

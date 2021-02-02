@@ -8,26 +8,29 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 
 @Entity
 @DiscriminatorValue("PATIENT")
 public class Patient extends User {
 
-	@Column(name = "points", nullable = false)
+	@Column(name = "points", nullable = true)
 	private Integer points;
 
-	@Column(name = "isActiveAccount", nullable = false)
+	@Column(name = "isActiveAccount", nullable = true)
 	private Boolean isActiveAccount;
 
-	@Column(name = "penalties", nullable = false)
+	@Column(name = "penalties", nullable = true)
 	private Integer penalties;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "allergies", referencedColumnName = "id")
 	private Set<Medicine> allergies;
 
@@ -36,6 +39,10 @@ public class Patient extends User {
 
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<MedicineReservation> medicineReservations;
+	
+	@ManyToMany(cascade =  CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "subscriptions")
+	private Set<Pharmacy> subscribedPharmacies;
 
 	public Integer getPoints() {
 		return points;
@@ -83,5 +90,13 @@ public class Patient extends User {
 
 	public void setMedicineReservations(Set<MedicineReservation> medicineReservations) {
 		this.medicineReservations = medicineReservations;
+	}
+
+	public Set<Pharmacy> getSubscribedPharmacies() {
+		return subscribedPharmacies;
+	}
+
+	public void setSubscribedPharmacies(Set<Pharmacy> subscribedPharmacies) {
+		this.subscribedPharmacies = subscribedPharmacies;
 	}
 }
