@@ -50,9 +50,11 @@ jobs:
         run: |
           cd isabackend
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          cd ../isafrontend
+          cd ..
       - name: SonarCloud frontend Scan
         uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: isafrontend
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
