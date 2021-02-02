@@ -8,6 +8,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
@@ -27,7 +28,7 @@ public class Patient extends User {
 	@Column(name = "penalties", nullable = false)
 	private Integer penalties;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "allergies", referencedColumnName = "id")
 	private Set<Medicine> allergies;
 

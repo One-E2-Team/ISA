@@ -12,7 +12,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 public class PharmacyAdmin extends User {
 
 	@OneToOne(optional = false)
-	@JoinColumn(name = "pharmacyId")
+	@JoinColumn(name = "adminsPharmacyId")
 	private Pharmacy pharmacy;
 
 	public Pharmacy getPharmacy() {

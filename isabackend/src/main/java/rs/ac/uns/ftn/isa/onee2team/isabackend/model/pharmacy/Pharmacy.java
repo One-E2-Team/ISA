@@ -1,11 +1,18 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
 
 @Entity
 @Table(name = "pharmacies")
@@ -24,6 +31,9 @@ public class Pharmacy {
 
 	@Column(name = "description", nullable = false)
 	private String description;
+
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "pharmacies")
+	private Set<Dermatologist> dermatologists;
 
 	public Long getId() {
 		return id;

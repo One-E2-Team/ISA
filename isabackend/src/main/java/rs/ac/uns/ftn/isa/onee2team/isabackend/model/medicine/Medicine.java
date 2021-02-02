@@ -1,10 +1,16 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -45,6 +51,10 @@ public class Medicine {
 
 	@Column(name = "points", nullable = false)
 	private Integer points;
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "equivalentMedicines", referencedColumnName = "id")
+	private Set<Medicine> equivalentMedicines;
 
 	public Long getId() {
 		return id;

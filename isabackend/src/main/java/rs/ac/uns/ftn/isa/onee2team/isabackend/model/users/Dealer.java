@@ -7,7 +7,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
 
@@ -15,7 +15,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantit
 @DiscriminatorValue("DEALER")
 public class Dealer extends User {
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicinesWithQuantity")
 	private List<MedicineWithQuantity> medicinesWithQuantity;
 
