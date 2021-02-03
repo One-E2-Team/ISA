@@ -37,11 +37,11 @@
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
-            <form class="d-flex">
-                <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button> 
-                <button v-if='role === "Anon"' class="btn btn-outline-primary ml-3" click="SignUp">Sign up</button>
-                <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" click="ShowProfile">Profile</button>
-            </form>
+            <div class="d-flex">
+                <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
+                <button v-if='role === "Anon"' class="btn btn-outline-primary ml-3" >Sign up</button>
+                <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" >Profile</button>
+            </div>
             </div>
         </div>
     </nav>
