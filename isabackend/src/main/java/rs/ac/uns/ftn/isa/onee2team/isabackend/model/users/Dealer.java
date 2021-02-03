@@ -15,6 +15,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantit
 @DiscriminatorValue("DEALER")
 public class Dealer extends User {
 
+	private static final long serialVersionUID = 1L;
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicinesWithQuantity")
 	private List<MedicineWithQuantity> medicinesWithQuantity;
@@ -25,5 +26,10 @@ public class Dealer extends User {
 
 	public void setMedicinesWithQuantity(List<MedicineWithQuantity> medicinesWithQuantity) {
 		this.medicinesWithQuantity = medicinesWithQuantity;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.getEmail();
 	}
 }

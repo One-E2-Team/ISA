@@ -11,6 +11,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @DiscriminatorValue("PHARMACY_ADMIN")
 public class PharmacyAdmin extends User {
 
+	private static final long serialVersionUID = 1L;
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "adminsPharmacyId")
 	private Pharmacy pharmacy;
@@ -21,5 +22,10 @@ public class PharmacyAdmin extends User {
 
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.getEmail();
 	}
 }
