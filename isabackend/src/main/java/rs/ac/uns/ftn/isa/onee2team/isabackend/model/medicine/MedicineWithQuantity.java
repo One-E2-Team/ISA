@@ -1,7 +1,5 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine;
 
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,21 +8,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "equivalentMedicines")
-public class EquivalentMedicines {
+@Table(name = "medicinesWithQuantity")
+public class MedicineWithQuantity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "medicines", referencedColumnName = "id")
-	private Set<Medicine> medicines;
+	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "medicineId")
+	private Medicine medicine;
+
+	@Column(name = "quantity", nullable = false)
+	private Integer quantity;
 
 	public Long getId() {
 		return id;
@@ -34,11 +35,19 @@ public class EquivalentMedicines {
 		this.id = id;
 	}
 
-	public Set<Medicine> getMedicines() {
-		return medicines;
+	public Medicine getMedicine() {
+		return medicine;
 	}
 
-	public void setMedicines(Set<Medicine> medicines) {
-		this.medicines = medicines;
+	public void setMedicine(Medicine medicine) {
+		this.medicine = medicine;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
 	}
 }

@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy;
 
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,12 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyJoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 
 @Entity
@@ -28,18 +27,17 @@ public class ERecipe {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
-	
-	@OneToOne(optional = true)
+
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicinesWithQuantity")
-	@MapKeyJoinColumn(name = "id")
-	private Map<Medicine, Integer> medicinesWithQuantity;
+	private List<MedicineWithQuantity> medicinesWithQuantity;
 
 	@Column(name = "date", nullable = false)
 	private Date date;
@@ -60,11 +58,11 @@ public class ERecipe {
 		this.patient = patient;
 	}
 
-	public Map<Medicine, Integer> getMedicinesWithQuantity() {
+	public List<MedicineWithQuantity> getMedicinesWithQuantity() {
 		return medicinesWithQuantity;
 	}
 
-	public void setMedicinesWithQuantity(Map<Medicine, Integer> medicinesWithQuantity) {
+	public void setMedicinesWithQuantity(List<MedicineWithQuantity> medicinesWithQuantity) {
 		this.medicinesWithQuantity = medicinesWithQuantity;
 	}
 
@@ -83,6 +81,5 @@ public class ERecipe {
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
 	}
-	
-	
+
 }
