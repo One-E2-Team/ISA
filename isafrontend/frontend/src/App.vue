@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Header /> 
+    <Header v-bind:role="role"/> 
     <router-view/>
   </div>
   
@@ -10,7 +10,7 @@
 
 import Header from './components/Header'
 
-//import axios from 'axios';
+// import axios from 'axios';
 
 
 
@@ -18,25 +18,26 @@ import Header from './components/Header'
 export default {
   name: 'App',
   components: {
-    Header
+    Header,
+    
   },
   data() {
     return{
       role: 'Anon' 
     }
+  },
+  mounted() {
+    this.$root.$on('login-user', data => {
+      this.role = data;
+    });
   }
 }
 </script>
 
 <style>
-  *{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 9;
-  }
 
-  body {
+  /* body {
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.4;
-  }
+  } */
 </style>
