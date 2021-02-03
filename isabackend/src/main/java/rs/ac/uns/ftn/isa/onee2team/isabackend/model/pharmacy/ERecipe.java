@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
@@ -27,11 +27,11 @@ public class ERecipe {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
-	@OneToOne(optional = true)
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 

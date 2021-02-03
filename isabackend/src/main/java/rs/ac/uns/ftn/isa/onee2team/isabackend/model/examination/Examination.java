@@ -34,6 +34,7 @@ public class Examination {
 	private HealthWorker healthWokrer;
 
 	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "patientId")
 	private Patient patient;
 
 	@ManyToOne(optional = false)

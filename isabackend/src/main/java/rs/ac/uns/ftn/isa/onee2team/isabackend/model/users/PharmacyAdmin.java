@@ -3,7 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.users;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 
@@ -11,7 +11,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @DiscriminatorValue("PHARMACY_ADMIN")
 public class PharmacyAdmin extends User {
 
-	@OneToOne(optional = true)
+	@ManyToOne(optional = true)
 	@JoinColumn(name = "adminsPharmacyId")
 	private Pharmacy pharmacy;
 

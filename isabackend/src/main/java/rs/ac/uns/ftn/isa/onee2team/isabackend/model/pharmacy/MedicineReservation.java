@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
@@ -26,15 +25,16 @@ public class MedicineReservation {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "id")
+	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "medicineId")
 	private Medicine medicine;
 	
-	@OneToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "patientId")
 	private Patient patient;
 
 	@Column(name = "expireDate", nullable = false)
