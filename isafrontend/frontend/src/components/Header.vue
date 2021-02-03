@@ -14,7 +14,7 @@
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#/">Pharmacy</a>
+                <a class="nav-link" href="#/pharmacy">Pharmacy</a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/">Medicine</a>
