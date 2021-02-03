@@ -16,11 +16,10 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 @DiscriminatorValue("PATIENT")
 public class Patient extends User {
 
+	private static final long serialVersionUID = 1L;
+
 	@Column(name = "points", nullable = true)
 	private Integer points;
-
-	@Column(name = "isActiveAccount", nullable = true)
-	private Boolean isActiveAccount;
 
 	@Column(name = "penalties", nullable = true)
 	private Integer penalties;
@@ -37,14 +36,6 @@ public class Patient extends User {
 		this.points = points;
 	}
 
-	public Boolean getIsActiveAccount() {
-		return isActiveAccount;
-	}
-
-	public void setIsActiveAccount(Boolean isActiveAccount) {
-		this.isActiveAccount = isActiveAccount;
-	}
-
 	public Integer getPenalties() {
 		return penalties;
 	}
@@ -59,5 +50,10 @@ public class Patient extends User {
 
 	public void setAllergies(Set<Medicine> allergies) {
 		this.allergies = allergies;
+	}
+	
+	@Override
+	public String getUsername() {
+		return this.getEmail();
 	}
 }

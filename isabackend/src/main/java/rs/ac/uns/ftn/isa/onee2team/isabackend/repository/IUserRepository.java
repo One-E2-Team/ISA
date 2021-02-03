@@ -9,6 +9,9 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 
 public interface IUserRepository extends JpaRepository<User, Long> {
+	
+	User findByEmail(String email);
+	
 	@Query(value = "select * from all_users u where u.user_type = 0", nativeQuery = true)
 	public List<Patient> getAllPatients();
 }

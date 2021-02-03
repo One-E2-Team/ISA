@@ -13,6 +13,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @Entity
 public class Dermatologist extends HealthWorker {
 
+	private static final long serialVersionUID = 1L;
+	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name="dermatologistsInPharmacies")
 	private Set<Pharmacy> pharmacies;

@@ -9,6 +9,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 @Entity
 public class Pharmacist extends HealthWorker {
 
+	private static final long serialVersionUID = 1L;
+	
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "pharmacistsPharmacyId")
 	private Pharmacy pharmacy;
