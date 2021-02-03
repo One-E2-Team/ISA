@@ -28,8 +28,8 @@
 </template>
 
 <script>
-// import axios from 'axios';
-
+import axios from 'axios';
+import * as comm from '../../configuration/communication.js'
 export default {
     name: "LogIn",
     
@@ -46,14 +46,25 @@ export default {
     methods: {
         logIn: function(){
             console.log(this.email,this.password);
-            // axios.post(url,this.credentials)
-            //     .then(response => {
-            //             let role='Anon';
-            //             if(response.data != "")
-            //                 role = response.data;
-            //             this.$root.$emit('login-user',role);
-            //         }
-            //     );
+            axios.post('http://' + comm.server + '/api/auth/login', this.credentials)
+              .then(response => {
+                if (response.status==200) {
+                  localStorage.setItem("JWT", JSON.stringify(response.data));
+                } else {
+                  //TODO greska
+                }
+                //SHOWCASE - delete
+                axios.get('http://' + comm.server + '/api/users/all', comm.getAxiosConfigWithAuthorizationHeader())
+                .then(response => {
+                        console.log(response.data)
+                        //let role='Anon';
+                        //if(response.data != "")
+                        //    role = response.data;
+                        //this.$root.$emit('login-user',role);
+                    }
+                );
+              });
+            
             this.$root.$emit("login-user","Submited");
         }
     }
