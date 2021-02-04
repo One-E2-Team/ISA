@@ -39,8 +39,9 @@
             </ul>
             <div class="d-flex">
                 <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
-                <button v-if='role === "Anon"' class="btn btn-outline-primary ml-3" >Sign up</button>
+                <button v-if='role === "Anon"' class="btn btn-outline-primary ml-3" data-bs-toggle="modal" data-bs-target="#registrationModal">Sign up</button>
                 <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" >Profile</button>
+                <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" @click="logout">Logout</button>
             </div>
             </div>
         </div>
@@ -48,18 +49,24 @@
 </template>
 
 <script>
+import * as comm from '../configuration/communication'
 export default {
     name: "Header",
     props: ['role'],
 
     data() {
         return {
-            msg :"Navigation bar" 
+            msg :"Navigation bar"
+
         }
     },
     methods: {
-        signIn: function(){
-            
+        getRole: function(){
+            return comm.getCurrentUserRole();
+        },
+        logout: function(){
+            comm.logOut();
+            this.$emit("logout-user", 'reevalPermissions')
         }
     }
 }

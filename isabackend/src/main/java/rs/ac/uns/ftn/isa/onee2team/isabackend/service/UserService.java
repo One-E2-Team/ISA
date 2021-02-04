@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -21,7 +22,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedHealthWorkerRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
@@ -62,7 +62,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public User save(UserRequest userRequest) {
+	public User createPatient(UserRequestDTO userRequest) {
 		Patient patient = new Patient();
 		patient.setEmail(userRequest.getEmail());
 		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -73,8 +73,7 @@ public class UserService implements IUserService, UserDetailsService {
 		patient.setState(userRequest.getState());
 		patient.setPhoneNumber(userRequest.getPhone());
 		patient.setUserType(UserType.PATIENT);
-		patient.setEnabled(true);
-
+		patient.setEnabled(false);
 		List<Authority> auths = authService.findByname("ROLE_PATIENT");
 
 		patient.setAuthorities(auths);
@@ -82,6 +81,16 @@ public class UserService implements IUserService, UserDetailsService {
 		patient = userRepository.save(patient);
 
 		return patient;
+	}
+	
+	@Override
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public User findById(Long id) {
+		return userRepository.findById(id).orElse(null);
 	}
 
 	@Override
