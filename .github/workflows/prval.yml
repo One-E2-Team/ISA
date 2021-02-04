@@ -15,9 +15,8 @@ jobs:
         java-version: 15
     - name: Build with Maven
       run: mvn -B test --file isabackend/pom.xml
-    - name: switch context to frontend
-      run: cd isafrontend/frontend
     - name: npm lint frontend
       run: |
+        cd isafrontend/frontend
         npm install
         npm run lint
