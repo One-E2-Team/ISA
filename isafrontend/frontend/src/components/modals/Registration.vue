@@ -22,27 +22,27 @@
             </div>  
             <div class="mb-3">
                 <label for="name1" class="form-label">Name</label>
-                <input type="text" v-model="regUserData.name" class="form-control" id="name1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.firstname" class="form-control" id="name1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="surname1" class="form-label">Surname</label>
-                <input type="text" v-model="regUserData.surname" class="form-control" id="surname1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.lastname" class="form-control" id="surname1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="address1" class="form-label">Address</label>
-                <input type="text" v-model="regUserData.email" class="form-control" id="address1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.address" class="form-control" id="address1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="city1" class="form-label">City</label>
-                <input type="text" v-model="regUserData.email" class="form-control" id="city1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.city" class="form-control" id="city1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="county1" class="form-label">County</label>
-                <input type="text" v-model="regUserData.email" class="form-control" id="county1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.state" class="form-control" id="county1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="phone1" class="form-label">Phone</label>
-                <input type="text" v-model="regUserData.email" class="form-control" id="phone1" aria-describedby="emailHelp">
+                <input type="text" v-model="regUserData.phone" class="form-control" id="phone1" aria-describedby="emailHelp">
             </div>
         </form>
       </div>
@@ -64,40 +64,40 @@ export default {
 
     data() {
         return {
+            passwordAgain: "",
             regUserData : {
                 email: "",
                 password: "", 
-                passwordAgain: "",
-                name: "",
-                surname: "",
+                firstname: "",
+                lastname: "",
                 address: "",
                 city: "",
-                country: "",
+                state: "",
                 phone: "",
             }         
         }
     },
     methods: {
         register: function(){
-            console.log(this.email,this.password);
-            axios.post('http://' + comm.server + '/api/auth/login', this.regUserData)
-              .then(response => {
-                if (response.status==200) {
-                  localStorage.setItem("JWT", JSON.stringify(response.data));
-                } else {
-                  //TODO greska
-                }
-                //SHOWCASE - delete
-                axios.get('http://' + comm.server + '/api/users/all')
+            if(this.passwordAgain==this.regUserData.password)
+                axios.post('http://' + comm.server + '/api/auth/register', this.regUserData)
                 .then(response => {
-                        console.log(response.data)
-                        //let role='Anon';
-                        //if(response.data != "")
-                        //    role = response.data;
-                        //this.$root.$emit('login-user',role);
+                    if (response.status==200) {
+                    localStorage.setItem("JWT", JSON.stringify(response.data));
+                    } else {
+                    //TODO greska
                     }
-                );
-              });
+                    //SHOWCASE - delete
+                    axios.get('http://' + comm.server + '/api/users/all')
+                    .then(response => {
+                            console.log(response.data)
+                            //let role='Anon';
+                            //if(response.data != "")
+                            //    role = response.data;
+                            //this.$root.$emit('login-user',role);
+                        }
+                    );
+                });
             
             this.$root.$emit("login-user","Submited");
         }

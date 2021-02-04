@@ -7,6 +7,11 @@ export function getCurrentUserRole(){
         return getJWTToken().userType.toString();
     return "Anon"
 }
+export function getCurrentUserEMail(){
+    if(getJWTToken())
+        return getJWTToken().email.toString();
+    return undefined
+}
 export function logOut(){
     sessionStorage.removeItem("JWT");
 }

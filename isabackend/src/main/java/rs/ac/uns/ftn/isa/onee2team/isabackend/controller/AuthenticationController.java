@@ -57,9 +57,10 @@ public class AuthenticationController {
 		String jwt = tokenUtils.generateToken(user.getEmail());
 		long expiresIn = tokenUtils.getExpiredIn();
 		UserType userType = user.getUserType();
+		String email = user.getEmail();
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
-		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn, userType));
+		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn, userType, email));
 	}
 
 	// Endpoint za registraciju novog korisnika
