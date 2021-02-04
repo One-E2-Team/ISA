@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -39,14 +39,21 @@ public class UserController {
 	
 	@GetMapping(value = "/pharmacists")
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
-	public List<PharmacistDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
+	public List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
 		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName);
 	}
 	
+
 	@GetMapping(value = "/patients/search")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public List<Patient> searchPatient(@RequestBody FirstLastNameDTO firstAndLastName){
 		return userService.searchPatient(firstAndLastName);
-		
+	}
+
+	@GetMapping(value = "/dermatologists")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
+	public List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
+		return userService.getAllDermatologistsByFirstAndLastName(firstAndLastName);
+
 	}
 }
