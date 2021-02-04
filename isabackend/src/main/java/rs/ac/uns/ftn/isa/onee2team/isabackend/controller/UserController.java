@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -46,7 +47,7 @@ public class UserController {
 
 	@GetMapping(value = "/patients/search")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public List<Patient> searchPatient(@RequestBody FirstLastNameDTO firstAndLastName){
+	public List<SearchedPatientDTO> searchPatient(@RequestBody FirstLastNameDTO firstAndLastName){
 		return userService.searchPatient(firstAndLastName);
 	}
 

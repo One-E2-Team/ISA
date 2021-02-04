@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
@@ -95,7 +96,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 	
 	@Override
-	public List<Patient> searchPatient(FirstLastNameDTO firstAndLastName) {
+	public List<SearchedPatientDTO> searchPatient(FirstLastNameDTO firstAndLastName) {
 		return userRepository.getAllPatientsByFirstAndLastName( firstAndLastName.getFirstName(),firstAndLastName.getLastName());
 	}
 
