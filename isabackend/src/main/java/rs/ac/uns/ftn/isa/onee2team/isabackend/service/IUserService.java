@@ -12,6 +12,7 @@ public interface IUserService {
 	List<User> getAll();
 	List<Patient> getAllPatients();
 	List<PharmacistDTO> getAllPharmacistsByFirstAndLastName(FirstLastNameDTO firstAndLastName);
+	List<Patient> searchPatient(FirstLastNameDTO firstAndLastName);
 	User save(UserRequest userRequest);
 	User findByEmail(String email);
 }

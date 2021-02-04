@@ -42,4 +42,11 @@ public class UserController {
 	public List<PharmacistDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
 		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName);
 	}
+	
+	@GetMapping(value = "/patients/search")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<Patient> searchPatient(@RequestBody FirstLastNameDTO firstAndLastName){
+		return userService.searchPatient(firstAndLastName);
+		
+	}
 }

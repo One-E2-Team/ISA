@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
@@ -21,4 +22,9 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 
 	@Query(value = "select * from all_users u where u.user_type = 1 and u.first_name like %?1% and u.last_name like %?2%", nativeQuery = true)
 	List<Pharmacist> getAllPharmacistsByFirstAndLastName(String firstName, String lastName);
+	
+	
+	@Query(value = "SELECT * FROM all_users u WHERE u.first_name LIKE %:firstname% and "
+			+ "u.last_name LIKE %:lastname% and u.user_type = 0 ", nativeQuery = true )
+	public List<Patient> getAllPatientsByFirstAndLastName(@Param("firstname")String firstname, @Param("lastname") String lastname);
 }
