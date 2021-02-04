@@ -40,7 +40,7 @@
             <div class="d-flex">
                 <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
                 <button v-if='role === "Anon"' class="btn btn-outline-primary ml-3" data-bs-toggle="modal" data-bs-target="#registrationModal">Sign up</button>
-                <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" >Profile</button>
+                <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" @click='getProfile'>Profile</button>
                 <button v-if='role !== "Anon"' class="btn btn-outline-primary ml-3" @click="logout">Logout</button>
             </div>
             </div>
@@ -67,6 +67,32 @@ export default {
         logout: function(){
             comm.logOut();
             this.$emit("logout-user", 'reevalPermissions')
+        },
+        getProfile: function(){
+            switch (comm.getCurrentUserRole()) {
+                case "PATIENT":
+                    window.location.href = '#/patient';
+                    break;
+                case "PHARMACIST":
+                    window.location.href = '#/pharmacist';
+                    break;
+                case "DERMATOLOGIST":
+                    window.location.href = '#/dermatologist';
+                    break;
+                case "PHARMACY_ADMIN":
+                    window.location.href = '#/pharmacy-admin';
+                    break;
+                case "SYSTEM_ADMIN":
+                    window.location.href = '#/system-admin';
+                    break;
+                case "DEALER":
+                    window.location.href = '#/dealer';
+                    break;
+                default:
+                    this.logout();
+                    window.location.href = '#/';
+                    break;
+            }
         }
     }
 }
