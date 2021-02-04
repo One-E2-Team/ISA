@@ -12,6 +12,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	
 	User findByEmail(String email);
 	
-	@Query(value = "select * from all_users u where u.user_type = 0", nativeQuery = true)
-	public List<Patient> getAllPatients();
+	@Query(value = "select u from User u where u.userType = 0")
+	List<Patient> getAllPatients();
 }
