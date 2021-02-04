@@ -11,10 +11,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
@@ -51,7 +51,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 	
 	@Override
-	public User save(UserRequest userRequest) {
+	public User save(UserRequestDTO userRequest) {
 		Patient patient = new Patient();
 		patient.setEmail(userRequest.getEmail());
 		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));

@@ -21,8 +21,9 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.JwtAuthenticationRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.ResourceConflictException;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.TokenUtils;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.UserTokenState;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserRequest;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.UserService;
 
 
@@ -54,19 +55,20 @@ public class AuthenticationController {
 		// Kreiraj token za tog korisnika
 		User user = (User) authentication.getPrincipal();
 		String jwt = tokenUtils.generateToken(user.getEmail());
-		int expiresIn = tokenUtils.getExpiredIn();
+		long expiresIn = tokenUtils.getExpiredIn();
+		UserType userType = user.getUserType();
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
-		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn, userType));
 	}
 
 	// Endpoint za registraciju novog korisnika
 	@PostMapping("/register")
-	public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
 
 		User existUser = this.userService.findByEmail(userRequest.getEmail());
 		if (existUser != null) {
-			throw new ResourceConflictException(userRequest.getId(), "Email already exists");
+			throw new ResourceConflictException(0L/*userRequest.getEmail()*/, "Email already exists");
 		}
 
 		User user = this.userService.save(userRequest);
