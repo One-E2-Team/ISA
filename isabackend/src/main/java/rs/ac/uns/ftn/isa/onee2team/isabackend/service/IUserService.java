@@ -12,8 +12,8 @@ public interface IUserService {
 	List<User> getAll();
 	List<Patient> getAllPatients();
 	User createPatient(UserRequestDTO userRequest);
-	List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(FirstLastNameDTO firstAndLastName);
-	List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(FirstLastNameDTO firstAndLastName);
+	List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(FirstLastNameDTO firstAndLastName, String loggedUserEmail);
+	List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(FirstLastNameDTO firstAndLastName, String loggedUserEmail);
 	User findByEmail(String email);
 	User saveUser(User user);
 	User findById(Long id);
