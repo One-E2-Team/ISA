@@ -16,9 +16,11 @@
                 <label for="exampleInputPassword1" class="form-label">Password</label>
                 <input type="password" v-model="credentials.password" class="form-control" id="exampleInputPassword1">
             </div>            
+            
         </form>
       </div>
-      <div class="modal-footer">
+        <div class="modal-footer">
+        <div id="loginAlert" class="alert alert-danger d-none" role="alert">Login was unsuccessful! </div>
         <button id="closeLoginModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" @click="logIn">Confirm</button>
       </div>
@@ -44,6 +46,7 @@ export default {
     },
     methods: {
         logIn: function(){
+          document.getElementById("loginAlert").classList.add("d-none");
             delete axios.defaults.headers.common["Authorization"];
             axios.post('http://' + comm.server + '/api/auth/login', this.credentials)
               .then(response => {
@@ -53,8 +56,11 @@ export default {
                   this.$emit("login-user", 'reevalPermissions');
                   document.getElementById("closeLoginModal").click();
                 } else {
-                  //TODO greska
+                  document.getElementById("loginAlert").classList.remove("d-none");
                 }
+              }).catch(reason => {
+                  console.log(reason);
+                  document.getElementById("loginAlert").classList.remove("d-none");
               });
         }
     }

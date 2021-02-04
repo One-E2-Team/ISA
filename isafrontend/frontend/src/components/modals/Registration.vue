@@ -47,6 +47,8 @@
         </form>
       </div>
       <div class="modal-footer">
+        <div id="registrationInformation" class="alert alert-primary d-none" role="alert">Email sent. Verify account by email. </div>
+        <div id="registrationAlert" class="alert alert-danger d-none" role="alert">Registration was unsuccessful! </div>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" @click="register">Confirm</button>
       </div>
@@ -79,16 +81,26 @@ export default {
     },
     methods: {
         register: function(){
+            document.getElementById("registrationInformation").classList.add("d-none");
+            document.getElementById("registrationAlert").classList.add("d-none");
             if(this.passwordAgain==this.regUserData.password && this.passwordAgain!=""){
                 delete axios.defaults.headers.common["Authorization"];
                 axios.post('http://' + comm.server + '/api/auth/register', this.regUserData)
                 .then(response => {
                     if (response.status==201) {
-                        // TODO obavjestenje o poslatom mejlu
+                        console.log("ifin")
+                        document.getElementById("registrationInformation").classList.remove("d-none");
                     } else {
-                        //TODO obavjestenje - Neuspjesna registracija
+                        console.log("elsein")
+                        document.getElementById("registrationAlert").classList.remove("d-none");
                     }
-                });
+                }).catch(reason => {
+                    console.log(reason);
+                    document.getElementById("registrationAlert").classList.remove("d-none");
+                    });
+            } else {
+                console.log("elseout")
+                document.getElementById("registrationAlert").classList.remove("d-none");
             }
         }
     }
