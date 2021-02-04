@@ -44,6 +44,7 @@ export default {
     },
     methods: {
         logIn: function(){
+            delete axios.defaults.headers.common["Authorization"];
             axios.post('http://' + comm.server + '/api/auth/login', this.credentials)
               .then(response => {
                 if (response.status==200) {

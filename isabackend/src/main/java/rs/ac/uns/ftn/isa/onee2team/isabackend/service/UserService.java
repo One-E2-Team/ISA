@@ -51,7 +51,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 	
 	@Override
-	public User save(UserRequestDTO userRequest) {
+	public User createPatient(UserRequestDTO userRequest) {
 		Patient patient = new Patient();
 		patient.setEmail(userRequest.getEmail());
 		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -62,7 +62,7 @@ public class UserService implements IUserService, UserDetailsService {
 		patient.setState(userRequest.getState());
 		patient.setPhoneNumber(userRequest.getPhone());
 		patient.setUserType(UserType.PATIENT);
-		patient.setEnabled(true);
+		patient.setEnabled(false);
 		
 		List<Authority> auths = authService.findByname("ROLE_PATIENT");
 		
@@ -71,6 +71,16 @@ public class UserService implements IUserService, UserDetailsService {
 		patient = userRepository.save(patient);
 		
 		return patient;
+	}
+	
+	@Override
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
+	
+	@Override
+	public User findById(Long id) {
+		return userRepository.findById(id).orElse(null);
 	}
 
 	@Override

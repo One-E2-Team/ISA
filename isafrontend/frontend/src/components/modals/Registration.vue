@@ -18,7 +18,7 @@
             </div>
             <div class="mb-3">
                 <label for="exampleInputRegPassword2" class="form-label">Password Again</label>
-                <input type="password" v-model="regUserData.passwordAgain" class="form-control" id="exampleInputRegPassword2">
+                <input type="password" v-model="passwordAgain" class="form-control" id="exampleInputRegPassword2">
             </div>  
             <div class="mb-3">
                 <label for="name1" class="form-label">Name</label>
@@ -79,27 +79,17 @@ export default {
     },
     methods: {
         register: function(){
-            if(this.passwordAgain==this.regUserData.password)
+            if(this.passwordAgain==this.regUserData.password && this.passwordAgain!=""){
+                delete axios.defaults.headers.common["Authorization"];
                 axios.post('http://' + comm.server + '/api/auth/register', this.regUserData)
                 .then(response => {
-                    if (response.status==200) {
-                    localStorage.setItem("JWT", JSON.stringify(response.data));
+                    if (response.status==201) {
+                        // TODO obavjestenje o poslatom mejlu
                     } else {
-                    //TODO greska
+                        //TODO obavjestenje - Neuspjesna registracija
                     }
-                    //SHOWCASE - delete
-                    axios.get('http://' + comm.server + '/api/users/all')
-                    .then(response => {
-                            console.log(response.data)
-                            //let role='Anon';
-                            //if(response.data != "")
-                            //    role = response.data;
-                            //this.$root.$emit('login-user',role);
-                        }
-                    );
                 });
-            
-            this.$root.$emit("login-user","Submited");
+            }
         }
     }
 }

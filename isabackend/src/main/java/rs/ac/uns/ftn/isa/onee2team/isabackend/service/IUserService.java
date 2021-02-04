@@ -9,6 +9,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 public interface IUserService {
 	List<User> getAll();
 	List<Patient> getAllPatients();
-	User save(UserRequestDTO userRequest);
+	User createPatient(UserRequestDTO userRequest);
 	User findByEmail(String email);
+	User saveUser(User user);
+	User findById(Long id);
 }

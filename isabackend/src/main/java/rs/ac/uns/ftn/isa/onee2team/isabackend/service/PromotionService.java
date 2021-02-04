@@ -15,10 +15,10 @@ public class PromotionService implements IPromotionService {
 	
 	private IPromotionRepository promotionRepository;
 	private IPharmacyRepository pharmacyRepository;
-	private EmailNotificationService emailNotificationService;
+	private IEmailNotificationService emailNotificationService;
 	
 	@Autowired
-	public PromotionService(IPromotionRepository promotionRepository, IPharmacyRepository pharmacyRepository, EmailNotificationService emailNotificationService) {
+	public PromotionService(IPromotionRepository promotionRepository, IPharmacyRepository pharmacyRepository, IEmailNotificationService emailNotificationService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.promotionRepository = promotionRepository;
 		this.emailNotificationService = emailNotificationService;
