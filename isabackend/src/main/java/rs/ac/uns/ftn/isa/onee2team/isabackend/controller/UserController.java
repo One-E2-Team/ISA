@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -32,5 +35,11 @@ public class UserController {
 	@GetMapping(value = "/patients")
 	public List<Patient> getAllPatients() {
 		return userService.getAllPatients();
+	}
+	
+	@GetMapping(value = "/pharmacists")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
+	public List<PharmacistDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
+		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName);
 	}
 }
