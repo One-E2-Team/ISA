@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,13 +40,15 @@ public class UserController {
 	
 	@GetMapping(value = "/pharmacists")
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
-	public List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
-		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName);
+	public List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName, Authentication authentication){
+		User loggedUser = (User) authentication.getPrincipal();
+		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName, loggedUser.getEmail());
 	}
 	
 	@GetMapping(value = "/dermatologists")
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
-	public List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName){
-		return userService.getAllDermatologistsByFirstAndLastName(firstAndLastName);
+	public List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName, Authentication authentication){
+		User loggedUser = (User) authentication.getPrincipal();
+		return userService.getAllDermatologistsByFirstAndLastName(firstAndLastName, loggedUser.getEmail());
 	}
 }
