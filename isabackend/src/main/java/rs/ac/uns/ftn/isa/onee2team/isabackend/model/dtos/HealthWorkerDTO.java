@@ -1,12 +1,14 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
-public class PharmacistDTO {
+import java.util.List;
+
+public class HealthWorkerDTO {
 	private String firstName;
 	private String lastName;
 	private Double rate;
-	private String pharmacyName;
+	private List<String> pharmacyNames;
 
-	public PharmacistDTO() {
+	public HealthWorkerDTO() {
 	}
 
 	public String getFirstName() {
@@ -33,11 +35,11 @@ public class PharmacistDTO {
 		this.rate = rate;
 	}
 
-	public String getPharmacyName() {
-		return pharmacyName;
+	public List<String> getPharmacyNames() {
+		return pharmacyNames;
 	}
 
-	public void setPharmacyName(String pharmacyName) {
-		this.pharmacyName = pharmacyName;
+	public void setPharmacyNames(List<String> pharmacyNames) {
+		this.pharmacyNames = pharmacyNames;
 	}
 }
