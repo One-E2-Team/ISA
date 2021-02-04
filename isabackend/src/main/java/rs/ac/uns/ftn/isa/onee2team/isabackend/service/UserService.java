@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
@@ -102,6 +104,22 @@ public class UserService implements IUserService, UserDetailsService {
 			dto.setPharmacyName(pharmacist.getPharmacy().getName());
 			List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(pharmacist.getId());
 			dto.setRate(getAverageRate(rates));
+			ret.add(dto);
+		}
+		return ret;
+	}
+
+	@Override
+	public List<DermatologistDTO> getAllDermatologistsByFirstAndLastName(FirstLastNameDTO firstAndLastName) {
+		List<DermatologistDTO> ret = new ArrayList<DermatologistDTO>();
+		for (Dermatologist dermatologist : userRepository.getAllDermatologistsByFirstAndLastName(
+				firstAndLastName.getFirstName(), firstAndLastName.getLastName())) {
+			DermatologistDTO dto = new DermatologistDTO();
+			dto.setFirstName(dermatologist.getFirstName());
+			dto.setLastName(dermatologist.getLastName());
+			List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(dermatologist.getId());
+			dto.setRate(getAverageRate(rates));
+			dto.setPharmacies(dermatologist.getPharmacies());
 			ret.add(dto);
 		}
 		return ret;
