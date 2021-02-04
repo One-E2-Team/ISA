@@ -50,21 +50,12 @@ export default {
               .then(response => {
                 if (response.status==200) {
                   localStorage.setItem("JWT", JSON.stringify(response.data));
+                  axios.defaults.headers.common['Authorization'] = 'Bearer ' + comm.getJWTToken().accessToken;
                 } else {
                   //TODO greska
                 }
-                //SHOWCASE - delete
-                axios.get('http://' + comm.server + '/api/users/all', comm.getAxiosConfigWithAuthorizationHeader())
-                .then(response => {
-                        console.log(response.data)
-                        //let role='Anon';
-                        //if(response.data != "")
-                        //    role = response.data;
-                        //this.$root.$emit('login-user',role);
-                    }
-                );
               });
-            
+              // TODO hide login
             this.$root.$emit("login-user","Submited");
         }
     }

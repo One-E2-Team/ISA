@@ -9,7 +9,6 @@
 
 //import axios from 'axios';
 import AddPromotion from './AddPromotion';
-
 export default {
     name: "Pharmacy",
     components: {
