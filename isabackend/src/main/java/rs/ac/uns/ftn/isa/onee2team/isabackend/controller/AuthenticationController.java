@@ -77,22 +77,18 @@ public class AuthenticationController {
 		if (existUser != null) {
 			throw new ResourceConflictException(0L/*userRequest.getEmail()*/, "Email already exists");
 		}
-
 		User user = this.userService.createPatient(userRequest);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/user/{userId}").buildAndExpand(user.getId()).toUri());
-		try {
-			this.emailNotificationService.sendNotificaitionAsync(user.getEmail(), "Account Validation", "Visit this link and validate your account: http://localhost:8083/api/auth/validate/" + user.getId() + "/");
-		} catch (Exception e) {}
+		this.emailNotificationService.sendNotificaitionAsync(user.getEmail(), "Account Validation", "Visit this link and validate your account: http://localhost:8083/api/auth/validate/" + user.getId() + "/");
 		return new ResponseEntity<>(user, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/validate/{id}")
 	public String validatePatient(@PathVariable("id") Long id) {
 		User p = this.userService.findById(id);
-		if(p == null) {
+		if(p == null)
 			return "Bad Request!";
-		}
 		p.setEnabled(true);
 		this.userService.saveUser(p);
 		

@@ -36,9 +36,7 @@ public class PromotionService implements IPromotionService {
 			String subject = "Pharmacy : " + pharmacy.getId() + " new promotion";
 			for (Patient patient : pharmacy.getSubscribedPatients()) {
 				String mailMessage = "Dear " + patient.getFirstName() + " " + patient.getLastName() + ", pharmacy has added new promotion";
-				try {
-					emailNotificationService.sendNotificaitionAsync("hgstqyssyzfutkvqpk@miucce.com", subject, mailMessage);
-				} catch (Exception e) {}
+				emailNotificationService.sendNotificaitionAsync("hgstqyssyzfutkvqpk@miucce.com", subject, mailMessage);
 			}
 			return promotionRepository.save(promotion);
 		}
