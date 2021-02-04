@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
-
-
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -30,7 +28,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class User implements UserDetails {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -64,15 +62,13 @@ public abstract class User implements UserDetails {
 
 	@Column(name = "userType", nullable = false)
 	private UserType userType;
-	
+
 	@Column(name = "enabled", nullable = false)
-    private boolean enabled;
-	
+	private boolean enabled;
+
 	@ManyToMany(fetch = FetchType.EAGER)
-	   @JoinTable(name = "user_authority",
-	           joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-	           inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
-	   private List<Authority> authorities;
+	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+	private List<Authority> authorities;
 
 	public void setAuthorities(List<Authority> authorities) {
 		this.authorities = authorities;
@@ -164,32 +160,32 @@ public abstract class User implements UserDetails {
 	public void setUserType(UserType userType) {
 		this.userType = userType;
 	}
-	
+
 	@Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
 	@Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.authorities;
-    }
-	
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return this.authorities;
+	}
+
 	@JsonIgnore
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @JsonIgnore
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@JsonIgnore
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @JsonIgnore
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@JsonIgnore
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 }
