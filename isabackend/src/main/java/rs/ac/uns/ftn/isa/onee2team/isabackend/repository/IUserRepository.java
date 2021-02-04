@@ -13,5 +13,5 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	User findByEmail(String email);
 	
 	@Query(value = "select u from User u where u.userType = 0")
-	public List<Patient> getAllPatients();
+	List<Patient> getAllPatients();
 }

@@ -6,6 +6,7 @@ import java.util.List;
 public class NewOrderDTO {
 
 	private List<NewMedicineWithQuantityDTO> newMedicineWithQuantity;
+	private Long pharmacyId;
 	private Date expireDate;
 
 	public NewOrderDTO() {
@@ -25,5 +26,13 @@ public class NewOrderDTO {
 
 	public void setExpireDate(Date expireDate) {
 		this.expireDate = expireDate;
+	}
+
+	public Long getPharmacyId() {
+		return pharmacyId;
+	}
+
+	public void setPharmacyId(Long pharmacyId) {
+		this.pharmacyId = pharmacyId;
 	}
 }
