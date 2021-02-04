@@ -1,20 +1,22 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.auth;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+
 public class UserTokenState {
 	 private String accessToken;
 	    private Long expiresIn;
+	    private UserType userType;
+	    private String email;
 
-	    public UserTokenState() {
-	        this.accessToken = null;
-	        this.expiresIn = null;
-	    }
+	    public UserType getUserType() {
+			return userType;
+		}
 
-	    public UserTokenState(String accessToken, long expiresIn) {
-	        this.accessToken = accessToken;
-	        this.expiresIn = expiresIn;
-	    }
+		public void setUserType(UserType userType) {
+			this.userType = userType;
+		}
 
-	    public String getAccessToken() {
+		public String getAccessToken() {
 	        return accessToken;
 	    }
 
@@ -26,7 +28,27 @@ public class UserTokenState {
 	        return expiresIn;
 	    }
 
-	    public void setExpiresIn(Long expiresIn) {
+	    public UserTokenState() {
+			super();
+		}
+
+		public UserTokenState(String accessToken, Long expiresIn, UserType userType, String email) {
+			super();
+			this.accessToken = accessToken;
+			this.expiresIn = expiresIn;
+			this.userType = userType;
+			this.email = email;
+		}
+
+		public void setExpiresIn(Long expiresIn) {
 	        this.expiresIn = expiresIn;
 	    }
+
+		public String getEmail() {
+			return email;
+		}
+
+		public void setEmail(String email) {
+			this.email = email;
+		}
 }

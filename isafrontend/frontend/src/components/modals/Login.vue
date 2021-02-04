@@ -16,11 +16,13 @@
                 <label for="exampleInputPassword1" class="form-label">Password</label>
                 <input type="password" v-model="credentials.password" class="form-control" id="exampleInputPassword1">
             </div>            
+            
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" v-bind:data-bs-dismiss="{modal : confirmed}" @click="logIn">Confirm</button>
+        <div class="modal-footer">
+        <div id="loginAlert" class="alert alert-danger d-none" role="alert">Login was unsuccessful! </div>
+        <button id="closeLoginModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" @click="logIn">Confirm</button>
       </div>
     </div>
   </div>
@@ -32,31 +34,34 @@ import axios from 'axios';
 import * as comm from '../../configuration/communication.js'
 export default {
     name: "LogIn",
-    
+    props: ['role'],
 
     data() {
         return {
             credentials : {
                 email: "",
                 password: "", 
-            },
-            confirmed: false,           
+            }        
         }
     },
     methods: {
         logIn: function(){
-            console.log(this.email,this.password);
+          document.getElementById("loginAlert").classList.add("d-none");
+            delete axios.defaults.headers.common["Authorization"];
             axios.post('http://' + comm.server + '/api/auth/login', this.credentials)
               .then(response => {
                 if (response.status==200) {
-                  localStorage.setItem("JWT", JSON.stringify(response.data));
+                  comm.setJWTToken(response.data);
                   axios.defaults.headers.common['Authorization'] = 'Bearer ' + comm.getJWTToken().accessToken;
+                  this.$emit("login-user", 'reevalPermissions');
+                  document.getElementById("closeLoginModal").click();
                 } else {
-                  //TODO greska
+                  document.getElementById("loginAlert").classList.remove("d-none");
                 }
+              }).catch(reason => {
+                  console.log(reason);
+                  document.getElementById("loginAlert").classList.remove("d-none");
               });
-              // TODO hide login
-            this.$root.$emit("login-user","Submited");
         }
     }
 }
