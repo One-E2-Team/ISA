@@ -70,7 +70,7 @@
                     <label>Old password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password">
+                    <input type="password" v-model="oldPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -85,7 +85,7 @@
                     <label>New password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password">
+                    <input type="password" v-model="newPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -100,7 +100,7 @@
                     <label>Confirm new password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password">
+                    <input type="password" v-model="repeatedPassword">
                 </div>
             </div><br/>
             <div class = "row justify-content-center">
@@ -108,9 +108,9 @@
                 <div class="col-2">
                     <button type="button" class="btn-success" v-on:click="updatePatientData"> Save my data </button>
                 </div>
-                <div class = "col-3"></div>
+                <div class = "col-3"><label v-bind="labelText" color="red"></label></div>
                 <div class="col-2">
-                    <button type="button" class="btn-primary"> Change password </button>
+                    <button type="button" class="btn-primary" v-on:click="changePassword"> Change password </button>
                 </div>
                 <div class = "col-3"></div>
             </div>
@@ -126,7 +126,11 @@ export default {
         return{
             user : {},
             allMedicines : {},
-            selectedMedicine : 0
+            selectedMedicine : 0,
+            oldPassword : "",
+            newPassword : "",
+            repeatedPassword: "",
+            labelText: ""
         }
     },
 
@@ -148,6 +152,21 @@ export default {
         updatePatientData : function(){
              axios.put('http://localhost:8083/api/users/patients/updatePatient', this.user)
             .then(alert("Data saved successfully!"))
+        },
+        changePassword : function(){
+            axios.get('http://localhost:8083/api/users/checkPassword', this.oldPassword)
+            .then(response => {
+                this.labelText = "";
+                if(!response){
+                    this.labelText = "Old password is wrong!";
+                }
+                else if(this.newPassword != this.repeatedPassword){
+                    this.labelText = "Passwords does not match!";
+                }
+                else{
+                    axios.post('http://localhost:8083/api/users/changePassword', this.newPassword)
+                }
+            })
         }
     }
 }
