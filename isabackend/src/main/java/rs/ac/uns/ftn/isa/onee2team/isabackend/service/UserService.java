@@ -169,17 +169,6 @@ public class UserService implements IUserService, UserDetailsService {
 		return dto;
 	}
 
-	private Double getAverageRate(List<Integer> rates) {
-		Double rate = 0.0;
-		for (Integer oneRate : rates) {
-			rate += oneRate;
-		}
-		if (!rates.isEmpty()) {
-			rate /= rates.size();
-		}
-		return rate;
-	}
-
 	@Override
 	public User createPatient(UserRequestDTO userRequest) {
 		return createUser(userRequest, "ROLE_PATIENT", UserType.PATIENT);
