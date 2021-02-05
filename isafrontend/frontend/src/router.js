@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 
 import Welcome from './components/Welcome'
 import Pharmacy from './components/Pharmacy'
+import PatientsPage from './components/pages/PatientsPage'
 import Patient from './components/profiles/Patient'
 import Pharmacist from './components/profiles/Pharmacist'
 import Dermatologist from './components/profiles/Dermatologist'
@@ -22,39 +23,46 @@ const router = new VueRouter({
       component: Welcome
     },
     {
-      path: '/pharmacy',
+      path: 'profile/pharmacy',
       name: 'pharmacy',
       component: Pharmacy
     },
     {
-      path: '/patient',
+
+      path: '/patients',
+      name: 'patients',
+      component: PatientsPage
+    },
+    {
+      path: 'profile/patient',
       name: 'patient',
       component: Patient
     },
     {
-      path: '/pharmacist',
+      path: 'profile/pharmacist',
       name: 'pharmacist',
       component: Pharmacist
     },
     {
-      path: '/dermatologist',
+      path: 'profile/dermatologist',
       name: 'dermatologist',
       component: Dermatologist
     },
     {
-      path: '/pharmacy-admin',
+      path: 'profile/pharmacy-admin',
       name: 'pharmacy-admin',
       component: PharmacyAdmin
     },
     {
-      path: '/system-admin',
+      path: 'profile/system-admin',
       name: 'system-admin',
       component: SystemAdmin
     },
     {
-      path: '/dealer',
+      path: 'profile/dealer',
       name: 'dealer',
       component: Dealer
+
     }
   ]
 })

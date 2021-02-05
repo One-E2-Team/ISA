@@ -8,10 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -45,10 +47,19 @@ public class UserController {
 		return userService.getAllPharmacistsByFirstAndLastName(firstAndLastName, loggedUser.getEmail());
 	}
 	
+
+	@GetMapping(value = "/patients/search")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<SearchedPatientDTO> searchPatient(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName){
+		return userService.searchPatient(firstName,lastName);
+	}
+
 	@GetMapping(value = "/dermatologists")
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
+
 	public List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(@RequestBody FirstLastNameDTO firstAndLastName, Authentication authentication){
 		User loggedUser = (User) authentication.getPrincipal();
 		return userService.getAllDermatologistsByFirstAndLastName(firstAndLastName, loggedUser.getEmail());
+
 	}
 }
