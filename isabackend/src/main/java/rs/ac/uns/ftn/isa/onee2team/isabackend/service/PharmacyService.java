@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedPharmacyRepository;
@@ -23,14 +25,17 @@ public class PharmacyService implements IPharmacyService {
 	private IUserRepository userRepository;
 	private IMedicineRepository medicineRepository;
 	private IRatedPharmacyRepository ratedPharmacyRepository;
+	private IExaminationRepository examinationRepository;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
-			IMedicineRepository medicineRepository, IRatedPharmacyRepository ratedPharmacyRepository) {
+			IMedicineRepository medicineRepository, IRatedPharmacyRepository ratedPharmacyRepository,
+			IExaminationRepository examinationRepository) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
 		this.ratedPharmacyRepository = ratedPharmacyRepository;
+		this.examinationRepository = examinationRepository;
 	}
 
 	@Override
@@ -61,18 +66,26 @@ public class PharmacyService implements IPharmacyService {
 		PharmacyWithDoctorsMedicinesAndRateDTO dto = new PharmacyWithDoctorsMedicinesAndRateDTO();
 		dto.setName(pharmacy.getName());
 		dto.setAddress(pharmacy.getAddress());
-		dto.setPharmacists(getCredentialsFromHealthWorkers(userRepository.getAllPharmacistsByPharmacyId(id)));
-		dto.setDermatologists(getCredentialsFromHealthWorkers(userRepository.getAllDermatologistsByPharmacyId(id)));
+		dto.setPharmacists(getCredentialsFromHealthWorkers(id, true));
+		dto.setDermatologists(getCredentialsFromHealthWorkers(id, false));
 		dto.setMedicines(medicineRepository.findMedicineByPharmacyid(id));
 		dto.setRate(ratedPharmacyRepository.getAverageRateByPharmacyId(id));
 		return dto;
 	}
 
-	private List<CredentialsAndIdDTO> getCredentialsFromHealthWorkers(List<? extends HealthWorker> workers) {
-		List<CredentialsAndIdDTO> ret = new ArrayList<CredentialsAndIdDTO>();
+	private List<DermatologistWithFreeExaminationsDTO> getCredentialsFromHealthWorkers(Long pharmacyId,
+			Boolean isPharmacist) {
+		List<DermatologistWithFreeExaminationsDTO> ret = new ArrayList<DermatologistWithFreeExaminationsDTO>();
+		List<? extends HealthWorker> workers = null;
+		if (isPharmacist)
+			workers = userRepository.getAllPharmacistsByPharmacyId(pharmacyId);
+		else
+			workers = userRepository.getAllDermatologistsByPharmacyId(pharmacyId);
 		for (HealthWorker worker : workers) {
-			CredentialsAndIdDTO dto = new CredentialsAndIdDTO(worker.getId(), worker.getFirstName(),
-					worker.getLastName());
+			DermatologistWithFreeExaminationsDTO dto = new DermatologistWithFreeExaminationsDTO();
+			dto.setCredentials(new CredentialsAndIdDTO(worker.getId(), worker.getFirstName(), worker.getLastName()));
+			dto.setFreeExaminations(
+					examinationRepository.getFreeExaminationsByHealthWorkerIdAndPharmacyId(worker.getId(), pharmacyId));
 			ret.add(dto);
 		}
 		return ret;

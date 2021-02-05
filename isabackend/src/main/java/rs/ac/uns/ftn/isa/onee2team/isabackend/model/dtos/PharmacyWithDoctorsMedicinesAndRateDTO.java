@@ -8,8 +8,8 @@ public class PharmacyWithDoctorsMedicinesAndRateDTO {
 
 	private String name;
 	private String address;
-	private List<CredentialsAndIdDTO> pharmacists;
-	private List<CredentialsAndIdDTO> dermatologists;
+	private List<DermatologistWithFreeExaminationsDTO> pharmacists;
+	private List<DermatologistWithFreeExaminationsDTO> dermatologists;
 	private List<Medicine> medicines;
 	private Double rate;
 
@@ -32,19 +32,19 @@ public class PharmacyWithDoctorsMedicinesAndRateDTO {
 		this.address = address;
 	}
 
-	public List<CredentialsAndIdDTO> getPharmacists() {
+	public List<DermatologistWithFreeExaminationsDTO> getPharmacists() {
 		return pharmacists;
 	}
 
-	public void setPharmacists(List<CredentialsAndIdDTO> pharmacists) {
+	public void setPharmacists(List<DermatologistWithFreeExaminationsDTO> pharmacists) {
 		this.pharmacists = pharmacists;
 	}
 
-	public List<CredentialsAndIdDTO> getDermatologists() {
+	public List<DermatologistWithFreeExaminationsDTO> getDermatologists() {
 		return dermatologists;
 	}
 
-	public void setDermatologists(List<CredentialsAndIdDTO> dermatologists) {
+	public void setDermatologists(List<DermatologistWithFreeExaminationsDTO> dermatologists) {
 		this.dermatologists = dermatologists;
 	}
 
