@@ -153,6 +153,7 @@ public class UserService implements IUserService, UserDetailsService {
 
 	private HealthWorkerDTO getProperDTO(HealthWorker worker, Boolean isPharmacist) {
 		HealthWorkerDTO dto = new HealthWorkerDTO();
+		dto.setId(worker.getId());
 		dto.setFirstName(worker.getFirstName());
 		dto.setLastName(worker.getLastName());
 		List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(worker.getId());
