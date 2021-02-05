@@ -52,7 +52,6 @@ public class PricelistService implements IPricelistService {
 	@Override
 	public Boolean changePriceList(PricelistDTO pricelist) {
 		Pricelist newPricelist = new Pricelist();
-		System.out.println("metoda sevis");
 		newPricelist.setMedicine(medicineRepository.findById(pricelist.getMedicineId()).orElse(null));
 		newPricelist.setPharmacy(pharmacyRepository.findById(pricelist.getPharmacyId()).orElse(null));
 		newPricelist.setEndDate(pricelist.getEndDate());
