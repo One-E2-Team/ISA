@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.FirstLastNameDTO;
@@ -49,8 +50,8 @@ public class UserController {
 
 	@GetMapping(value = "/patients/search")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public List<SearchedPatientDTO> searchPatient(@RequestBody FirstLastNameDTO firstAndLastName){
-		return userService.searchPatient(firstAndLastName);
+	public List<SearchedPatientDTO> searchPatient(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName){
+		return userService.searchPatient(firstName,lastName);
 	}
 
 	@GetMapping(value = "/dermatologists")

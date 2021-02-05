@@ -23,7 +23,7 @@ const router = new VueRouter({
       component: Welcome
     },
     {
-      path: '/pharmacy',
+      path: 'profile/pharmacy',
       name: 'pharmacy',
       component: Pharmacy
     },
@@ -34,32 +34,32 @@ const router = new VueRouter({
       component: PatientsPage
     },
     {
-      path: '/patient',
+      path: 'profile/patient',
       name: 'patient',
       component: Patient
     },
     {
-      path: '/pharmacist',
+      path: 'profile/pharmacist',
       name: 'pharmacist',
       component: Pharmacist
     },
     {
-      path: '/dermatologist',
+      path: 'profile/dermatologist',
       name: 'dermatologist',
       component: Dermatologist
     },
     {
-      path: '/pharmacy-admin',
+      path: 'profile/pharmacy-admin',
       name: 'pharmacy-admin',
       component: PharmacyAdmin
     },
     {
-      path: '/system-admin',
+      path: 'profile/system-admin',
       name: 'system-admin',
       component: SystemAdmin
     },
     {
-      path: '/dealer',
+      path: 'profile/dealer',
       name: 'dealer',
       component: Dealer
 

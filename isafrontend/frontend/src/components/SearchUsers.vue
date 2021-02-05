@@ -30,14 +30,16 @@ export default {
     },
     methods:{
         searchPatients: function(){
-            let params = {
-                firstName : this.firstName,
-                lastName : this.lastName
-            }
-            axios.get('http://' + comm.server + '/api/users/patients/search',params)
+            
+            axios.get('http://' + comm.server + '/api/users/patients/search',{
+                params : {
+                "firstName" : this.firstName,
+                "lastName" : this.lastName
+                }
+            })
                 .then(response => {
                     if (response.status==200) {
-                    console.log(response.data)
+                        this.$emit('searched-patients',response.data);
                     } else {
                     //TODO greska
                     }

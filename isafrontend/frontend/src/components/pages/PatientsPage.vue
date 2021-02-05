@@ -1,6 +1,20 @@
 <template>
     <div id = "patientPage" class="container">
-        <SearchUsers/>
+        <SearchUsers v-on:searched-patients='users = $event'/>
+        <table class="table table-striped">
+            <tr class="table-light">
+                <th class="table-light">Name</th>
+                <th class="table-light">Surname</th>
+                <th class="table-light">Email</th>
+                <th class="table-light">Phone</th>
+            </tr>
+            <tr v-for="user in users" v-bind:key="user.id" class="table-light">
+                <td class="table-light">{{user.firstName}}</td>
+                <td class="table-light">{{user.lastName}}</td>
+                <td class="table-light">{{user.email}}</td>
+                <td class="table-light">{{user.telephone}}</td>
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -11,6 +25,12 @@ export default {
 
     components:{
         SearchUsers,
+    },
+
+    data() {
+        return{
+            users : []
+        }
     }
 }
 </script>

@@ -109,8 +109,8 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 	
 	@Override
-	public List<SearchedPatientDTO> searchPatient(FirstLastNameDTO firstAndLastName) {
-		return userRepository.getAllPatientsByFirstAndLastName( firstAndLastName.getFirstName(),firstAndLastName.getLastName());
+	public List<SearchedPatientDTO> searchPatient(String firstName,  String lastName) {
+		return userRepository.getAllPatientsByFirstAndLastName( firstName,lastName);
 	}
 
 	@Override
