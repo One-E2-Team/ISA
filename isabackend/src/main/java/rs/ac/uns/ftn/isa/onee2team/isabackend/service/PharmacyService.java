@@ -67,6 +67,7 @@ public class PharmacyService implements IPharmacyService {
 		p.setAddress(phdto.getAddress());
 		p.setDescription(phdto.getDescription());
 		return save(p);
+	}
   
   @Override
 	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(Long id) {
