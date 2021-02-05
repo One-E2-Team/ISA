@@ -40,6 +40,12 @@ public class UserController {
 	public List<User> getAll() {
 		return userService.getAll();
 	}
+	
+	@GetMapping(value = "/me")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('PATIENT')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')")
+	public User getMe(Authentication auth) {
+		return userService.findById(((User) auth.getPrincipal()).getId());
+	}
 
 	@GetMapping(value = "/patients")
 	public List<Patient> getAllPatients() {

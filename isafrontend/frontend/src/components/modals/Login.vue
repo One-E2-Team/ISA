@@ -41,20 +41,29 @@ export default {
             credentials : {
                 email: "",
                 password: "", 
-            }        
+            },
+            elevated: false
         }
     },
     methods: {
         logIn: function(){
           document.getElementById("loginAlert").classList.add("d-none");
-            delete axios.defaults.headers.common["Authorization"];
+          delete axios.defaults.headers.common["Authorization"];
+          if(this.elevated){
+            //TODO - lelevated request
+          } else{
             axios.post('http://' + comm.server + '/api/auth/login', this.credentials)
               .then(response => {
                 if (response.status==200) {
-                  comm.setJWTToken(response.data);
-                  axios.defaults.headers.common['Authorization'] = 'Bearer ' + comm.getJWTToken().accessToken;
-                  this.$emit("login-user", 'reevalPermissions');
-                  document.getElementById("closeLoginModal").click();
+                  if(response.data.accessToken){
+                    comm.setJWTToken(response.data);
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + comm.getJWTToken().accessToken;
+                    this.$emit("login-user", 'reevalPermissions');
+                    document.getElementById("closeLoginModal").click();
+                  } else {
+                    this.elevated=true;
+                    //TODO prikazi polja
+                  }
                 } else {
                   document.getElementById("loginAlert").classList.remove("d-none");
                 }
@@ -62,6 +71,7 @@ export default {
                   console.log(reason);
                   document.getElementById("loginAlert").classList.remove("d-none");
               });
+          }
         }
     }
 }

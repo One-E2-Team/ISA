@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.ElevatedFirstLogIn;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.JwtAuthenticationRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.ResourceConflictException;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.TokenUtils;
@@ -46,10 +48,16 @@ public class AuthenticationController {
 	@Autowired
 	private IEmailNotificationService emailNotificationService;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	@PostMapping("/login")
 	public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) {
 
+		User u = userService.findByEmail(authenticationRequest.getEmail());
+		if(u != null && passwordEncoder.matches(authenticationRequest.getPassword(), u.getPassword()) && u.getUserType()!=UserType.PATIENT && !u.isEnabled())
+			return ResponseEntity.ok(new UserTokenState(null, 0L, u.getUserType(), u.getEmail()));
 		// 
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
@@ -93,5 +101,18 @@ public class AuthenticationController {
 		this.userService.saveUser(p);
 		
 		return "Validation succesfull, you can use your account now.";
+	}
+	
+	@PostMapping("/login/elevated")
+	public ResponseEntity<UserTokenState> createElevatedAuthenticationToken(@RequestBody ElevatedFirstLogIn authenticationRequest,
+			HttpServletResponse response){
+		User u = userService.findByEmail(authenticationRequest.getEmail());
+		if(!passwordEncoder.matches(authenticationRequest.getPassword(), u.getPassword()))
+			return ResponseEntity.ok(new UserTokenState(null, 0L, u.getUserType(), u.getEmail()));
+		u.setPassword(passwordEncoder.encode(authenticationRequest.getNewPassword()));
+		u.setEnabled(true);
+		this.userService.saveUserAndFlush(u);
+		authenticationRequest.setPassword(authenticationRequest.getNewPassword());
+		return createAuthenticationToken(authenticationRequest, response);
 	}
 }
