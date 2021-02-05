@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 
@@ -36,4 +37,20 @@ public class MedicineService implements IMedicineService {
 		return medicineRepository.findAll();
 	}
 
+	@Override
+	public Medicine createMedicine(NewMedicineDTO nmdto) {
+		Medicine m = new Medicine();
+		m.setCode(nmdto.getCode());
+		m.setContexture(nmdto.getContexture());
+		m.setDailyIntake(nmdto.getDailyIntake());
+		m.setManufacturer(nmdto.getManufacturer());
+		m.setMedicineForm(nmdto.getMedicineForm());
+		m.setMedicineType(nmdto.getMedicineType());
+		m.setName(nmdto.getName());
+		m.setPoints(nmdto.getPoints());
+		m.setRecipeNeeded(nmdto.getRecipeNeeded());
+		m.setSideEffects(nmdto.getSideEffects());
+		m.setEquivalentMedicines(nmdto.getEquivalentMedicines());
+		return this.medicineRepository.save(m);
+	}
 }
