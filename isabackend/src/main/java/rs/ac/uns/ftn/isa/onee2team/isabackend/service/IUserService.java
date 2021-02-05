@@ -7,6 +7,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 
 public interface IUserService {
 	List<User> getAll();
@@ -15,7 +16,11 @@ public interface IUserService {
 
 	List<SearchedPatientDTO> searchPatient(String firstName, String lastName);
 
+	User createUser(UserRequestDTO userRequest, String role, UserType usertype);
 	User createPatient(UserRequestDTO userRequest);
+	User createDermatologist(UserRequestDTO userRequest);
+	User createPharmacyAdmin(UserRequestDTO userRequest);
+	User createDealer(UserRequestDTO userRequest);
 
 	List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(String firstName, String lastName,
 			String loggedUserEmail);

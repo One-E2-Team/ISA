@@ -3,16 +3,17 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
@@ -53,5 +54,11 @@ public class PharmacyController {
 	@GetMapping(value = "/medicinesByPharmacyId")
 	public List<MedicineDTO> getMedicinesByPharmacyId(@RequestParam Long id) {
 		return medicineService.findMedicineByPharmacyid(id);
+	}
+	
+	@PostMapping(value = "/register")
+	@PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
+	public Pharmacy registerPharmacy(@RequestBody NewPharmacyDTO phdto) {
+		return pharmacyService.registerPharmacy(phdto);
 	}
 }
