@@ -1,6 +1,6 @@
 <template>
     <div id = "patientPage" class="container">
-        <SearchUsers v-on:searched-patients='users = $event'/>
+        <SearchUsers v-on:searched-patients='users = $event' v-bind:page="page"/>
         <table class="table table-striped">
             <tr class="table-light">
                 <th class="table-light">Name</th>
@@ -29,6 +29,7 @@ export default {
 
     data() {
         return{
+            page : "patients",
             users : []
         }
     }
