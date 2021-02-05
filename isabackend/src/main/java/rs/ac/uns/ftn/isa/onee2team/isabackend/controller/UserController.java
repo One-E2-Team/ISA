@@ -5,13 +5,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -21,10 +26,13 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
 public class UserController {
 
 	private IUserService userService;
+	
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	public UserController(IUserService userService) {
+	public UserController(IUserService userService, PasswordEncoder passwordEncoder) {
 		this.userService = userService;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@GetMapping(value = "/all")
@@ -61,5 +69,25 @@ public class UserController {
 		User loggedUser = (User) authentication.getPrincipal();
 		return userService.getAllDermatologistsByFirstAndLastName(firstName, lastName, loggedUser.getEmail());
 
+	}
+	
+	@PostMapping(value = "/registerElevatedUser")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public User registerElevatedUser(@RequestBody NewElevatedUserRequestDTO udto) {
+		if(udto.getUserType().equalsIgnoreCase("PHARMACY_ADMIN"))
+			return this.userService.createPharmacyAdmin(udto);
+		else if(udto.getUserType().equalsIgnoreCase("DEALER"))
+			return this.userService.createDealer(udto);
+		else if(udto.getUserType().equalsIgnoreCase("DERMATOLOGIST"))
+			return this.userService.createDermatologist(udto);
+		else if(udto.getUserType().equalsIgnoreCase("SYSTEM_ADMIN"))
+			return this.userService.createSystemAdmin(udto);
+		else return null;
+	}
+	
+	@PostMapping(value = "/changePassword")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
+		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
 	}
 }
