@@ -12,7 +12,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedPharmacyRepository;
@@ -25,17 +24,17 @@ public class PharmacyService implements IPharmacyService {
 	private IUserRepository userRepository;
 	private IMedicineRepository medicineRepository;
 	private IRatedPharmacyRepository ratedPharmacyRepository;
-	private IExaminationRepository examinationRepository;
+	private IExaminationService examinationService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
 			IMedicineRepository medicineRepository, IRatedPharmacyRepository ratedPharmacyRepository,
-			IExaminationRepository examinationRepository) {
+			IExaminationService examinationService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
 		this.ratedPharmacyRepository = ratedPharmacyRepository;
-		this.examinationRepository = examinationRepository;
+		this.examinationService = examinationService;
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class PharmacyService implements IPharmacyService {
 			DermatologistWithFreeExaminationsDTO dto = new DermatologistWithFreeExaminationsDTO();
 			dto.setCredentials(new CredentialsAndIdDTO(worker.getId(), worker.getFirstName(), worker.getLastName()));
 			dto.setFreeExaminations(
-					examinationRepository.getFreeExaminationsByHealthWorkerIdAndPharmacyId(worker.getId(), pharmacyId));
+					examinationService.getFreeExaminationsByHealthWorkerIdAndPharmacyId(worker.getId(), pharmacyId));
 			ret.add(dto);
 		}
 		return ret;
