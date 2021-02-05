@@ -8,12 +8,7 @@ import AllPharmacies from './components/AllPharmacies'
 import DermatologistsPage from './components/pages/DermatologistsPage'
 import PatientsPage from './components/pages/PatientsPage'
 import PharmacistsPage from './components/pages/PharmacistsPage'
-import Patient from './components/profiles/Patient'
-import Pharmacist from './components/profiles/Pharmacist'
-import Dermatologist from './components/profiles/Dermatologist'
-import PharmacyAdmin from './components/profiles/PharmacyAdmin'
-import SystemAdmin from './components/profiles/SystemAdmin'
-import Dealer from './components/profiles/Dealer'
+import ProfilePage from './components/pages/ProfilePage'
 
 Vue.use(VueRouter)
 
@@ -50,35 +45,10 @@ const router = new VueRouter({
       component: DermatologistsPage
     },
     {
-      path: 'profile/patient',
-      name: 'patient',
-      component: Patient
+      path: '/profile',
+      name: 'profile',
+      component: ProfilePage
     },
-    {
-      path: 'profile/pharmacist',
-      name: 'pharmacist',
-      component: Pharmacist
-    },
-    {
-      path: 'profile/dermatologist',
-      name: 'dermatologist',
-      component: Dermatologist
-    },
-    {
-      path: 'profile/pharmacy-admin',
-      name: 'pharmacy-admin',
-      component: PharmacyAdmin
-    },
-    {
-      path: 'profile/system-admin',
-      name: 'system-admin',
-      component: SystemAdmin
-    },
-    {
-      path: 'profile/dealer',
-      name: 'dealer',
-      component: Dealer
-    }
   ]
 })
 
