@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import Login from './components/modals/Login'
 import Welcome from './components/Welcome'
 import Pharmacy from './components/Pharmacy'
+import AllPharmacies from './components/AllPharmacies'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ const router = new VueRouter({
       path: '/pharmacy',
       name: 'pharmacy',
       component: Pharmacy
+    },
+    {
+      path: '/allPharmacies',
+      name: 'allPharmacies',
+      component: AllPharmacies
     }
   ]
 })
