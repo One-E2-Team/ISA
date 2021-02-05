@@ -1,8 +1,11 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 
@@ -24,5 +27,15 @@ public class PharmacyService implements IPharmacyService{
 	@Override
 	public Pharmacy save(Pharmacy pharmacy) {
 		return pharmacyRepository.save(pharmacy);
+	}
+	
+	@Override
+	public List<Pharmacy> findAll(){
+		return pharmacyRepository.findAll();
+	}
+
+	@Override
+	public List<PharmacyDTO> findAllIPharmaciesDto() {
+		return pharmacyRepository.findAllIPharmaciesDto();
 	}
 }
