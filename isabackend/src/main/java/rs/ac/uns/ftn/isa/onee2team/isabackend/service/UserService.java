@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -11,29 +12,40 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedHealthWorkerRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 
 	private IUserRepository userRepository;
-	
+
 	private IAuthorityService authService;
+	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
 
 	@Autowired
-	public UserService(IUserRepository userRepository, IAuthorityService authService) {
+	public UserService(IUserRepository userRepository, IAuthorityService authService,
+			IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
 		this.userRepository = userRepository;
 		this.authService = authService;
+		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
 	}
 
 	public List<User> getAll() {
@@ -49,9 +61,9 @@ public class UserService implements IUserService, UserDetailsService {
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-	
+
 	@Override
-	public User save(UserRequest userRequest) {
+	public User createPatient(UserRequestDTO userRequest) {
 		Patient patient = new Patient();
 		patient.setEmail(userRequest.getEmail());
 		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -62,15 +74,24 @@ public class UserService implements IUserService, UserDetailsService {
 		patient.setState(userRequest.getState());
 		patient.setPhoneNumber(userRequest.getPhone());
 		patient.setUserType(UserType.PATIENT);
-		patient.setEnabled(true);
-		
+		patient.setEnabled(false);
 		List<Authority> auths = authService.findByname("ROLE_PATIENT");
-		
+
 		patient.setAuthorities(auths);
-		
+
 		patient = userRepository.save(patient);
-		
+
 		return patient;
+	}
+
+	@Override
+	public User saveUser(User user) {
+		return userRepository.save(user);
+	}
+
+	@Override
+	public User findById(Long id) {
+		return userRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -82,5 +103,80 @@ public class UserService implements IUserService, UserDetailsService {
 			return user;
 		}
 	}
-}
 
+	@Override
+	public List<SearchedPatientDTO> searchPatient(String firstName, String lastName) {
+		return userRepository.getAllPatientsByFirstAndLastName(firstName, lastName);
+	}
+
+	@Override
+	public List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(String firstName, String lastName,
+			String loggedUserEmail) {
+		List<HealthWorkerDTO> ret = new ArrayList<HealthWorkerDTO>();
+		List<Pharmacist> allPharmacists = new ArrayList<Pharmacist>();
+		User loggerUser = getLoggedUser(loggedUserEmail);
+		UserType loggedUserRole = loggerUser.getUserType();
+		if (loggedUserRole.equals(UserType.PATIENT)) {
+			allPharmacists = userRepository.getAllPharmacistsByFirstAndLastName(firstName, lastName);
+		} else if (loggedUserRole.equals(UserType.PHARMACY_ADMIN)) {
+			allPharmacists = userRepository.getAllPharmacistsByFirstAndLastNameAndPharmacyId(firstName, lastName,
+					((PharmacyAdmin) loggerUser).getPharmacy().getId());
+		}
+		for (Pharmacist pharmacist : allPharmacists) {
+			ret.add(getProperDTO(pharmacist, true));
+		}
+		return ret;
+	}
+
+	@Override
+	public List<HealthWorkerDTO> getAllDermatologistsByFirstAndLastName(String firstName, String lastName,
+			String loggedUserEmail) {
+		List<HealthWorkerDTO> ret = new ArrayList<HealthWorkerDTO>();
+		List<Dermatologist> allDermatologists = new ArrayList<Dermatologist>();
+		User loggerUser = getLoggedUser(loggedUserEmail);
+		UserType loggedUserRole = loggerUser.getUserType();
+		if (loggedUserRole.equals(UserType.PATIENT)) {
+			allDermatologists = userRepository.getAllDermatologistsByFirstAndLastName(firstName, lastName);
+		} else if (loggedUserRole.equals(UserType.PHARMACY_ADMIN)) {
+			allDermatologists = userRepository.getAllDermatologistsByFirstAndLastNameAndPharmacyId(firstName, lastName,
+					((PharmacyAdmin) loggerUser).getPharmacy().getId());
+		}
+		for (Dermatologist dermatologist : allDermatologists) {
+			ret.add(getProperDTO(dermatologist, false));
+		}
+		return ret;
+	}
+
+	private User getLoggedUser(String loggedUserEmail) {
+		return userRepository.findByEmail(loggedUserEmail);
+	}
+
+	private HealthWorkerDTO getProperDTO(HealthWorker worker, Boolean isPharmacist) {
+		HealthWorkerDTO dto = new HealthWorkerDTO();
+		dto.setId(worker.getId());
+		dto.setFirstName(worker.getFirstName());
+		dto.setLastName(worker.getLastName());
+		List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(worker.getId());
+		dto.setRate(getAverageRate(rates));
+		dto.setPharmacyNames(new ArrayList<String>());
+		if (isPharmacist) {
+			dto.getPharmacyNames().add(((Pharmacist) worker).getPharmacy().getName());
+		} else {
+			for (Pharmacy pharmacy : ((Dermatologist) worker).getPharmacies()) {
+				dto.getPharmacyNames().add(pharmacy.getName());
+			}
+		}
+		return dto;
+	}
+
+	private Double getAverageRate(List<Integer> rates) {
+		Double rate = 0.0;
+		for (Integer oneRate : rates) {
+			rate += oneRate;
+		}
+		if (!rates.isEmpty()) {
+			rate /= rates.size();
+		}
+		return rate;
+	}
+}

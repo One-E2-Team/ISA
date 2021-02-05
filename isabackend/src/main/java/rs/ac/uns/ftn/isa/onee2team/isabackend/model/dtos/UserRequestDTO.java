@@ -1,8 +1,6 @@
-package rs.ac.uns.ftn.isa.onee2team.isabackend.model.users;
+package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
-public class UserRequest {
-
-	private Long id;
+public class UserRequestDTO {
 
 	private String email;
 
@@ -19,14 +17,6 @@ public class UserRequest {
 	private String state;
 	
 	private String phone;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getEmail() {
 		return email;

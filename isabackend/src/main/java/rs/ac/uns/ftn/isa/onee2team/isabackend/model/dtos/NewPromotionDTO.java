@@ -3,14 +3,13 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 import java.util.Date;
 
 public class NewPromotionDTO {
-	
+
 	private Long pharmacyId;
 	private String description;
 	private Date startDate;
 	private Date endDate;
-	
+
 	public NewPromotionDTO() {
-		
 	}
 
 	public Long getPharmacyId() {

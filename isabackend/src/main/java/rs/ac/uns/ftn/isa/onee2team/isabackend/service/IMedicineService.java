@@ -6,5 +6,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
 public interface IMedicineService {
-	List<Medicine> findMedicineByPharmacyid(Long id);
+	List<MedicineDTO> findMedicineByPharmacyid(Long id);
+	List<Medicine> getAll();
 }

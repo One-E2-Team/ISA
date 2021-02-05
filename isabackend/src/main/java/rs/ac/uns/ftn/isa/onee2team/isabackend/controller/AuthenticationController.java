@@ -11,6 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +23,10 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.JwtAuthenticationRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.ResourceConflictException;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.TokenUtils;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.UserTokenState;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserRequest;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IEmailNotificationService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.UserService;
 
 
@@ -39,6 +43,9 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private IEmailNotificationService emailNotificationService;
+	
 	@PostMapping("/login")
 	public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) {
@@ -54,24 +61,37 @@ public class AuthenticationController {
 		// Kreiraj token za tog korisnika
 		User user = (User) authentication.getPrincipal();
 		String jwt = tokenUtils.generateToken(user.getEmail());
-		int expiresIn = tokenUtils.getExpiredIn();
+		long expiresIn = tokenUtils.getExpiredIn();
+		UserType userType = user.getUserType();
+		String email = user.getEmail();
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
-		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));
+		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn, userType, email));
 	}
 
 	// Endpoint za registraciju novog korisnika
 	@PostMapping("/register")
-	public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
 
 		User existUser = this.userService.findByEmail(userRequest.getEmail());
 		if (existUser != null) {
-			throw new ResourceConflictException(userRequest.getId(), "Email already exists");
+			throw new ResourceConflictException(0L/*userRequest.getEmail()*/, "Email already exists");
 		}
-
-		User user = this.userService.save(userRequest);
+		User user = this.userService.createPatient(userRequest);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/user/{userId}").buildAndExpand(user.getId()).toUri());
+		this.emailNotificationService.sendNotificaitionAsync(user.getEmail(), "Account Validation", "Visit this link and validate your account: http://localhost:8083/api/auth/validate/" + user.getId() + "/");
 		return new ResponseEntity<>(user, HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/validate/{id}")
+	public String validatePatient(@PathVariable("id") Long id) {
+		User p = this.userService.findById(id);
+		if(p == null)
+			return "Bad Request!";
+		p.setEnabled(true);
+		this.userService.saveUser(p);
+		
+		return "Validation succesfull, you can use your account now.";
 	}
 }

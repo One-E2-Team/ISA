@@ -31,7 +31,6 @@ export default {
     },
     methods : {
         addPromotion(){
-            console.log("sasaa");
             let url = 'http://localhost:8083/api/promotions/save';
             let promotion = {
                 description: this.description, 
