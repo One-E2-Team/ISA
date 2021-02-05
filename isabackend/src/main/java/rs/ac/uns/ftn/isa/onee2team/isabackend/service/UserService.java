@@ -41,8 +41,7 @@ public class UserService implements IUserService, UserDetailsService {
 	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
 
 	@Autowired
-	public UserService(IUserRepository userRepository, IAuthorityService authService,
-			IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
+	public UserService(IUserRepository userRepository, IAuthorityService authService, IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
 		this.userRepository = userRepository;
 		this.authService = authService;
 		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
@@ -156,8 +155,7 @@ public class UserService implements IUserService, UserDetailsService {
 		dto.setId(worker.getId());
 		dto.setFirstName(worker.getFirstName());
 		dto.setLastName(worker.getLastName());
-		List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(worker.getId());
-		dto.setRate(getAverageRate(rates));
+		dto.setRate(ratedHealthWorkerRepository.getAverageRateByHealthWorkerId(worker.getId()));
 		dto.setPharmacyNames(new ArrayList<String>());
 		if (isPharmacist) {
 			dto.getPharmacyNames().add(((Pharmacist) worker).getPharmacy().getName());
@@ -169,14 +167,4 @@ public class UserService implements IUserService, UserDetailsService {
 		return dto;
 	}
 
-	private Double getAverageRate(List<Integer> rates) {
-		Double rate = 0.0;
-		for (Integer oneRate : rates) {
-			rate += oneRate;
-		}
-		if (!rates.isEmpty()) {
-			rate /= rates.size();
-		}
-		return rate;
-	}
 }
