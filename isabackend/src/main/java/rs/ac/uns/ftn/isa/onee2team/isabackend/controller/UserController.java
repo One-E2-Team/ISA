@@ -75,6 +75,8 @@ public class UserController {
 			return this.userService.createDealer(udto);
 		else if(udto.getUserType().equalsIgnoreCase("DERMATOLOGIST"))
 			return this.userService.createDermatologist(udto);
+		else if(udto.getUserType().equalsIgnoreCase("SYSTEM_ADMIN"))
+			return this.userService.createSystemAdmin(udto);
 		else return null;
 	}
 }

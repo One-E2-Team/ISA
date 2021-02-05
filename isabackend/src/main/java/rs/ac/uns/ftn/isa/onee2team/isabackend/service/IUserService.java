@@ -21,6 +21,7 @@ public interface IUserService {
 	User createDermatologist(UserRequestDTO userRequest);
 	User createPharmacyAdmin(UserRequestDTO userRequest);
 	User createDealer(UserRequestDTO userRequest);
+	User createSystemAdmin(UserRequestDTO userRequest);
 
 	List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(String firstName, String lastName,
 			String loggedUserEmail);
