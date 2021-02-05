@@ -206,4 +206,9 @@ public class UserService implements IUserService, UserDetailsService {
 	public User createSystemAdmin(UserRequestDTO userRequest) {
 		return createUser(userRequest, "ROLE_SYSTEM_ADMIN", UserType.SYSTEM_ADMIN);
 	}
+
+	@Override
+	public void changePassword(Long id, String password) {
+		userRepository.changePassword(id, password);
+	}
 }

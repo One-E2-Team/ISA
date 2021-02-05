@@ -2,7 +2,11 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.repository;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.hibernate.annotations.SQLUpdate;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -43,5 +47,10 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 			+ "and u.user_type = 2 and u.first_name like %?1% and u.last_name like %?2% and d.pharmacies_id = ?3)", nativeQuery = true)
 	List<Dermatologist> getAllDermatologistsByFirstAndLastNameAndPharmacyId(String firstName, String lastName,
 			Long pharmacyId);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "update all_users set password = ?2 where id = ?1", nativeQuery = true)
+	void changePassword(Long id, String password);
 
 }

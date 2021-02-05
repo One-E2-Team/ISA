@@ -34,4 +34,6 @@ public interface IUserService {
 	User saveUser(User user);
 
 	User findById(Long id);
+	
+	void changePassword(Long id, String password);
 }
