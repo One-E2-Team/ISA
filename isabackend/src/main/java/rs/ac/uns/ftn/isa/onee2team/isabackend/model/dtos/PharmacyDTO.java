@@ -6,9 +6,10 @@ public class PharmacyDTO {
 	private String name;
 	private String address;
 	private String description;
-	
-	public PharmacyDTO() {}
-	
+
+	public PharmacyDTO() {
+	}
+
 	public PharmacyDTO(Long id, String name, String address, String description) {
 		this.id = id;
 		this.name = name;
@@ -47,7 +48,4 @@ public class PharmacyDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
 }

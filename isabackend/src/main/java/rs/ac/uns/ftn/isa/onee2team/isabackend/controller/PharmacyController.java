@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
@@ -31,26 +32,26 @@ public class PharmacyController {
 		this.medicineService = medicineService;
 	}
 
-	@GetMapping
-	public Pharmacy getById(Long id) {
-		return pharmacyService.getById(id);
-	}
-	
+//	@GetMapping
+//	public Pharmacy getById(Long id) {
+//		return pharmacyService.getById(id);
+//	}
+
 	@PostMapping
 	public Pharmacy save(Pharmacy pharmacy) {
 		return pharmacyService.save(pharmacy);
 	}
-	
+
 	@GetMapping(value = "/all")
 	public List<Pharmacy> getAll() {
 		return pharmacyService.findAll();
 	}
-	
+
 	@GetMapping(value = "/pharmaciesDto")
 	public List<PharmacyDTO> getAllPharmaciesDto() {
 		return pharmacyService.findAllIPharmaciesDto();
 	}
-	
+
 	@GetMapping(value = "/medicinesByPharmacyId")
 	public List<MedicineDTO> getMedicinesByPharmacyId(@RequestParam Long id) {
 		return medicineService.findMedicineByPharmacyid(id);
@@ -60,5 +61,11 @@ public class PharmacyController {
 	@PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
 	public Pharmacy registerPharmacy(@RequestBody NewPharmacyDTO phdto) {
 		return pharmacyService.registerPharmacy(phdto);
+	}
+  
+	@GetMapping(value = "/")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
+	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(@RequestParam Long id){
+		return pharmacyService.getPharmacyById(id);
 	}
 }
