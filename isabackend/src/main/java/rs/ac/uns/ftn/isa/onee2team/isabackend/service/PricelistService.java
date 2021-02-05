@@ -29,10 +29,22 @@ public class PricelistService implements IPricelistService {
 	@Override
 	public List<PricelistDTO> getValidPricelist(Long pharmacyId) {
 		List<PricelistDTO> ret = new ArrayList<PricelistDTO>();
+		List<Long> medicines = medicineRepository.findMedicineIdsByPharmacyid(pharmacyId);
+		List<Long> medicinesInPricelists = new ArrayList<Long>();
 		for (Pricelist pricelist : pricelistRepository.getValidPricelist(pharmacyId)) {
+			medicinesInPricelists.add(pricelist.getMedicine().getId());
 			PricelistDTO dto = new PricelistDTO(pricelist.getId(), pricelist.getMedicine().getId(),
 					pricelist.getPrice(), pricelist.getStartDate(), pricelist.getEndDate(), pharmacyId);
 			ret.add(dto);
+		}
+		for (Long id : medicines) {
+			if(!medicinesInPricelists.contains(id)) {
+				PricelistDTO dto = new PricelistDTO();
+				dto.setMedicineId(id);
+				dto.setPrice(-1.0);
+				dto.setPharmacyId(pharmacyId);
+				ret.add(dto);
+			}
 		}
 		return ret;
 	}
