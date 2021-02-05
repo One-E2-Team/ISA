@@ -34,7 +34,7 @@ public class VacationRequest {
 	@Column(name = "endDate", nullable = false)
 	private Date endDate;
 
-	@Column(name = "accepted", nullable = false)
+	@Column(name = "accepted", nullable = true)
 	private Boolean accepted;
 
 	@Column(name = "type", nullable = false)
