@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.users;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -66,7 +67,7 @@ public abstract class User implements UserDetails {
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
 	private List<Authority> authorities;
 
