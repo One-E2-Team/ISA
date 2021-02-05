@@ -9,17 +9,21 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.EquivalentMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 
 @Service
 public class MedicineService implements IMedicineService {
 	
 	private IMedicineRepository medicineRepository;
+	private IEquivalentMedicines equivalentMedicines;
 
 	@Autowired
-	public MedicineService(IMedicineRepository medicineRepository) {
+	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines) {
 		this.medicineRepository = medicineRepository;
+		this.equivalentMedicines = equivalentMedicines;
 	}
 	
 	@Override
@@ -50,7 +54,17 @@ public class MedicineService implements IMedicineService {
 		m.setPoints(nmdto.getPoints());
 		m.setRecipeNeeded(nmdto.getRecipeNeeded());
 		m.setSideEffects(nmdto.getSideEffects());
-		m.setEquivalentMedicines(nmdto.getEquivalentMedicines());
+		if(nmdto.getEquivalentMedicines()!=null)
+			for(Medicine simm : nmdto.getEquivalentMedicines()) {
+				EquivalentMedicine em = new EquivalentMedicine();
+				em.setPrimaryMedicineId(m.getId());
+				em.setPrimaryMedicineId(simm.getId());
+				equivalentMedicines.save(em);
+				EquivalentMedicine eminv = new EquivalentMedicine();
+				eminv.setPrimaryMedicineId(simm.getId());
+				eminv.setSimilarMedicineId(m.getId());
+				equivalentMedicines.save(eminv);
+			}
 		return this.medicineRepository.save(m);
 	}
 }

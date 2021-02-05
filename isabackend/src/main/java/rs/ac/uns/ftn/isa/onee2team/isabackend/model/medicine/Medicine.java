@@ -52,9 +52,9 @@ public class Medicine {
 	@Column(name = "points", nullable = false)
 	private Integer points;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "equivalentMedicines", referencedColumnName = "id")
-	private Set<Medicine> equivalentMedicines;
+	//@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	//@JoinColumn(name = "equivalentMedicines", referencedColumnName = "id")
+	//private Set<Medicine> equivalentMedicines;
 
 	public Long getId() {
 		return id;
@@ -144,11 +144,4 @@ public class Medicine {
 		this.points = points;
 	}
 
-	public Set<Medicine> getEquivalentMedicines() {
-		return equivalentMedicines;
-	}
-
-	public void setEquivalentMedicines(Set<Medicine> equivalentMedicines) {
-		this.equivalentMedicines = equivalentMedicines;
-	}
 }

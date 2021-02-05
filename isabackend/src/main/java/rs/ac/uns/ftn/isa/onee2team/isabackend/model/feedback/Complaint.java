@@ -22,7 +22,7 @@ public class Complaint {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL)//, fetch = FetchType.LAZY
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
@@ -34,6 +34,12 @@ public class Complaint {
 
 	@Column(name = "comment", nullable = false)
 	private String comment;
+	
+	@Column(name = "answer", nullable = true)
+	private String answer;
+	
+	@Column(name = "handled", nullable = false)
+	private Boolean handled;
 
 	public Long getId() {
 		return id;
@@ -73,5 +79,21 @@ public class Complaint {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public Boolean getHandled() {
+		return handled;
+	}
+
+	public void setHandled(Boolean handled) {
+		this.handled = handled;
 	}
 }
