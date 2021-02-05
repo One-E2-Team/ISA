@@ -1,16 +1,18 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
@@ -58,6 +60,16 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	@Override
+	public Pharmacy registerPharmacy(NewPharmacyDTO phdto) {
+		Pharmacy p = new Pharmacy();
+		p.setName(phdto.getName());
+		p.setSubscribedPatients(new HashSet<Patient>());
+		p.setAddress(phdto.getAddress());
+		p.setDescription(phdto.getDescription());
+		return save(p);
+	}
+  
+  @Override
 	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(Long id) {
 		Pharmacy pharmacy = getById(id);
 		if (pharmacy == null)
