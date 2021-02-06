@@ -89,6 +89,11 @@ public class UserService implements IUserService, UserDetailsService {
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
+	
+	@Override
+	public User saveUserAndFlush(User user) {
+		return userRepository.saveAndFlush(user);
+	}
 
 	@Override
 	public User findById(Long id) {

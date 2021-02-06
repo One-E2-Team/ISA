@@ -13,7 +13,7 @@ export function getCurrentUserEMail(){
     return undefined
 }
 export function logOut(){
-    window.location.href = '#/';
+    window.location.href = '/';
     sessionStorage.removeItem("JWT");
 }
 export function setJWTToken(jwt){
