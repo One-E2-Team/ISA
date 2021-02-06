@@ -74,7 +74,7 @@ public class ExaminationService implements IExaminationService {
 	public void cancelAppointment(Long examinationId) {
 		Examination ex = examinationRepository.findById(examinationId).orElse(null);
 		ex.setPatient(null);
-		ex.setStatus(ExaminationStatus.CREATED);
+		ex.setStatus(ExaminationStatus.CANCELED);
 		examinationRepository.save(ex);
 	}
 
