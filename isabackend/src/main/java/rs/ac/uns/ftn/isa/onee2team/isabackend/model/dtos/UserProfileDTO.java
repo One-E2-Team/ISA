@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
-public class PatientDTO {
+public class UserProfileDTO {
 
 	private Long id;
 	private String email;
@@ -11,9 +11,9 @@ public class PatientDTO {
 	private String state;
 	private String phone;
 	
-	public PatientDTO() {}
+	public UserProfileDTO() {}
 	
-	public PatientDTO(Long id, String email, String firstName, String lastName, String address, String city,
+	public UserProfileDTO(Long id, String email, String firstName, String lastName, String address, String city,
 			String state, String phone) {
 		super();
 		this.id = id;

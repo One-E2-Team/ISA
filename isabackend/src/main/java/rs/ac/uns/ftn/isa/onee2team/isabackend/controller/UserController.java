@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
@@ -57,24 +57,24 @@ public class UserController {
 		return userService.getAllPatients();
 	}
 	
-	@PutMapping(value = "patients/updatePatient")
-	@PreAuthorize("hasRole('PATIENT')")
-	public void updatePatient(@RequestBody PatientDTO patientDTO) {
-		User user = userService.findById(patientDTO.getId());
-		user.setFirstName(patientDTO.getFirstName());
-		user.setLastName(patientDTO.getLastName());
-		user.setAddress(patientDTO.getAddress());
-		user.setCity(patientDTO.getCity());
-		user.setPhoneNumber(patientDTO.getPhone());
+	@PutMapping(value = "/profile")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')" )
+	public void updateUser(@RequestBody UserProfileDTO userDTO) {
+		User user = userService.findById(userDTO.getId());
+		user.setFirstName(userDTO.getFirstName());
+		user.setLastName(userDTO.getLastName());
+		user.setAddress(userDTO.getAddress());
+		user.setCity(userDTO.getCity());
+		user.setPhoneNumber(userDTO.getPhone());
 		userService.saveUser(user);
 	}
 	
-	@GetMapping(value = "/patients/getLoggedPatient")
-	@PreAuthorize("hasRole('PATIENT')")
-	public PatientDTO getLoggedPatient() {
+	@GetMapping(value = "/logged")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
+	public UserProfileDTO getLoggedPatient() {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		PatientDTO patientDTO = new PatientDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getCity(), user.getState(), user.getPhoneNumber());
+		UserProfileDTO patientDTO = new UserProfileDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getCity(), user.getState(), user.getPhoneNumber());
 		return patientDTO;
 	}
 
@@ -118,7 +118,7 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/checkPassword")
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public boolean checkPassword(@RequestBody StringInformationDTO sidto) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
@@ -126,7 +126,7 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/changePassword")
-	@PreAuthorize("hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
 		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
 	}
