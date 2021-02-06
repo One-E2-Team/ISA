@@ -13,8 +13,9 @@ export function getCurrentUserEMail(){
     return undefined
 }
 export function logOut(){
-    window.location.href = '/';
     sessionStorage.removeItem("JWT");
+    console.log(sessionStorage.getItem("JWT"));
+    window.location.href = '/';
 }
 export function setJWTToken(jwt){
     sessionStorage.setItem("JWT", JSON.stringify(jwt));

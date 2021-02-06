@@ -17,11 +17,13 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.SystemAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedHealthWorkerRepository;
@@ -63,24 +65,46 @@ public class UserService implements IUserService, UserDetailsService {
 
 	@Override
 	public User createUser(UserRequestDTO userRequest, String role, UserType usertype) {
-		Patient patient = new Patient();
-		patient.setEmail(userRequest.getEmail());
-		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-		patient.setFirstName(userRequest.getFirstname());
-		patient.setLastName(userRequest.getLastname());
-		patient.setAddress(userRequest.getAddress());
-		patient.setCity(userRequest.getCity());
-		patient.setState(userRequest.getState());
-		patient.setPhoneNumber(userRequest.getPhone());
-		patient.setUserType(usertype);
-		patient.setEnabled(false);
+		User user;
+		switch (usertype) {
+		case PATIENT:
+			user = new Patient();
+			break;
+		case SYSTEM_ADMIN:
+			user = new SystemAdmin();
+			break;
+		case PHARMACY_ADMIN:
+			user = new PharmacyAdmin();
+			break;
+		case PHARMACIST:
+			user = new Pharmacist();
+			break;
+		case DERMATOLOGIST:
+			user = new Dermatologist();
+			break;
+		case DEALER:
+			user = new Dealer();
+			break;
+		default:
+			return null;
+		}
+		user.setEmail(userRequest.getEmail());
+		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+		user.setFirstName(userRequest.getFirstname());
+		user.setLastName(userRequest.getLastname());
+		user.setAddress(userRequest.getAddress());
+		user.setCity(userRequest.getCity());
+		user.setState(userRequest.getState());
+		user.setPhoneNumber(userRequest.getPhone());
+		user.setUserType(usertype);
+		user.setEnabled(false);
 		List<Authority> auths = authService.findByname(role);
 
-		patient.setAuthorities(auths);
+		user.setAuthorities(auths);
 
-		patient = userRepository.save(patient);
+		user = userRepository.save(user);
 
-		return patient;
+		return user;
 	}
 	
 	
