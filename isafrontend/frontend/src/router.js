@@ -11,6 +11,9 @@ import PharmacistsPage from './components/pages/PharmacistsPage'
 import ProfilePage from './components/pages/ProfilePage'
 import VacationRequestPage from './components/pages/VacationRequestPage'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
+import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
+import SysadminComplaints from './components/pages/SysadminComplaints'
+import LoyaltyProgram from './components/pages/DefineLoyalty'
 
 Vue.use(VueRouter)
 
@@ -60,6 +63,21 @@ const router = new VueRouter({
       path: '/sysadmin/register',
       name: 'registerUsers',
       component: SysadminRegisterPage
+    },
+    {
+      path: '/sysadmin/registerPharma',
+      name: 'registerPharmacy',
+      component: SysadminRegisterPharmacyPage
+    },
+    {
+      path: '/sysadmin/complaints',
+      name: 'complaints',
+      component: SysadminComplaints
+    },
+    {
+      path: '/sysadmin/loyalty',
+      name: 'loyaltyProgram',
+      component: LoyaltyProgram
     },
   ]
 })
