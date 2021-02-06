@@ -1,6 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
-import java.util.Set;
+import java.util.List;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
@@ -15,7 +15,7 @@ public class NewMedicineDTO {
 	private String contexture;
 	private Integer dailyIntake;
 	private Integer points;
-	private Set<Medicine> equivalentMedicines;
+	private List<Medicine> equivalentMedicines;
 	
 	public String getName() {
 		return name;
@@ -77,10 +77,10 @@ public class NewMedicineDTO {
 	public void setPoints(Integer points) {
 		this.points = points;
 	}
-	public Set<Medicine> getEquivalentMedicines() {
+	public List<Medicine> getEquivalentMedicines() {
 		return equivalentMedicines;
 	}
-	public void setEquivalentMedicines(Set<Medicine> equivalentMedicines) {
+	public void setEquivalentMedicines(List<Medicine> equivalentMedicines) {
 		this.equivalentMedicines = equivalentMedicines;
 	}
 }

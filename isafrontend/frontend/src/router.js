@@ -16,6 +16,7 @@ import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
 import LoyaltyProgram from './components/pages/DefineLoyalty'
+import CreateMedicine from './components/pages/CreateMedicine'
 
 Vue.use(VueRouter)
 
@@ -90,6 +91,11 @@ const router = new VueRouter({
       path: '/sysadmin/loyalty',
       name: 'loyaltyProgram',
       component: LoyaltyProgram
+    },
+    {
+      path: '/sysadmin/medicine',
+      name: 'createMedicine',
+      component: CreateMedicine
     },
   ]
 })
