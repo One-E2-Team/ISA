@@ -19,8 +19,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
+                            <tr v-for="e in myExaminations" v-bind:key="e.id" class="table-secondary" v-on:click="selectExamination(e)">
+                                <td> {{e.startTime.substring(0,10)}} </td>
+                                <td> {{e.startTime.substring(11,16)}} </td>
+                                <td> {{e.firstName}}  {{e.lastName}} </td>
+                                <td> {{e.doctorType}}</td>
+                                <td> {{e.price}} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -37,18 +41,34 @@
 
 <script>
 
-//import axios from 'axios';
-//import * as comm from '../../configuration/communication.js'
+import axios from 'axios';
+import * as comm from '../configuration/communication.js'
 
 export default {
     data(){
         return{
             myExaminations: {},
+            selectedAppointment : null
         }
     },
 
     mounted() {
+        axios.get('http://' + comm.server + '/api/examinations/patientsAppointments')
+        .then(response => this.myExaminations = response.data);
+    },
 
+    methods : {
+        selectExamination : function(e){
+            this.selectedAppointment = e;
+        },
+        cancelAppointment : function(){
+            if (this.selectedAppointment == null)
+                alert("You have to select an appointment!");
+            else{
+                axios.post('http://' + comm.server + '/api/examinations/cancelAppointment?examinationId=' + this.selectedAppointment.id );
+                alert('Appointment canceled!');
+            }
+        }
     }
 }
 
