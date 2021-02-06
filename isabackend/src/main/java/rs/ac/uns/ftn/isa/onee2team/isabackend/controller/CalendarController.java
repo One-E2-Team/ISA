@@ -49,10 +49,15 @@ public class CalendarController {
 		return vacationService.getAllVacationRequestsFromPharmacists(loggedUser.getId());
 	}
 	
-	@PutMapping(value = "/decline")
+	@PutMapping(value = "/decline-request")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')")
 	public Boolean declineVacationRequest(@RequestBody VacationRequestWithHealthWorkerDTO request) {
 		return vacationService.declineVacationRequest(request);
 	}
-
+	
+	@PutMapping(value = "/accept-request")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')")
+	public Boolean acceptVacationRequest(@RequestBody VacationRequestWithHealthWorkerDTO request) {
+		return vacationService.acceptVacationRequest(request);
+	}
 }

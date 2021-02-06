@@ -14,4 +14,6 @@ public interface IVacationRequestService {
 	List<VacationRequestWithHealthWorkerDTO> getAllVacationRequestsFromPharmacists(Long adminId);
 
 	Boolean declineVacationRequest(VacationRequestWithHealthWorkerDTO request);
+	
+	Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request);
 }

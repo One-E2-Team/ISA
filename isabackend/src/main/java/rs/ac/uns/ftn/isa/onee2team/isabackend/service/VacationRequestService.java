@@ -12,6 +12,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.VacationRequestWithHeal
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IVacationRequestRepository;
@@ -84,6 +85,23 @@ public class VacationRequestService implements IVacationRequestService {
 		String message = "Dear " + healthWorker.getFirstName() + " " + healthWorker.getLastName()
 				+ ", your vacation request has been declined.\nReason: " + request.getMessage();
 		emailNotificationService.sendNotificationAsync(healthWorker.getEmail(), "Vacation request declined", message);
+		return true;
+	}
+
+	@Override
+	public Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request) {
+		VacationRequest req = vacationRequestRepository.findById(request.getRequestId()).orElse(null);
+		User healthWorker = userRepository.findById(request.getHealthWorkerId()).orElse(null);
+		if (req == null || healthWorker == null || !healthWorker.getUserType().equals(UserType.PHARMACIST))
+			return false;
+		if (examinationRepository.getNumScheduledExaminationsByPharmacistIdInTimeInterval(healthWorker.getId(),
+				request.getStart(), request.getEnd()) > 0)
+			return false;
+		req.setAccepted(true);
+		vacationRequestRepository.save(req);
+		String message = "Dear " + healthWorker.getFirstName() + " " + healthWorker.getLastName()
+				+ ", your vacation request has been accepted.";
+		emailNotificationService.sendNotificationAsync(healthWorker.getEmail(), "Vacation request accepted", message);
 		return true;
 	}
 }
