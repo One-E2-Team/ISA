@@ -22,6 +22,12 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/loyalty">Loyalty Program</a>
                 </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/medicine">Add Medicine</a>
+                </li>
+                <li class="nav-item d-none">
+                <a class="nav-link" href="#/welcome">Link</a>
+                </li>
                 <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
                 <a class="nav-link" href="#/pharmacy">Pharmacy</a>
                 </li>
@@ -33,6 +39,9 @@
                 </li>
                 <li class="nav-item dropdown" v-if="role == 'PATIENT'">
                 <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                <li class="nav-item dropdown d-none">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Schedule an appointment
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="schedule">
