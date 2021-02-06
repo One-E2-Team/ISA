@@ -13,7 +13,7 @@
                 <li class="nav-item">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
-                <li v-if='role == "PHARMACY_ADMIN"' class="nav-item">
+                <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
                 <a class="nav-link" href="#/pharmacy">Pharmacy</a>
                 </li>
                 <li class="nav-item">
