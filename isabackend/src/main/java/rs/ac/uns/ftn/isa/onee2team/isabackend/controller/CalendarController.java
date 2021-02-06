@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,12 @@ public class CalendarController {
 	public List<VacationRequestWithHealthWorkerDTO> getAllVacationRequestsFromPharmacists(Authentication authentication) {
 		User loggedUser = (User) authentication.getPrincipal();
 		return vacationService.getAllVacationRequestsFromPharmacists(loggedUser.getId());
+	}
+	
+	@PutMapping(value = "/decline")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')")
+	public Boolean declineVacationRequest(@RequestBody VacationRequestWithHealthWorkerDTO request) {
+		return vacationService.declineVacationRequest(request);
 	}
 
 }

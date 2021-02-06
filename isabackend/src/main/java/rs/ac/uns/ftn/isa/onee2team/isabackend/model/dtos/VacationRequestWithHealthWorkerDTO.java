@@ -9,26 +9,17 @@ public class VacationRequestWithHealthWorkerDTO extends VacationRequestDTO {
 	private Long requestId;
 	private String healthWorkerFirstName;
 	private String healthWorkerLastName;
-	private Boolean isAccepted;
+	private String message = "";
 
 	public VacationRequestWithHealthWorkerDTO() {
 	}
 
 	public VacationRequestWithHealthWorkerDTO(Long requestId, Date start, Date end, VacationType type, Long healthWorkerId,
-			String healthWorkerFirstName, String healthWorkerLastName, Boolean isAccepted) {
+			String healthWorkerFirstName, String healthWorkerLastName) {
 		super(start, end, type, healthWorkerId);
 		this.requestId = requestId;
 		this.healthWorkerFirstName = healthWorkerFirstName;
 		this.healthWorkerLastName = healthWorkerLastName;
-		this.isAccepted = isAccepted;
-	}
-
-	public Boolean getIsAccepted() {
-		return isAccepted;
-	}
-
-	public void setIsAccepted(Boolean isAccepted) {
-		this.isAccepted = isAccepted;
 	}
 
 	public String getHealthWorkerFirstName() {
@@ -53,5 +44,13 @@ public class VacationRequestWithHealthWorkerDTO extends VacationRequestDTO {
 
 	public void setRequestId(Long requestId) {
 		this.requestId = requestId;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }
