@@ -13,6 +13,15 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/register">Register User</a>
                 </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/registerPharma">Register Pharmacy</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/complaints">Complaints</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/loyalty">Loyalty Program</a>
+                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>

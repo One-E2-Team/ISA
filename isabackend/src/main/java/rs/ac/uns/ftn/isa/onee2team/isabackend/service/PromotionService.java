@@ -56,7 +56,7 @@ public class PromotionService implements IPromotionService {
 		l.setDiscount(ldto.getDiscount());
 		l.setExaminationPoints(ldto.getExaminationPoints());
 		l.setMinPoints(ldto.getMinPoints());
-		return this.loyaltyRepository.save(l);
+		return this.loyaltyRepository.saveAndFlush(l);
 	}
 
 	@Override
