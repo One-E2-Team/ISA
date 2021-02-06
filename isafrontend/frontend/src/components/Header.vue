@@ -10,8 +10,6 @@
                 <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#/">Home</a>
                 </li>
-<<<<<<< HEAD
-=======
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/register">Register User</a>
                 </li>
@@ -27,7 +25,6 @@
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
->>>>>>> d2bcf249ff1cb686dd70a765d1dcd7a6c1e39c2d
                 <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
                 <a class="nav-link" href="#/pharmacy">Pharmacy</a>
                 </li>
