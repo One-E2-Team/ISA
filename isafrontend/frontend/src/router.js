@@ -10,6 +10,7 @@ import PatientsPage from './components/pages/PatientsPage'
 import PharmacistsPage from './components/pages/PharmacistsPage'
 import ProfilePage from './components/pages/ProfilePage'
 import VacationRequestPage from './components/pages/VacationRequestPage'
+import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,11 @@ const router = new VueRouter({
       name: 'vacation',
       component: VacationRequestPage
     },
+    {
+      path: '/scheduleAtDermatologist',
+      name: 'scheduleAtDermatologist',
+      component: ScheduleAtDermatologist
+    }
   ]
 })
 
