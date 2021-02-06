@@ -15,5 +15,5 @@ public interface IVacationRequestService {
 
 	Boolean declineVacationRequest(VacationRequestWithHealthWorkerDTO request);
 	
-	Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request);
+	Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request, Long loggedUserId);
 }

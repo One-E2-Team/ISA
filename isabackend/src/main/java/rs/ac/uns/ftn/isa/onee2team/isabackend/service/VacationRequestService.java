@@ -89,13 +89,21 @@ public class VacationRequestService implements IVacationRequestService {
 	}
 
 	@Override
-	public Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request) {
+	public Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request, Long loggedUserId) {
 		VacationRequest req = vacationRequestRepository.findById(request.getRequestId()).orElse(null);
 		User healthWorker = userRepository.findById(request.getHealthWorkerId()).orElse(null);
-		if (req == null || healthWorker == null || !healthWorker.getUserType().equals(UserType.PHARMACIST))
+		if (req == null || healthWorker == null)
 			return false;
-		if (examinationRepository.getNumScheduledExaminationsByPharmacistIdInTimeInterval(healthWorker.getId(),
-				request.getStart(), request.getEnd()) > 0)
+		Integer numOfScheduledExaminations = 0;
+		Boolean isPharmacist = healthWorker.getUserType().equals(UserType.PHARMACIST);
+		if (isPharmacist)
+			numOfScheduledExaminations = examinationRepository.getNumScheduledExaminationsByPharmacistIdInTimeInterval(
+					healthWorker.getId(), request.getStart(), request.getEnd());
+		else
+			numOfScheduledExaminations = examinationRepository
+					.getNumScheduledExaminationsByDermatologistsIdInTimeInterval(healthWorker.getId(),
+							request.getStart(), request.getEnd());
+		if (numOfScheduledExaminations > 0)
 			return false;
 		req.setAccepted(true);
 		vacationRequestRepository.save(req);

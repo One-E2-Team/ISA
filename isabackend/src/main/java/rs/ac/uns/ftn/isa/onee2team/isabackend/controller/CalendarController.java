@@ -57,7 +57,8 @@ public class CalendarController {
 	
 	@PutMapping(value = "/accept-request")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')")
-	public Boolean acceptVacationRequest(@RequestBody VacationRequestWithHealthWorkerDTO request) {
-		return vacationService.acceptVacationRequest(request);
+	public Boolean acceptVacationRequest(@RequestBody VacationRequestWithHealthWorkerDTO request, Authentication authentication) {
+		User loggedUser = (User) authentication.getPrincipal();
+		return vacationService.acceptVacationRequest(request, loggedUser.getId());
 	}
 }
