@@ -10,6 +10,7 @@ import PatientsPage from './components/pages/PatientsPage'
 import PharmacistsPage from './components/pages/PharmacistsPage'
 import ProfilePage from './components/pages/ProfilePage'
 import VacationRequestPage from './components/pages/VacationRequestPage'
+import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
@@ -59,6 +60,11 @@ const router = new VueRouter({
       path: '/vacation/request',
       name: 'vacation',
       component: VacationRequestPage
+    },
+    {
+      path: '/scheduleAtDermatologist',
+      name: 'scheduleAtDermatologist',
+      component: ScheduleAtDermatologist
     },
     {
       path: '/sysadmin/register',
