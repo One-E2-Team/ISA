@@ -11,7 +11,7 @@
                 </div>
                 <div class = "col-3"></div>
                 <div class = "col-3">
-                    <select v-model="selectedMedicine" class="form-select" aria-label="Default select example" name="allergies" id="allergies">
+                    <select  v-if="isPatient()" v-model="selectedMedicine" class="form-select" aria-label="Default select example" name="allergies" id="allergies">
                         <option v-for="m in allMedicines" v-bind:key="m.id" v-bind:value="m.id">{{m.name}}</option>
                     </select>
                 </div>
@@ -25,7 +25,7 @@
                 </div>
                 <div class = "col-3"></div>
                  <div class="col-3">
-                    <button v-on:click="addAllergy()" type="button" class="btn-dark"> Add allergy </button>
+                    <button v-if="isPatient()" v-on:click="addAllergy()" type="button" class="btn-dark"> Add allergy </button>
                 </div>
             </div><br/>
            <div class="row justify-content-center">
@@ -90,10 +90,10 @@
             </div><br/>
             <div class="row justify-content-center">
                 <div class="col-1">
-                    <label>0 POINTS</label>
+                    <label v-if="isPatient()">0 POINTS</label>
                 </div>
                 <div class="col-2">
-                    <input type="text" value="SILVER USER" name="phone" disabled>
+                    <input v-if="isPatient()" type="text" value="SILVER USER" name="phone" disabled>
                 </div>
                 <div class = "col-1"></div>
                 <div class = "col-2">
@@ -120,7 +120,7 @@
 <script>
 
 import axios from 'axios';
-//import * as comm from '../../configuration/communication.js'
+import * as comm from '../../configuration/communication.js'
 
 export default {
     data(){
@@ -135,18 +135,18 @@ export default {
         }
     },
 
-    //axios.post('http://' + comm.server + '/api
 
-    mounted(){
-        axios.get('http://localhost:8083/api/users/patients/getLoggedPatient')
+    created(){
+        axios.get('http://' + comm.server + '/api/users/logged')
         .then(response => this.user = response.data);
-
-        axios.get('http://localhost:8083/api/medicines/all')
-        .then(response => this.allMedicines = response.data);
+        if(this.isPatient()){
+            axios.get('http://'+comm.server+'/api/medicines/all')
+            .then(response => this.allMedicines = response.data);
+        }
     },
     methods:{
         addAllergy : function(){
-            axios.post('http://localhost:8083/api/medicines/addAllergy/' + this.selectedMedicine)
+            axios.post('http://'+comm.server+'/api/medicines/addAllergy/' + this.selectedMedicine)
             .then(response => {
                 if(response.status == 200)
                     alert("Allergy on medicine saved!");
@@ -157,14 +157,21 @@ export default {
         selectMedicine : function(s){
             this.selectedMedicine = s;
         },
+        isPatient : function(){
+            return comm.getCurrentUserRole() === 'PATIENT';
+        },
         updatePatientData : function(){
-             axios.put('http://localhost:8083/api/users/patients/updatePatient', this.user)
-            .then(alert("Data saved successfully!"))
+             axios.put('http://'+comm.server+'/api/users/profile', this.user)
+             .then(response => {
+                if (response.status == 200) {
+                    alert("Profile updated successfully ")
+                }
+            });
         },
         changePassword : function(){
             this.labelText = "";
             var oldPasswordDTO = {"info" : this.oldPassword};
-             axios.post('http://localhost:8083/api/users/checkPassword', oldPasswordDTO)
+             axios.post('http://'+comm.server+'/api/users/checkPassword', oldPasswordDTO)
              .then(response => {
                  if(!response.data)
                     this.labelText = "Old password is wrong!";
@@ -174,7 +181,7 @@ export default {
                         this.oldPassword = "";
                         this.newPassword = "";
                         this.repeatedPassword = "";
-                        axios.post('http://localhost:8083/api/users/changePassword', passwordDTO)
+                        axios.post('http://'+comm.server+'/api/users/changePassword', passwordDTO)
                         .then( alert("Password changed!"));
                      }
                      else

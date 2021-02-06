@@ -9,39 +9,46 @@ public class VacationRequestDTO {
 	private Date end;
 	private VacationType type;
 	private Long healthWorkerId;
+
 	public VacationRequestDTO() {
-		super();
 	}
-	public VacationRequestDTO(Date start, Date end, VacationType type) {
-		super();
+
+	public VacationRequestDTO(Date start, Date end, VacationType type, Long healthWorkerId) {
 		this.start = start;
 		this.end = end;
 		this.type = type;
+		this.healthWorkerId = healthWorkerId;
 	}
+
 	public Date getStart() {
 		return start;
 	}
+
 	public void setStart(Date start) {
 		this.start = start;
 	}
+
 	public Date getEnd() {
 		return end;
 	}
+
 	public void setEnd(Date end) {
 		this.end = end;
 	}
+
 	public VacationType getType() {
 		return type;
 	}
+
 	public void setType(VacationType type) {
 		this.type = type;
 	}
+
 	public Long getHealthWorkerId() {
 		return healthWorkerId;
 	}
+
 	public void setHealthWorkerId(Long healthWorkerId) {
 		this.healthWorkerId = healthWorkerId;
 	}
-	
-	
 }

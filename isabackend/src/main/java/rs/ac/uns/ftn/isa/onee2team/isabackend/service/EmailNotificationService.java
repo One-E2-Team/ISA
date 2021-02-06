@@ -20,7 +20,7 @@ public class EmailNotificationService implements IEmailNotificationService {
 	}
 
 	@Async
-	public void sendNotificaitionAsync(String sendTo, String subject, String mailMessage) {
+	public void sendNotificationAsync(String sendTo, String subject, String mailMessage) {
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(sendTo);
 		mail.setFrom(env.getProperty("spring.mail.username"));

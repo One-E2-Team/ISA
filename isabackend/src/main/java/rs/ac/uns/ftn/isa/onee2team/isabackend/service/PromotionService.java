@@ -43,7 +43,7 @@ public class PromotionService implements IPromotionService {
 			String subject = "Pharmacy : " + pharmacy.getId() + " new promotion";
 			for (Patient patient : pharmacy.getSubscribedPatients()) {
 				String mailMessage = "Dear " + patient.getFirstName() + " " + patient.getLastName() + ", pharmacy has added new promotion";
-				emailNotificationService.sendNotificaitionAsync("hgstqyssyzfutkvqpk@miucce.com", subject, mailMessage);
+				emailNotificationService.sendNotificationAsync(patient.getEmail(), subject, mailMessage);
 			}
 			return promotionRepository.save(promotion);
 		}
@@ -56,7 +56,7 @@ public class PromotionService implements IPromotionService {
 		l.setDiscount(ldto.getDiscount());
 		l.setExaminationPoints(ldto.getExaminationPoints());
 		l.setMinPoints(ldto.getMinPoints());
-		return this.loyaltyRepository.save(l);
+		return this.loyaltyRepository.saveAndFlush(l);
 	}
 
 	@Override
