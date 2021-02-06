@@ -59,17 +59,18 @@ public class MedicineService implements IMedicineService {
 		m.setPoints(nmdto.getPoints());
 		m.setRecipeNeeded(nmdto.getRecipeNeeded());
 		m.setSideEffects(nmdto.getSideEffects());
+		m = this.medicineRepository.save(m);
 		if(nmdto.getEquivalentMedicines()!=null)
 			for(Medicine simm : nmdto.getEquivalentMedicines()) {
 				EquivalentMedicine em = new EquivalentMedicine();
 				em.setPrimaryMedicineId(m.getId());
-				em.setPrimaryMedicineId(simm.getId());
+				em.setSimilarMedicineId(simm.getId());
 				equivalentMedicines.save(em);
 				EquivalentMedicine eminv = new EquivalentMedicine();
 				eminv.setPrimaryMedicineId(simm.getId());
 				eminv.setSimilarMedicineId(m.getId());
 				equivalentMedicines.save(eminv);
 			}
-		return this.medicineRepository.save(m);
+		return m;
 	}
 }

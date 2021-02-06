@@ -22,6 +22,9 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/loyalty">Loyalty Program</a>
                 </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/medicine">Add Medicine</a>
+                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
@@ -34,7 +37,7 @@
                  <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Working calendar</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Dropdown
                 </a>
