@@ -41,8 +41,7 @@ public class UserService implements IUserService, UserDetailsService {
 	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
 
 	@Autowired
-	public UserService(IUserRepository userRepository, IAuthorityService authService,
-			IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
+	public UserService(IUserRepository userRepository, IAuthorityService authService, IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
 		this.userRepository = userRepository;
 		this.authService = authService;
 		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
@@ -63,7 +62,7 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
-	public User createPatient(UserRequestDTO userRequest) {
+	public User createUser(UserRequestDTO userRequest, String role, UserType usertype) {
 		Patient patient = new Patient();
 		patient.setEmail(userRequest.getEmail());
 		patient.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -73,9 +72,9 @@ public class UserService implements IUserService, UserDetailsService {
 		patient.setCity(userRequest.getCity());
 		patient.setState(userRequest.getState());
 		patient.setPhoneNumber(userRequest.getPhone());
-		patient.setUserType(UserType.PATIENT);
+		patient.setUserType(usertype);
 		patient.setEnabled(false);
-		List<Authority> auths = authService.findByname("ROLE_PATIENT");
+		List<Authority> auths = authService.findByname(role);
 
 		patient.setAuthorities(auths);
 
@@ -83,6 +82,8 @@ public class UserService implements IUserService, UserDetailsService {
 
 		return patient;
 	}
+	
+	
 
 	@Override
 	public User saveUser(User user) {
@@ -156,8 +157,7 @@ public class UserService implements IUserService, UserDetailsService {
 		dto.setId(worker.getId());
 		dto.setFirstName(worker.getFirstName());
 		dto.setLastName(worker.getLastName());
-		List<Integer> rates = ratedHealthWorkerRepository.getRatesByHealthWorkerId(worker.getId());
-		dto.setRate(getAverageRate(rates));
+		dto.setRate(ratedHealthWorkerRepository.getAverageRateByHealthWorkerId(worker.getId()));
 		dto.setPharmacyNames(new ArrayList<String>());
 		if (isPharmacist) {
 			dto.getPharmacyNames().add(((Pharmacist) worker).getPharmacy().getName());
@@ -178,5 +178,35 @@ public class UserService implements IUserService, UserDetailsService {
 			rate /= rates.size();
 		}
 		return rate;
+	}
+
+	@Override
+	public User createPatient(UserRequestDTO userRequest) {
+		return createUser(userRequest, "ROLE_PATIENT", UserType.PATIENT);
+	}
+
+	@Override
+	public User createDermatologist(UserRequestDTO userRequest) {
+		return createUser(userRequest, "ROLE_DERMATOLOGIST", UserType.DERMATOLOGIST);
+	}
+
+	@Override
+	public User createPharmacyAdmin(UserRequestDTO userRequest) {
+		return createUser(userRequest, "ROLE_PHARMACY_ADMIN", UserType.PHARMACY_ADMIN);
+	}
+
+	@Override
+	public User createDealer(UserRequestDTO userRequest) {
+		return createUser(userRequest, "ROLE_DEALER", UserType.DEALER);
+	}
+
+	@Override
+	public User createSystemAdmin(UserRequestDTO userRequest) {
+		return createUser(userRequest, "ROLE_SYSTEM_ADMIN", UserType.SYSTEM_ADMIN);
+	}
+
+	@Override
+	public void changePassword(Long id, String password) {
+		userRepository.changePassword(id, password);
 	}
 }

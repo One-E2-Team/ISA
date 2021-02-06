@@ -70,7 +70,7 @@
                     <label>Old password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password" v-model="oldPassword">
+                    <input type="text" v-model="oldPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -85,7 +85,7 @@
                     <label>New password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password" v-model="newPassword">
+                    <input type="text" v-model="newPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -100,7 +100,7 @@
                     <label>Confirm new password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="password" v-model="repeatedPassword">
+                    <input type="text" v-model="repeatedPassword">
                 </div>
             </div><br/>
             <div class = "row justify-content-center">
@@ -108,7 +108,7 @@
                 <div class="col-2">
                     <button type="button" class="btn-success" v-on:click="updatePatientData"> Save my data </button>
                 </div>
-                <div class = "col-3"><label v-bind="labelText" color="red"></label></div>
+                <div class = "col-3"><label  style="color:red"> {{labelText}}</label ></div>
                 <div class="col-2">
                     <button type="button" class="btn-primary" v-on:click="changePassword"> Change password </button>
                 </div>
@@ -120,6 +120,7 @@
 <script>
 
 import axios from 'axios';
+//import * as comm from '../../configuration/communication.js'
 
 export default {
     data(){
@@ -133,6 +134,8 @@ export default {
             labelText: ""
         }
     },
+
+    //axios.post('http://' + comm.server + '/api
 
     mounted(){
         axios.get('http://localhost:8083/api/users/patients/getLoggedPatient')
@@ -154,19 +157,25 @@ export default {
             .then(alert("Data saved successfully!"))
         },
         changePassword : function(){
-            axios.get('http://localhost:8083/api/users/checkPassword', this.oldPassword)
-            .then(response => {
-                this.labelText = "";
-                if(!response){
+            this.labelText = "";
+            var oldPasswordDTO = {"info" : this.oldPassword};
+             axios.post('http://localhost:8083/api/users/checkPassword', oldPasswordDTO)
+             .then(response => {
+                 if(!response.data)
                     this.labelText = "Old password is wrong!";
-                }
-                else if(this.newPassword != this.repeatedPassword){
-                    this.labelText = "Passwords does not match!";
-                }
-                else{
-                    axios.post('http://localhost:8083/api/users/changePassword', this.newPassword)
-                }
-            })
+                 else{
+                     if(this.newPassword == this.repeatedPassword && this.newPassword != ""){
+                        var passwordDTO = {"info" : this.newPassword};
+                        this.oldPassword = "";
+                        this.newPassword = "";
+                        this.repeatedPassword = "";
+                        axios.post('http://localhost:8083/api/users/changePassword', passwordDTO)
+                        .then( alert("Password changed!"));
+                     }
+                     else
+                        this.labelText = "Passwords do not match!";
+                    }
+             });
         }
     }
 }

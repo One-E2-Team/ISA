@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
@@ -29,7 +30,7 @@ public class MedicineController {
 	}
 
 	@GetMapping(value = "/all")
-	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PATIENT')")
 	public List<Medicine> getAll() {
 		return medicineService.getAll();
 	}
@@ -40,5 +41,11 @@ public class MedicineController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		medicineService.addAllergy(user.getId(), medicineId);
+	}
+
+	@PostMapping(value = "/create")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public Medicine createMedicine(@RequestBody NewMedicineDTO nmdto) {
+		return medicineService.createMedicine(nmdto);
 	}
 }
