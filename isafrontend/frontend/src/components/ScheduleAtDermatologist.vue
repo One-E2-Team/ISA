@@ -40,7 +40,7 @@
 <script>
 
 import axios from 'axios';
-//import * as comm from '../../configuration/communication.js'
+import * as comm from '../configuration/communication.js'
 
 export default {
     data(){
@@ -51,7 +51,7 @@ export default {
     },
 
     mounted() {
-        axios.get('http://localhost:8083/api/examinations/freeExaminationsAtDermatoloist')
+        axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
         .then(response => this.freeExaminations = response.data);
     },
 
@@ -63,12 +63,12 @@ export default {
             if (this.selectedExamination == null)
                 alert("You have to select an appointment!");
             else{
-                axios.post('http://localhost:8083/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id );
+                axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id );
 
                 setTimeout(alert("Appointment scheduled successfully!"), 3000);
                 this.selectedExamination = {};
 
-                axios.get('http://localhost:8083/api/examinations/freeExaminationsAtDermatoloist')
+                axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
                 .then(response => this.freeExaminations = response.data);
                 
                 

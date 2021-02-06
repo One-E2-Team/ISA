@@ -65,8 +65,13 @@ export default {
             if (this.selectedAppointment == null)
                 alert("You have to select an appointment!");
             else{
-                axios.post('http://' + comm.server + '/api/examinations/cancelAppointment?examinationId=' + this.selectedAppointment.id );
-                alert('Appointment canceled!');
+                if(Date.parse(this.selectedAppointment.startTime) - Date.now() > 86400000 ){
+                    axios.post('http://' + comm.server + '/api/examinations/cancelAppointment?examinationId=' + this.selectedAppointment.id );
+                    alert('Appointment canceled!');
+                }
+                else{
+                    alert('Appointment cannot be canceled less than 24h before start time!');
+                }
             }
         }
     }

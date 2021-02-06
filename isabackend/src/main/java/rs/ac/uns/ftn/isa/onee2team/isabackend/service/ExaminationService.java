@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,9 +73,6 @@ public class ExaminationService implements IExaminationService {
 	@Override
 	public void cancelAppointment(Long examinationId) {
 		Examination ex = examinationRepository.findById(examinationId).orElse(null);
-		LocalDate now = LocalDate.now();
-		System.out.println(ex.getStartTime());
-		System.out.println(now);
 		ex.setPatient(null);
 		ex.setStatus(ExaminationStatus.CREATED);
 		examinationRepository.save(ex);
