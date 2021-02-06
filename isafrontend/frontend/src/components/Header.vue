@@ -37,15 +37,21 @@
                  <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Working calendar</a>
                 </li>
+                <li class="nav-item dropdown" v-if="role == 'PATIENT'">
+                <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
                 <li class="nav-item dropdown d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Schedule an appointment
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li v-if="role == 'PATIENT'"><a class="dropdown-item" href="#/scheduleAtDermatologist">At dermatologist</a></li>
+                <ul class="dropdown-menu" aria-labelledby="schedule">
+                    <li><a class="dropdown-item" href="#/scheduleAtDermatologist">At dermatologist</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#">At pharmacist</a></li>
                 </ul>
+                </li>
+                <li v-if="role=='PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/scheduledAppointments">My appointments</a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/allPharmacies">All pharmacies</a>

@@ -3,7 +3,7 @@
         <div class = "container">
             <div class = "row justify-content-center">
                 <div class = "col-md-auto">
-                    <h2>Schedule an appointment</h2>
+                    <h2>My scheduled appointments</h2>
                 </div>
             </div><br/>
             <div class = "row justify-content-center">
@@ -13,15 +13,17 @@
                             <tr> 
                                 <th> Date </th>
                                 <th> Time </th>
-                                <th> Dermatologist </th>
+                                <th> Doctor </th>
+                                <th> Doctor type </th>
                                 <th> Price </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="e in freeExaminations" v-bind:key="e.id" class="table-info" v-on:click="selectExamination(e)">
+                            <tr v-for="e in myExaminations" v-bind:key="e.id" class="table-secondary" v-on:click="selectExamination(e)">
                                 <td> {{e.startTime.substring(0,10)}} </td>
                                 <td> {{e.startTime.substring(11,16)}} </td>
                                 <td> {{e.firstName}}  {{e.lastName}} </td>
+                                <td> {{e.doctorType}}</td>
                                 <td> {{e.price}} </td>
                             </tr>
                         </tbody>
@@ -30,7 +32,7 @@
             </div>
             <div class = "row justify-content-center">
                 <div class = "col-md-auto">
-                    <button type="button" class="btn btn-primary" v-on:click="scheduleAppointment()">Schedule</button>
+                    <button type="button" class="btn btn-danger" v-on:click="cancelAppointment()">Cancel an appointment</button>
                 </div>
             </div>
         </div>
@@ -45,34 +47,31 @@ import * as comm from '../configuration/communication.js'
 export default {
     data(){
         return{
-            freeExaminations: {},
-            selectedExamination : null
+            myExaminations: {},
+            selectedAppointment : null
         }
     },
 
     mounted() {
-        axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
-        .then(response => this.freeExaminations = response.data);
+        axios.get('http://' + comm.server + '/api/examinations/patientsAppointments')
+        .then(response => this.myExaminations = response.data);
     },
 
     methods : {
         selectExamination : function(e){
-            this.selectedExamination = e;
+            this.selectedAppointment = e;
         },
-        scheduleAppointment: function(){
-            if (this.selectedExamination == null)
+        cancelAppointment : function(){
+            if (this.selectedAppointment == null)
                 alert("You have to select an appointment!");
             else{
-                axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id );
-
-                setTimeout(alert("Appointment scheduled successfully!"), 3000);
-                this.selectedExamination = {};
-
-                axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
-                .then(response => this.freeExaminations = response.data);
-                
-                
-
+                if(Date.parse(this.selectedAppointment.startTime) - Date.now() > 86400000 ){
+                    axios.post('http://' + comm.server + '/api/examinations/cancelAppointment?examinationId=' + this.selectedAppointment.id );
+                    alert('Appointment canceled!');
+                }
+                else{
+                    alert('Appointment cannot be canceled less than 24h before start time!');
+                }
             }
         }
     }
