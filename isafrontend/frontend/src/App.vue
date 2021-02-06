@@ -14,8 +14,7 @@ import Header from './components/Header'
 import Login from './components/modals/Login.vue'
 import Registration from './components/modals/Registration.vue'
 import * as comm from './configuration/communication'
-// import axios from 'axios';
-
+//import axios from 'axios';
 
 
 
@@ -28,8 +27,11 @@ export default {
   },
   data() {
     return{
-      role: 'Anon' 
+      role: 'Anon',
     }
+  },
+  created(){
+    this.role = comm.getCurrentUserRole();
   },
   methods: {
     RoleReEvaluation: function(){

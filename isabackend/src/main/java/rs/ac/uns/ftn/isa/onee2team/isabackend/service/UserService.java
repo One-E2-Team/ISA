@@ -89,6 +89,11 @@ public class UserService implements IUserService, UserDetailsService {
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
+	
+	@Override
+	public User saveUserAndFlush(User user) {
+		return userRepository.saveAndFlush(user);
+	}
 
 	@Override
 	public User findById(Long id) {
@@ -167,17 +172,6 @@ public class UserService implements IUserService, UserDetailsService {
 			}
 		}
 		return dto;
-	}
-
-	private Double getAverageRate(List<Integer> rates) {
-		Double rate = 0.0;
-		for (Integer oneRate : rates) {
-			rate += oneRate;
-		}
-		if (!rates.isEmpty()) {
-			rate /= rates.size();
-		}
-		return rate;
 	}
 
 	@Override

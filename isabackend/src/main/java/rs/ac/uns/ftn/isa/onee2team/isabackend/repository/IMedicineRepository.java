@@ -19,4 +19,9 @@ public interface IMedicineRepository extends JpaRepository<Medicine, Long> {
 	@Transactional
 	@Query(value = "insert into all_users_allergies (patient_id, allergies_id) values (?1, ?2)", nativeQuery = true)
 	public void addAllergy(Long patientId, Long medicineId);
+
+
+	@Query("select w.medicine.id from Warehouse w where w.pharmacy.id = ?1")
+	public List<Long> findMedicineIdsByPharmacyid(Long id);
+
 }

@@ -147,8 +147,13 @@ export default {
     methods:{
         addAllergy : function(){
             axios.post('http://localhost:8083/api/medicines/addAllergy/' + this.selectedMedicine)
-            .then(alert("Allergy on medicine saved!"));
-        },
+            .then(response => {
+                if(response.status == 200)
+                    alert("Allergy on medicine saved!");
+                else
+                    alert("Select a medicine!");
+            }
+        )},
         selectMedicine : function(s){
             this.selectedMedicine = s;
         },
