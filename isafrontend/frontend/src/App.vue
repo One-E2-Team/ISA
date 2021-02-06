@@ -30,6 +30,9 @@ export default {
       role: 'Anon',
     }
   },
+  created(){
+    this.role = comm.getCurrentUserRole();
+  },
   methods: {
     RoleReEvaluation: function(){
       this.role=comm.getCurrentUserRole();
