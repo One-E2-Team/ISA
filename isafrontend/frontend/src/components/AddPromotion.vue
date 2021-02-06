@@ -5,7 +5,7 @@
         <label>From: </label>
         <DatePicker :min-date="new Date()" v-model="startDate"/>
         <label>To: </label>
-        <DatePicker :min-date="new Date()" v-model="endDate"/>
+        <DatePicker :min-date="startDate" v-model="endDate"/>
         <button name="Add" @click="addPromotion">Add</button>
     </div>
 
@@ -25,8 +25,8 @@ export default {
     data (){
         return {
             description : '',
-            startDate : null,
-            endDate : null,
+            startDate : new Date(),
+            endDate : new Date(),
         }
     },
     methods : {
