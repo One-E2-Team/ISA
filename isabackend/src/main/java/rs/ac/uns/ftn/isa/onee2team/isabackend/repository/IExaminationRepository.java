@@ -13,7 +13,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 	@Query(value = "select * from examinations e where e.status = 0 and e.health_wokrer_id = ?1 and e.pharmacy_id = ?2", nativeQuery = true)
 	List<Examination> getFreeExaminationsByHealthWorkerIdAndPharmacyId(Long healthWorkerId, Long pharmacyId);
 
-	@Query(value = "select * from examinations e where e.status = 0 and e.health_wokrer_id in \r\n" + 
+	@Query(value = "select * from examinations e where e.status in (0,2) and e.health_wokrer_id in \r\n" + 
 			"(select user_id from user_authority where authority_id = 3)", nativeQuery = true)
 	List<Examination> getFreeExaminationsAtDermatologist();
 	
@@ -30,4 +30,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ "and e.date > ?2 and e.date < ?3 and e.pharmacy_id in "
 			+ "(select d.pharmacies_id from dermatologists_in_pharmacies d where d.dermatologist_id = ?1)", nativeQuery = true)
 	Integer getNumScheduledExaminationsByDermatologistsIdInTimeInterval(Long dermatologistsId, Date start, Date end);
+
+	@Query(value = "select e from Examination e where e.patient.id = ?1 and e.status = 4 ")
+	List<Examination> getScheduledAppointments(Long patientId);
 }
