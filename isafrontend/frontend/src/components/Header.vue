@@ -10,16 +10,28 @@
                 <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#/">Home</a>
                 </li>
-                <li class="nav-item">
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/register">Register User</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/registerPharma">Register Pharmacy</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/complaints">Complaints</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/loyalty">Loyalty Program</a>
+                </li>
+                <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
                 <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
                 <a class="nav-link" href="#/pharmacy">Pharmacy</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Medicine</a>
                 </li>
-                 <li class="nav-item">
+                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Working calendar</a>
                 </li>
                 <li class="nav-item dropdown">
@@ -36,7 +48,7 @@
                 <li class="nav-item">
                 <a class="nav-link" href="#/allPharmacies">All pharmacies</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item d-none">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
             </ul>
