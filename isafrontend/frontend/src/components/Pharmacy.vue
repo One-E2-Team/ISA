@@ -17,6 +17,7 @@
                 <td class="table-light">{{medicine.name}}</td>
                 <td class="table-light">{{medicine.manufacturer}}</td>
                 <td class="table-light">{{medicine.sideEffects}}</td>
+                <td class="table-light"><button name="scheduleExamination" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
             </tr>
             </table>
         </div>
@@ -105,6 +106,9 @@ export default {
         },
         scheduleExamination : function(examinationId){
             console.log(examinationId);
+        },
+        reserveMedicine : function(medicineId){
+            console.log(medicineId);
         }
     },
     mounted() {
