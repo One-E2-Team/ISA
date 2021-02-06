@@ -118,7 +118,7 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/checkPassword")
-	@PreAuthorize("hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public boolean checkPassword(@RequestBody StringInformationDTO sidto) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
@@ -126,7 +126,7 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "/changePassword")
-	@PreAuthorize("hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
 		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
 	}
