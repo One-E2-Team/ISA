@@ -39,7 +39,7 @@ public class Offer {
 	private Dealer dealer;
 
 	@Column(name = "status", nullable = false)
-	private String status;
+	private OfferStatus status;
 
 	public Long getId() {
 		return id;
@@ -81,11 +81,11 @@ public class Offer {
 		this.dealer = dealer;
 	}
 
-	public String getStatus() {
+	public OfferStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(OfferStatus status) {
 		this.status = status;
 	}
 }
