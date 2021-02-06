@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationAtDermatologistDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IExaminationService;
 
@@ -30,7 +31,7 @@ public class ExaminationController {
 	
 	@GetMapping(value = "/freeExaminationsAtDermatoloist")
 	@PreAuthorize("hasRole('PATIENT')")
-	public List<ExaminationAtDermatologistDTO> getFreeExaminationsAtDermatologist() {
+	public List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist() {
 		return examinationService.getFreeExaminationsAtDermatologist();
 	}
 	
@@ -40,6 +41,20 @@ public class ExaminationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		examinationService.scheduleAtDermatologist(user.getId(), examinationId);
+	}
+	
+	@PostMapping(value = "/cancelAppointment")
+	@PreAuthorize("hasRole('PATIENT')")
+	public void cancelAppointment(@RequestParam("examinationId") Long examinationId) {
+		examinationService.cancelAppointment(examinationId);
+	}
+	
+	@GetMapping(value = "/patientsAppointments")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<ScheduledExaminationDTO> getPatientsAppointments() {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return examinationService.getPatientsExaminations(user.getId());
 	}
 	
 }

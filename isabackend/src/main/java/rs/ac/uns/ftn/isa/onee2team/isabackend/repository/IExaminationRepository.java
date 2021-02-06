@@ -30,4 +30,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ "and e.date > ?2 and e.date < ?3 and e.pharmacy_id in "
 			+ "(select d.pharmacies_id from dermatologists_in_pharmacies d where d.dermatologist_id = ?1)", nativeQuery = true)
 	Integer getNumScheduledExaminationsByDermatologistsIdInTimeInterval(Long dermatologistsId, Date start, Date end);
+
+	@Query(value = "select e from Examination e where e.patient.id = ?1 and e.status = 4 ")
+	List<Examination> getScheduledAppointments(Long patientId);
 }
