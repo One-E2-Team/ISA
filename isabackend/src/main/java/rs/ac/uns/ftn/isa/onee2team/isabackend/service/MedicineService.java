@@ -40,6 +40,11 @@ public class MedicineService implements IMedicineService {
 	public List<Medicine> getAll() {
 		return medicineRepository.findAll();
 	}
+	
+	@Override
+	public void addAllergy(Long patientId, Long medicineId) {
+		medicineRepository.addAllergy(patientId, medicineId);
+	}
 
 	@Override
 	public Medicine createMedicine(NewMedicineDTO nmdto) {
