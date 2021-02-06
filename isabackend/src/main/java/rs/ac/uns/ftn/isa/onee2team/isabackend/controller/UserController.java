@@ -42,7 +42,7 @@ public class UserController {
 	}
 	
 	@GetMapping(value = "/me")
-	@PreAuthorize("hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('PATIENT')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('PATIENT')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')" + "||" + "hasRole('DEALER')")
 	public User getMe(Authentication auth) {
 		return userService.findById(((User) auth.getPrincipal()).getId());
 	}
