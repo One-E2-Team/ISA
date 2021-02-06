@@ -30,7 +30,7 @@
             </div>
             <div class = "row justify-content-center">
                 <div class = "col-md-auto">
-                    <button type="button" class="btn btn-primary">Schedule</button>
+                    <button type="button" class="btn btn-primary" v-on:click="scheduleAppointment()">Schedule</button>
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@ export default {
     data(){
         return{
             freeExaminations: {},
-            selectedExamination : {}
+            selectedExamination : null
         }
     },
 
@@ -58,6 +58,22 @@ export default {
     methods : {
         selectExamination : function(e){
             this.selectedExamination = e;
+        },
+        scheduleAppointment: function(){
+            if (this.selectedExamination == null)
+                alert("You have to select an appointment!");
+            else{
+                axios.post('http://localhost:8083/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id );
+
+                setTimeout(alert("Appointment scheduled successfully!"), 3000);
+                this.selectedExamination = {};
+
+                axios.get('http://localhost:8083/api/examinations/freeExaminationsAtDermatoloist')
+                .then(response => this.freeExaminations = response.data);
+                
+                
+
+            }
         }
     }
 }

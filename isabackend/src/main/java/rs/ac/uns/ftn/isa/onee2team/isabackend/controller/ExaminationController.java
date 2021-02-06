@@ -5,11 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationAtDermatologistDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IExaminationService;
 
 @RestController
@@ -27,6 +32,14 @@ public class ExaminationController {
 	@PreAuthorize("hasRole('PATIENT')")
 	public List<ExaminationAtDermatologistDTO> getFreeExaminationsAtDermatologist() {
 		return examinationService.getFreeExaminationsAtDermatologist();
+	}
+	
+	@PostMapping(value = "/scheduleAtDermatologist")
+	@PreAuthorize("hasRole('PATIENT')")
+	public void scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		examinationService.scheduleAtDermatologist(user.getId(), examinationId);
 	}
 	
 }

@@ -10,4 +10,6 @@ public interface IExaminationService {
 	List<ExaminationDTO> getFreeExaminationsByHealthWorkerIdAndPharmacyId(Long healthWorkerId, Long pharmacyId);
 
 	List<ExaminationAtDermatologistDTO> getFreeExaminationsAtDermatologist();
+	
+	void scheduleAtDermatologist(Long patientId, Long examinationId);
 }
