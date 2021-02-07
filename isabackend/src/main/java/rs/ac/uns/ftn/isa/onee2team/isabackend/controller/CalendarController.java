@@ -1,6 +1,5 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,6 @@ public class CalendarController {
 		dto.getDate().setMinutes(0);
 		dto.getDate().setHours(1);
 		dto.getDate().setSeconds(0);
-		System.out.println(dto.getDate());
 		WorkingCalendar ret = workingCalendarService.getWorkingTimeForDermatologist(dto, loggedUser.getId());
 		if (ret == null)
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
