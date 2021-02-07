@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IExaminationService;
 
@@ -81,6 +81,17 @@ public class ExaminationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		examinationService.scheduleAtPharmacist(user.getId(), dto.getPharmacy_id(), dto.getDate());
+	}
+	
+	@SuppressWarnings("deprecation")
+	@PostMapping(value = "/create")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public String createNewExaminations(@RequestBody NewExaminationsDTO newExaminations, Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		newExaminations.getDate().setMinutes(0);
+		newExaminations.getDate().setHours(1);
+		newExaminations.getDate().setSeconds(0);
+		return examinationService.createNewExaminations(newExaminations, user.getId());
 	}
 	
 }

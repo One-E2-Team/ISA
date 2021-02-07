@@ -30,7 +30,6 @@ public class WorkingCalendarService implements IWorkingCalendarService {
 	@Override
 	public WorkingCalendar getWorkingTimeForDermatologist(WorkingTimeDTO dto, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
-		System.out.println("*********************************************************");
 		if (admin == null)
 			return null;
 		WorkingCalendar ret = new WorkingCalendar();
