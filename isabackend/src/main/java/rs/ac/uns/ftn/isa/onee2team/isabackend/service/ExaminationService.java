@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,11 +12,15 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
@@ -24,13 +29,15 @@ public class ExaminationService implements IExaminationService {
 	private IExaminationRepository examinationRepository;
 	private IUserRepository userRepository;
 	private IEmailNotificationService emailService;
+	private IPharmacyRepository pharmacyRepository;
 
 	@Autowired
 	public ExaminationService(IExaminationRepository examinationRepository, IUserRepository userRepository,
-			IEmailNotificationService emailService) {
+			IEmailNotificationService emailService, IPharmacyRepository pharmacyRepository) {
 		this.examinationRepository = examinationRepository;
 		this.userRepository = userRepository;
 		this.emailService = emailService;
+		this.pharmacyRepository = pharmacyRepository;
 	}
 
 	@Override
@@ -73,7 +80,6 @@ public class ExaminationService implements IExaminationService {
 	@Override
 	public void cancelAppointment(Long examinationId) {
 		Examination ex = examinationRepository.findById(examinationId).orElse(null);
-		ex.setPatient(null);
 		ex.setStatus(ExaminationStatus.CANCELED);
 		examinationRepository.save(ex);
 	}
@@ -90,4 +96,49 @@ public class ExaminationService implements IExaminationService {
 					);}
 		return ret_list;
 		}
+
+	@Override
+	public List<PharmacyWithFreeAppointmentDTO> getFreePharmaciesAppointments(Date date) {
+		List<Long> pharmacyIds = examinationRepository.getFreePharmaciesAppointments(date);
+		List<PharmacyWithFreeAppointmentDTO> ret_list = new ArrayList<PharmacyWithFreeAppointmentDTO>();
+		
+		for(Long id : pharmacyIds) {
+			Pharmacy pharmacy = pharmacyRepository.findById(id).orElse(null);
+			
+			PharmacyWithFreeAppointmentDTO dto = new PharmacyWithFreeAppointmentDTO();
+			dto.setId(id);
+			dto.setName(pharmacy.getName());
+			dto.setAddress(pharmacy.getAddress());
+			
+			dto.setPrice(examinationRepository.getPriceForAppointment(id));
+			
+			dto.setRate(examinationRepository.getAvgRateForPharmacy(id));
+			
+			ret_list.add(dto);
+		}
+		
+		return ret_list;
+		
+	}
+
+	@Override
+	public List<PharmacistWithFreeAppointmentDTO> getFreePharmacistInPharmacy(Long id, Date date) {
+		List<Long> pharmacistIds =  examinationRepository.getFreePharmacistInPharmacy(id, date);
+		List<PharmacistWithFreeAppointmentDTO> ret_list = new ArrayList<PharmacistWithFreeAppointmentDTO>();
+		
+		for(Long pId : pharmacistIds) {
+			PharmacistWithFreeAppointmentDTO dto = new PharmacistWithFreeAppointmentDTO();
+			User user = userRepository.findById(pId).orElse(null);
+			
+			dto.setId(pId);
+			dto.setFirstName(user.getFirstName());
+			dto.setLastName(user.getLastName());
+			dto.setRate(examinationRepository.getAvgRateForHealthWorker(pId));
+			
+			ret_list.add(dto);
+		}
+		
+		return ret_list;
+		
+	}
 }
