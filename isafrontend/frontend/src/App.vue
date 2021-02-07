@@ -2,6 +2,7 @@
   <div id="app">
     <Header v-on:logout-user='RoleReEvaluation()' v-bind:role="role"/> 
     <Login v-on:login-user='RoleReEvaluation()'/>
+    <PatientAppearedModal/>
     <Registration />
     <router-view/>
   </div>
@@ -13,8 +14,11 @@
 import Header from './components/Header'
 import Login from './components/modals/Login.vue'
 import Registration from './components/modals/Registration.vue'
+
 import * as comm from './configuration/communication'
 import axios from 'axios';
+import PatientAppearedModal from './components/modals/PatientAppearedModal.vue'
+
 
 
 
@@ -24,6 +28,8 @@ export default {
     Header,
     Login,
     Registration,
+    PatientAppearedModal,
+   
   },
   data() {
     return{

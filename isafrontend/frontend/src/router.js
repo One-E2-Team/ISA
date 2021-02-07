@@ -15,6 +15,7 @@ import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
 
 import WorkingCalendar from './components/pages/WorkingCalendarPage'
+import TherapyPage from './components/pages/TherapyPage'
 
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
@@ -118,6 +119,11 @@ const router = new VueRouter({
       path: '/order/create',
       component: CreateOrderPage,
       props: true
+    },
+    {
+      path: '/therapy',
+      name: 'Therapy',
+      component: TherapyPage,
     }
   ]
 })

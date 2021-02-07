@@ -21,7 +21,9 @@
                         <td> {{e.date | dateFormat('DD.MM.YYYY ')}} </td>
                         <td>  {{e.pharmacyName }} </td>
                         <td> {{e.startTime | dateFormat('HH:mm')}} - {{e.endTime | dateFormat('HH:mm')}} </td>
-                        <td> <button>Let's rock</button></td>
+                        <td> <button type="button" class="btn btn-primary" @click="openExamination()" data-bs-toggle="modal" data-bs-target="#PatientAppeared">
+                            Start therapy
+                        </button></td>
 
                     </tr>
                 </tbody>
@@ -69,6 +71,9 @@ export default {
                 ).then(response => {
                     this.examinations = response.data;
                 });
+        },
+        openExamination: function(examination){
+            this.$root.$emit('therapy',examination);
         }
     },
     filters:{
