@@ -14,7 +14,7 @@ import ReviewVacationRequestsPage from './components/pages/ReviewVacationRequest
 import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
 
-import WorkingCalendar from './components/pages/WorkingCalendar'
+import WorkingCalendar from './components/pages/WorkingCalendarPage'
 
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
