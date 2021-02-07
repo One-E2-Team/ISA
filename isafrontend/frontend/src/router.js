@@ -11,6 +11,7 @@ import PharmacistsPage from './components/pages/PharmacistsPage'
 import ProfilePage from './components/pages/ProfilePage'
 import VacationRequestPage from './components/pages/VacationRequestPage'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
+import WorkingCalendar from './components/pages/WorkingCalendar'
 
 Vue.use(VueRouter)
 
@@ -60,6 +61,11 @@ const router = new VueRouter({
       path: '/sysadmin/register',
       name: 'registerUsers',
       component: SysadminRegisterPage
+    },
+    {
+      path: '/healthworker/working-calendar',
+      name: 'workingCalendar',
+      component: WorkingCalendar
     },
   ]
 })
