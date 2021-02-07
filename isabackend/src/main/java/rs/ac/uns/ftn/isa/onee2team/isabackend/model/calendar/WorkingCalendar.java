@@ -25,7 +25,7 @@ public class WorkingCalendar {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWorker;
 
