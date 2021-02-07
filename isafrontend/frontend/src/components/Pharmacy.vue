@@ -63,6 +63,7 @@
         </div>
         <button class="btn btn-outline-success" name="subscribe">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
+        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()">Create order</button>
     </div>
 </template>
 
@@ -114,6 +115,12 @@ export default {
         },
         isPharmacyAdmin : function(){
             return comm.getCurrentUserRole() === 'PHARMACY_ADMIN';
+        },
+        openCreateOrderPage : function(){
+            this.$router.push({
+                name: 'createOrder',
+                params: { pid: this.id }
+            })
         }
     },
     mounted() {
