@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
@@ -55,6 +61,26 @@ public class ExaminationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		return examinationService.getPatientsExaminations(user.getId());
+	}
+	
+	@PostMapping(value = "/pharmaciesWithFreeAppointments")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<PharmacyWithFreeAppointmentDTO> getFreePharmaciesAppointments(@RequestBody Date date) {
+		return examinationService.getFreePharmaciesAppointments(date);
+	}
+	
+	@PostMapping(value = "/freePharmacistsInPharmacy")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<PharmacistWithFreeAppointmentDTO> getFreePharmaciesAppointments(@RequestBody RequestDTO dto) {
+		return examinationService.getFreePharmacistInPharmacy(dto.getPharmacy_id(), dto.getDate());
+	}
+	
+	@PutMapping(value = "/scheduleAtPharmacist")
+	@PreAuthorize("hasRole('PATIENT')")
+	public void scheduleAtPharmacist(@RequestBody RequestDTO dto) {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		examinationService.scheduleAtPharmacist(user.getId(), dto.getPharmacy_id(), dto.getDate());
 	}
 	
 }
