@@ -43,7 +43,7 @@ public class OrderController {
 	@GetMapping(value = "/all")
 	@PreAuthorize("hasRole('DEALER')")
 	public List<Order> getAll(){
-		return orderService.getAllOrders();
+		return orderService.getAllActiveOrders();
 	}
 	
 	@GetMapping(value = "/dealerOffers")
@@ -55,7 +55,7 @@ public class OrderController {
 	
 	@PostMapping(value = "/{id}/offer")
 	@PreAuthorize("hasRole('DEALER')")
-	public Offer createOffer(@PathVariable("id") Long orderId, Authentication auth, @RequestBody NewOfferDTO nodto) {
-		return orderService.createOffer(orderId, (Dealer) userService.findById(((User) auth.getPrincipal()).getId()), nodto);
+	public Offer createOrUpdateOffer(@PathVariable("id") Long orderId, Authentication auth, @RequestBody NewOfferDTO nodto) {
+		return orderService.createOrUpdateOffer(orderId, (Dealer) userService.findById(((User) auth.getPrincipal()).getId()), nodto);
 	}
 }

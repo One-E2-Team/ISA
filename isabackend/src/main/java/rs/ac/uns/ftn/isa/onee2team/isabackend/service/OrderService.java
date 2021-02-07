@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +76,8 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public List<Order> getAllOrders() {
-		return orderRepository.findAll();
+	public List<Order> getAllActiveOrders() {
+		return orderRepository.findAllActive();
 	}
 
 	@Override
@@ -85,13 +86,35 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
-	public Offer createOffer(Long orderId, Dealer dealer, NewOfferDTO nodto) {
-		Offer o = new Offer();
-		o.setOrder(orderRepository.findById(orderId).get());
-		o.setDealer(dealer);
-		o.setStatus(OfferStatus.CREATED);
+	public Offer createOrUpdateOffer(Long orderId, Dealer dealer, NewOfferDTO nodto) {
+		Order order = orderRepository.findById(orderId).get();
+		if(order == null) return null;
+		if(order.getExpireDate().compareTo(new Date()) <= 0) return null;
+		List<Offer> offers = offerRepository.findAllByDealerAndOrder(dealer, order);
+		Offer o;
+		if(offers.size()!=0)
+			o = offers.get(0);
+		else {
+			o = new Offer();
+			o.setOrder(order);
+			o.setDealer(dealer);
+			o.setStatus(OfferStatus.CREATED);
+		}
 		o.setFullPrice(nodto.getFullPrice());
 		o.setDate(nodto.getDate());
+		for (MedicineWithQuantity mwq : o.getOrder().getMedicinesWithQuantity()) {
+			boolean handled = false;
+			for (MedicineWithQuantity dealermwq : o.getDealer().getMedicinesWithQuantity()) {
+				if(mwq.getMedicine().getId().equals(dealermwq.getMedicine().getId()))
+					if(mwq.getQuantity() > dealermwq.getQuantity())
+						return null;
+					else {
+						handled = true;
+						break;
+					}
+			}
+			if(!handled) return null;
+		}
 		return offerRepository.save(o);
 	}
 

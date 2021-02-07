@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 

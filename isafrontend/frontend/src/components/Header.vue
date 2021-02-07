@@ -38,9 +38,6 @@
                 <a class="nav-link" href="#/">Working calendar</a>
                 </li>
                 <li class="nav-item dropdown" v-if="role == 'PATIENT'">
-                <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-                <li class="nav-item dropdown d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Schedule an appointment
                 </a>
