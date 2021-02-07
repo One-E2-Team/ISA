@@ -51,6 +51,7 @@
 <script>
 
 import axios from 'axios';
+import * as comm from '../configuration/communication.js';
 
 export default {
     name: "AllPharmacies",
@@ -64,14 +65,14 @@ export default {
     },
 
     mounted() {
-        axios.get('http://localhost:8083/api/pharmacies/pharmaciesDto')
+        axios.get('http://' + comm.server + '/api/pharmacies/pharmaciesDto')
         .then(response => this.pharmacies = response.data)
     },
 
     methods: {
         showMedicines: function(pharmacy){
             this.selectedPharmacy = pharmacy;
-            axios.get('http://localhost:8083/api/pharmacies/medicinesByPharmacyId/', {params:{"id": this.selectedPharmacy.id }})
+            axios.get('http://' + comm.server + '/api/pharmacies/medicinesByPharmacyId/', {params:{"id": this.selectedPharmacy.id }})
             .then(response => this.medicines = response.data)
         },
         selectPharmacy: function(pharmacy){

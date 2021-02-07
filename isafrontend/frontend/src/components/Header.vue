@@ -13,6 +13,18 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/register">Register User</a>
                 </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/registerPharma">Register Pharmacy</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/complaints">Complaints</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/loyalty">Loyalty Program</a>
+                </li>
+                <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
+                <a class="nav-link" href="#/sysadmin/medicine">Add Medicine</a>
+                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
@@ -25,16 +37,21 @@
                  <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Working calendar</a>
                 </li>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" v-if="role == 'PATIENT'">
+                <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                </li>
+                <li class="nav-item dropdown d-none">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown
+                    Schedule an appointment
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                <ul class="dropdown-menu" aria-labelledby="schedule">
+                    <li><a class="dropdown-item" href="#/scheduleAtDermatologist">At dermatologist</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <li><a class="dropdown-item" href="#">At pharmacist</a></li>
                 </ul>
+                </li>
+                <li v-if="role=='PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/scheduledAppointments">My appointments</a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/allPharmacies">All pharmacies</a>

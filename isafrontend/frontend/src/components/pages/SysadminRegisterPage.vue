@@ -87,15 +87,15 @@ export default {
                         console.log("ifin")
                     } else {
                         console.log("elsein")
-                        document.getElementById("registrationAlert").classList.remove("d-none");
+                        document.getElementById("userRegistrationAlert").classList.remove("d-none");
                     }
                 }).catch(reason => {
                     console.log(reason);
-                    document.getElementById("registrationAlert").classList.remove("d-none");
+                    document.getElementById("userRegistrationAlert").classList.remove("d-none");
                     });
             } else {
                 console.log("elseout")
-                document.getElementById("registrationAlert").classList.remove("d-none");
+                document.getElementById("userRegistrationAlert").classList.remove("d-none");
             }
         }
     }

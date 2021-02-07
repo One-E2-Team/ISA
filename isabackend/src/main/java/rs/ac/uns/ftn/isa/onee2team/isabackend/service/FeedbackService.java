@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +34,14 @@ public class FeedbackService implements IFeedbackService {
 			c.setAnswer(answer);
 			//does not work if fetch type lazy
 			c = this.saveComplaint(c);
-			emailNotificationService.sendNotificaitionAsync(c.getPatient().getEmail(), "Answer to complaint number: " + c.getId().toString(), answer);
+			emailNotificationService.sendNotificationAsync(c.getPatient().getEmail(), "Answer to complaint number: " + c.getId().toString(), answer);
 			return c;
 		} else return null;
+	}
+
+	@Override
+	public List<Complaint> getUnansweredComplaints() {
+		return complaintRepository.findAllByHandled(false);
 	}
 	
 	

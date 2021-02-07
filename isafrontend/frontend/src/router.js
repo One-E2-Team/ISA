@@ -10,8 +10,19 @@ import PatientsPage from './components/pages/PatientsPage'
 import PharmacistsPage from './components/pages/PharmacistsPage'
 import ProfilePage from './components/pages/ProfilePage'
 import VacationRequestPage from './components/pages/VacationRequestPage'
+import ReviewVacationRequestsPage from './components/pages/ReviewVacationRequestsPage'
+import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
+
 import WorkingCalendar from './components/pages/WorkingCalendar'
+
+import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
+import SysadminComplaints from './components/pages/SysadminComplaints'
+import LoyaltyProgram from './components/pages/DefineLoyalty'
+import ScheduledAppointments from './components/ScheduledAppointments'
+import CreateMedicine from './components/pages/CreateMedicine'
+import CreateOrderPage from './components/pages/CreateOrderPage'
+
 
 Vue.use(VueRouter)
 
@@ -58,6 +69,16 @@ const router = new VueRouter({
       component: VacationRequestPage
     },
     {
+      path: '/vacation/review',
+      name: 'vacationReview',
+      component: ReviewVacationRequestsPage
+    },
+    {
+      path: '/scheduleAtDermatologist',
+      name: 'scheduleAtDermatologist',
+      component: ScheduleAtDermatologist
+    },
+    {
       path: '/sysadmin/register',
       name: 'registerUsers',
       component: SysadminRegisterPage
@@ -67,6 +88,37 @@ const router = new VueRouter({
       name: 'workingCalendar',
       component: WorkingCalendar
     },
+    {
+      path: '/sysadmin/registerPharma',
+      name: 'registerPharmacy',
+      component: SysadminRegisterPharmacyPage
+    },
+    {
+      path: '/sysadmin/complaints',
+      name: 'complaints',
+      component: SysadminComplaints
+    },
+    {
+      path: '/sysadmin/loyalty',
+      name: 'loyaltyProgram',
+      component: LoyaltyProgram
+    },
+    {
+      path: '/scheduledAppointments',
+      name: 'scheduledAppointments',
+      component: ScheduledAppointments
+    },
+    {
+      path: '/sysadmin/medicine',
+      name: 'createMedicine',
+      component: CreateMedicine
+    },
+    {
+      name: 'createOrder',
+      path: '/order/create',
+      component: CreateOrderPage,
+      props: true
+    }
   ]
 })
 
