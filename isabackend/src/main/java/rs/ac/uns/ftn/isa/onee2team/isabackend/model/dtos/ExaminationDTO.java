@@ -7,6 +7,7 @@ public class ExaminationDTO {
 	private Long id;
 	private Long healthWorkerId;
 	private Long pharmacyId;
+	private String pharmacyName;
 	private Date date;
 	private Date startTime;
 	private Date endTime;
@@ -18,6 +19,18 @@ public class ExaminationDTO {
 		this.id = id;
 		this.healthWorkerId = healthWorkerId;
 		this.pharmacyId = pharmacyId;
+		this.date = date;
+		this.startTime = startTime;
+		this.endTime = endTime;
+	}
+
+	public ExaminationDTO(Long id, Long healthWorkerId, Long pharmacyId, String pharmacyName, Date date, Date startTime,
+			Date endTime) {
+		super();
+		this.id = id;
+		this.healthWorkerId = healthWorkerId;
+		this.pharmacyId = pharmacyId;
+		this.pharmacyName = pharmacyName;
 		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -45,6 +58,14 @@ public class ExaminationDTO {
 
 	public void setPharmacyId(Long pharmacyId) {
 		this.pharmacyId = pharmacyId;
+	}
+
+	public String getPharmacyName() {
+		return pharmacyName;
+	}
+
+	public void setPharmacyName(String pharmacyName) {
+		this.pharmacyName = pharmacyName;
 	}
 
 	public Date getDate() {
