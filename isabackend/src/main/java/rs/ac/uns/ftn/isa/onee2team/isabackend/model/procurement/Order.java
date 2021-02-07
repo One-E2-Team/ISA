@@ -28,7 +28,7 @@ public class Order {
 	@Column(name = "expireDate", nullable = false)
 	private Date expireDate;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = CascadeType.ALL)//, fetch = FetchType.LAZY
 	@JoinColumn(name = "medicinesWithQuantity")
 	private List<MedicineWithQuantity> medicinesWithQuantity;
 
