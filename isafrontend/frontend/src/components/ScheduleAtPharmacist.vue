@@ -149,6 +149,14 @@ export default {
             if(this.selectedPharmacist == null){
                 alert("You need to select a pharmacist!");
             }
+            else{
+                let date = new Date (this.selectedDate.toString() + " " + this.selectedTime.toString());
+                date = date - (date.getTimezoneOffset() * 60 * 1000);
+                date = new Date(date);
+                 let dto = {"pharmacy_id" : this.selectedPharmacist.id, "date" : date}
+                axios.put('http://' + comm.server + '/api/examinations/scheduleAtPharmacist', dto)
+                .then(alert("Appointment scheduled successfully!"));
+            }
         }
     }
 }

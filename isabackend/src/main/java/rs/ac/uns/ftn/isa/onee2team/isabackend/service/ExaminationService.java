@@ -71,7 +71,7 @@ public class ExaminationService implements IExaminationService {
 		Examination examination =  examinationRepository.findById(examinationId).orElse(null);
 		examination.setPatient((Patient)(userRepository.findById(patientId).orElse(null)));
 		examination.setStatus(ExaminationStatus.SCHEDULED);
-		examinationRepository.saveAndFlush(examination);
+		examinationRepository.save(examination);
 		User user = userRepository.findById(patientId).orElse(null);
 		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
 				"You have successfully scheduled an appointment at dermatologist.");
@@ -141,4 +141,20 @@ public class ExaminationService implements IExaminationService {
 		return ret_list;
 		
 	}
+
+	@Override
+	public void scheduleAtPharmacist(Long user_id, Long id, Date date) {
+		Examination ex = examinationRepository.getExaminationByPharmacistAndDate(id, date);
+		
+		ex.setPatient((Patient)(userRepository.findById(user_id).orElse(null)));
+		
+		ex.setStatus(ExaminationStatus.SCHEDULED);
+		
+		examinationRepository.save(ex);
+		
+		User user = userRepository.findById(user_id).orElse(null);
+		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
+				"You have successfully scheduled an appointment at pharmacist.");
+	}
+	
 }

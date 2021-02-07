@@ -24,4 +24,6 @@ public interface IExaminationService {
 	List<PharmacyWithFreeAppointmentDTO> getFreePharmaciesAppointments(Date date);
 	
 	List<PharmacistWithFreeAppointmentDTO> getFreePharmacistInPharmacy(Long id, Date date);
+	
+	void scheduleAtPharmacist(Long user_id, Long id, Date date);
 }

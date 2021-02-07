@@ -52,4 +52,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 	
 	@Query(value = "select avg(rate) from rated_health_workers where health_worker_id = ?1", nativeQuery = true)
 	double getAvgRateForHealthWorker(Long id);
+	
+	@Query("select e from Examination e where e.healthWokrer.id = ?1 and e.startTime = ?2")
+	Examination getExaminationByPharmacistAndDate(Long id, Date date);
 }
