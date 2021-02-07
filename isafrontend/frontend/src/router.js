@@ -18,6 +18,7 @@ import SysadminComplaints from './components/pages/SysadminComplaints'
 import LoyaltyProgram from './components/pages/DefineLoyalty'
 import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
+import CreateOrderPage from './components/pages/CreateOrderPage'
 
 Vue.use(VueRouter)
 
@@ -103,6 +104,12 @@ const router = new VueRouter({
       name: 'createMedicine',
       component: CreateMedicine
     },
+    {
+      name: 'createOrder',
+      path: '/order/create',
+      component: CreateOrderPage,
+      props: true
+    }
   ]
 })
 
