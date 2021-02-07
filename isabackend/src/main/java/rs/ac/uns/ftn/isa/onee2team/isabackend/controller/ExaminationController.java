@@ -4,17 +4,26 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IExaminationService;
 
@@ -55,6 +64,33 @@ public class ExaminationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		return examinationService.getPatientsExaminations(user.getId());
+	}
+	
+	@PostMapping(value="/all/scheduled")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<ExaminationDTO> getAllScheduledExaminationForHealthWorker(@RequestBody TimeIntervalDTO timeInterval, Authentication auth){
+		if(timeInterval.getPharmacyId().equals(""))
+			return examinationService.getExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd(), ExaminationStatus.SCHEDULED);
+		
+		return examinationService.getExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd(), ExaminationStatus.SCHEDULED,Long.parseLong(timeInterval.getPharmacyId()));
+	}
+	
+	@GetMapping(value="/patient")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Patient getPatientFromExamination(@RequestParam("examination-id") Long id ) {
+		return examinationService.getPatientFromExamination(id);
+	}
+	
+	@PutMapping(value="/not-realized")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public void PassExamination (@RequestBody Long id ) {
+		examinationService.punishPatientAndUpdateExaminationStatus(id);		
+	}
+	
+	@PutMapping(value="/information")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public void updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
+		examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInfromation());
 	}
 	
 }
