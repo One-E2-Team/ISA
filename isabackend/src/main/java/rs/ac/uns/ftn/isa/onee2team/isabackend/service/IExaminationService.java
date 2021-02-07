@@ -3,8 +3,11 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 import java.util.Date;
 import java.util.List;
 
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 
 public interface IExaminationService {
@@ -22,5 +25,12 @@ public interface IExaminationService {
 	void cancelAppointment(Long examinationId);
 	
 	List<ScheduledExaminationDTO> getPatientsExaminations(Long patientId);
-
+	
+	List<PharmacyWithFreeAppointmentDTO> getFreePharmaciesAppointments(Date date);
+	
+	List<PharmacistWithFreeAppointmentDTO> getFreePharmacistInPharmacy(Long id, Date date);
+	
+	void scheduleAtPharmacist(Long user_id, Long id, Date date);
+	
+	String createNewExaminations(NewExaminationsDTO newExaminations, Long userId);
 }
