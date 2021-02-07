@@ -13,16 +13,14 @@ import VacationRequestPage from './components/pages/VacationRequestPage'
 import ReviewVacationRequestsPage from './components/pages/ReviewVacationRequestsPage'
 import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
-
 import WorkingCalendar from './components/pages/WorkingCalendar'
-
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
 import LoyaltyProgram from './components/pages/DefineLoyalty'
 import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
-
+import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
 
 Vue.use(VueRouter)
 
@@ -118,7 +116,12 @@ const router = new VueRouter({
       path: '/order/create',
       component: CreateOrderPage,
       props: true
-    }
+    },
+    {
+      path: '/dealer/ordersOffers',
+      name: 'dealerOrdersOffers',
+      component: DealerOrdersOffers
+    },
   ]
 })
 

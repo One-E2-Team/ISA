@@ -115,7 +115,7 @@ public class OrderService implements IOrderService {
 			}
 			if(!handled) return null;
 		}
-		return offerRepository.save(o);
+		return offerRepository.saveAndFlush(o);
 	}
 
 }

@@ -25,6 +25,9 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/medicine">Add Medicine</a>
                 </li>
+                <li v-if='role == "DEALER"' class="nav-item">
+                <a class="nav-link" href="#/dealer/ordersOffers">Orders and Offers</a>
+                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/welcome">Link</a>
                 </li>
