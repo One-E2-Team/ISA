@@ -13,6 +13,7 @@
                 <td class="table-light">{{dermatologist.lastName}}</td>
                 <td class="table-light">{{dermatologist.rate}}</td>
                 <td class="table-light">{{dermatologist.pharmacyNames}}</td>
+                <td><button @click="goToCreateExam(dermatologist.id)">Create free examinations</button></td>
             </tr>
         </table>
     </div>
@@ -31,6 +32,14 @@ export default {
         return {
             page : "dermatologists",
             dermatologists : []
+        }
+    },
+    methods:{
+        goToCreateExam : function(id){
+            this.$router.push({
+                name: 'createExamination',
+                params: { dermatologistId: id }
+            })
         }
     }
 }

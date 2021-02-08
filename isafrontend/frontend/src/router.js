@@ -13,7 +13,8 @@ import VacationRequestPage from './components/pages/VacationRequestPage'
 import ReviewVacationRequestsPage from './components/pages/ReviewVacationRequestsPage'
 import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
-import WorkingCalendar from './components/pages/WorkingCalendar'
+import WorkingCalendar from './components/pages/WorkingCalendarPage'
+import TherapyPage from './components/pages/TherapyPage'
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
 import LoyaltyProgram from './components/pages/DefineLoyalty'
@@ -21,8 +22,11 @@ import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
 import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
-import ScheduleAtPharmacist  from './components/ScheduleAtPharmacist'
 import PatientComplaintPage from './components/pages/PatientComplaintPage'
+import CreateExamination from './components/pages/CreateExamination'
+import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
+import History from './components/pages/History'
+import ReservedMedicines from './components/pages/ReservedMedicines'
 
 
 Vue.use(VueRouter)
@@ -35,9 +39,10 @@ const router = new VueRouter({
       component: Welcome
     },
     {
-      path: '/pharmacy',
+      path: '/pharmacy/:id',
       name: 'pharmacy',
-      component: Pharmacy
+      component: Pharmacy,
+      props: true
     },
     {
       path: '/allPharmacies',
@@ -121,6 +126,13 @@ const router = new VueRouter({
       props: true
     },
     {
+
+      path: '/therapy/:id',
+      name: 'Therapy',
+      component: TherapyPage,
+      props: true,
+    },
+    {
       path: '/dealer/ordersOffers',
       name: 'dealerOrdersOffers',
       component: DealerOrdersOffers
@@ -136,6 +148,24 @@ const router = new VueRouter({
       path: '/createComplaint',
       component: PatientComplaintPage,
     },
+    {
+      name: 'createExamination',
+      path: '/examination/create',
+      component: CreateExamination,
+      props: true
+    },
+    {
+      name: 'history',
+      path: '/history',
+      component: History,
+      props: true
+    },
+    {
+      name: 'reservedMedicines',
+      path: '/reservedMedicines',
+      component: ReservedMedicines,
+      props: true
+    }
   ]
 })
 

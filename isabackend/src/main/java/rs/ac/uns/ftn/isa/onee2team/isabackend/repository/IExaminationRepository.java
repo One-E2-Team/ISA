@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -73,4 +74,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 
 	@Query(value = "select * from examinations where patient_id = ?1 and end_time <= now()", nativeQuery = true)
 	List<Examination> getExaminationsFromHistoryByPatientToDate(Long patientId);
+	
+	@Query("select e from Examination e where e.patient.id = ?1 and e.status = 1")
+	List<Examination> getPatientsFinishedAppointments(Long id);
 }

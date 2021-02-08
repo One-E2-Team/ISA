@@ -25,14 +25,17 @@
                 <li v-if='role == "DEALER"' class="nav-item">
                 <a class="nav-link" href="#/dealer/ordersOffers">Orders and Offers</a>
                 </li>
-                <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
-                <a class="nav-link" href="#/pharmacy">Pharmacy</a>
-                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Medicine</a>
                 </li>
-                 <li class="nav-item d-none">
-                <a class="nav-link" href="#/">Working calendar</a>
+                 <li class="nav-item" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
+                <a class="nav-link" href="#/healthworker/working-calendar">Working calendar</a>
+                </li>
+                <li v-if="role == 'PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/history">History</a>
+                </li>
+                <li v-if="role == 'PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/reservedMedicines">My reservations</a>
                 </li>
                 <li class="nav-item dropdown" v-if="role == 'PATIENT'">
                 <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false">
