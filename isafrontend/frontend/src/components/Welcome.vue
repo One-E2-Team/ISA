@@ -1,8 +1,6 @@
 <template>
-    <div>
-        <h1> Welcome dusmani </h1> 
+    <div style="width: 1920px; height: 1080px; background-image: url('bg.jpeg'); background-repeat: no-repeat; background-attachment: fixed;">
     </div>
-
 </template>
 
 <script>

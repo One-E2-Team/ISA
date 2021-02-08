@@ -62,7 +62,7 @@
                 <td class="table-light"><button name="scheduleExamination" @click="scheduleExamination(examination.id)">Schedule this examination</button></td>
             </tr>
         </div>
-        <button class="btn btn-outline-success" name="subscribe">Subscribe on promotions</button>
+        <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
         <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()">Create order</button>
     </div>
@@ -136,6 +136,22 @@ export default {
                 name: 'createOrder',
                 params: { pid: this.id }
             })
+        },
+        toggleSubscribeButton: function(){
+            axios.get('http://' + comm.server + '/api/promotions/subscriptions').then(response => {
+                if(response.status == 200 && response.data != null)
+                    response.data.forEach(element => {
+                        if(element.id == this.id) document.getElementById("subscribeButton").classList.add("d-none");
+                    });
+            });
+        },
+        subscribe: function() {
+            axios.get('http://' + comm.server + '/api/promotions/subscribe/' + this.id).then(response => {
+                if(response.status == 200 && response.data != null){
+                    document.getElementById("subscribeButton").classList.add("d-none");
+                    this.toggleSubscribeButton();
+                }
+            });
         }
     },
     mounted() {
@@ -143,9 +159,13 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.pharmacy = response.data;
+
                 }
             });
-    }
+    },
+    created(){
+        this.toggleSubscribeButton();
+    },
 }
 </script>
 

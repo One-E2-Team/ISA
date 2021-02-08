@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppoint
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
@@ -258,6 +256,11 @@ public class ExaminationService implements IExaminationService {
 		return "Successfully created examinations!";
 	}
 
+	@Override
+	public List<Examination> getExaminationsFromHistoryByPatientToDate(Long patientId) {
+		return examinationRepository.getExaminationsFromHistoryByPatientToDate(patientId);
+	}
+	
 	@Override
 	public List<ScheduledExaminationDTO> getPatientsFinishedAppointments(Long id) {
 		List<Examination> examinations =  examinationRepository.getPatientsFinishedAppointments(id);
