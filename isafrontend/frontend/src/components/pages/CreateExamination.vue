@@ -59,6 +59,8 @@ export default {
         },
         getWorkTime : function(){
             this.gotDate = false;
+            this.newExaminations = [];
+            this.created = false;
             let request = {
                 dermatologistId: this.dermatologistId,
                 date: new Date(this.date)
@@ -116,15 +118,16 @@ export default {
             this.created = true;
         },
         createInDatabase : function(){
+            let dateString = this.ticksToYYYYMMDD(this.date.getTime()) + " 00:00:00";
             let request = {
                 healthWorkerId: this.dermatologistId,
-                date: this.date,
+                date: this.dateWithoutZone(dateString),
                 newExaminations: this.newExaminations
             }
             axios.post('http://' + comm.server + '/api/examinations/create', request)
             .then(response => {
                 if (response.status == 200) {
-                    alert("OK");
+                    alert(response.data);
                 }
             });
         }
