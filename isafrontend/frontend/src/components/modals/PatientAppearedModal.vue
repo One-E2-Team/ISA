@@ -11,7 +11,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" @click="restrictPatient()" data-bs-dismiss="modal" class="btn btn-danger" >No</button>
-                <button type="button" @click="startTherapy()" class="btn btn-primary">Yes</button>
+                <button type="button" @click="startTherapy()" data-bs-dismiss="modal" class="btn btn-primary">Yes</button>
             </div>
             </div>
         </div>
@@ -29,16 +29,11 @@ export default {
     methods:{
         restrictPatient: function(){
             console.log(this.examination)
-            axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination.id)
+            axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination)
                 .then(this.closeDialog()); 
         },
         startTherapy: function(){
-            window.location.href = '#/therapy';
-            this.$root.$emit('therapy',this.examination)
-            this.closeDialog();
-        },
-        closeDialog: function(){
-            this.$refs.patientAppearedModalCloseBtn.click();
+            this.$router.push({name: 'Therapy', params: {id: this.examination}})
         }
     }
 }

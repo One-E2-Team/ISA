@@ -2,14 +2,14 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
 public class ExaminationInformationDTO {
 	private Long examinationId;
-	private String infromation;
+	private String information;
 	public ExaminationInformationDTO() {
 		super();
 	}
-	public ExaminationInformationDTO(Long examinationId, String infromation) {
+	public ExaminationInformationDTO(Long examinationId, String information) {
 		super();
 		this.examinationId = examinationId;
-		this.infromation = infromation;
+		this.information = information;
 	}
 	public Long getExaminationId() {
 		return examinationId;
@@ -18,9 +18,9 @@ public class ExaminationInformationDTO {
 		this.examinationId = examinationId;
 	}
 	public String getInfromation() {
-		return infromation;
+		return information;
 	}
 	public void setInfromation(String infromation) {
-		this.infromation = infromation;
+		this.information = infromation;
 	}
 }

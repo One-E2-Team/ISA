@@ -151,13 +151,14 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public void updateInformation(Long examinationId, String infromation) {
+	public boolean updateInformation(Long examinationId, String infromation) {
 		Examination examination = examinationRepository.findById(examinationId).orElse(null);
 		if(examination != null && examination.getStatus().equals(ExaminationStatus.SCHEDULED)) {
 			examination.setInformation(infromation);
 			examinationRepository.save(examination);
+			return true;
 		}
-		
+		return false;
 	}
 
 }

@@ -4,29 +4,37 @@
             <div class="col-lg-4 col-md-4">
                 <h3 class="mb-3">Patient</h3>
                 <div class="mb-3">
-                    <label class="form-label">Name</label>
-                    <input type="text" class="form-control"  >
+                    <label class="form-label">Name:</label>
+                    <label class="form-label px-3">{{patient.firstName}}</label>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Surname</label>
-                    <input type="text" class="form-control">
+                    <label class="form-label">Surname:</label>
+                     <label class="form-label px-3">{{patient.lastName}}</label>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" class="form-control">
+                    <label class="form-label">Address:</label>
+                     <label class="form-label px-3">{{patient.address}} , {{patient.city}}</label>
+                </div>
+                 <div class="mb-3">
+                    <label class="form-label">State:</label>
+                     <label class="form-label px-3">{{patient.state}}</label>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" class="form-control">
+                    <label class="form-label">Email:</label>
+                     <label class="form-label px-3">{{patient.email}}</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone:</label>
+                    <label class="form-label px-3">{{patient.phoneNumber}}</label>
                 </div>
             </div>
             <div class="col-lg-8 col-md-8">
                 <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 200px;resize: none"></textarea>
+                    <textarea class="form-control" v-model="information" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 200px;resize: none"></textarea>
                     <label for="floatingTextarea2">Insert information about examination</label>
                 </div>
                 <div class="text-end mt-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button class="btn btn-primary" @click="submitInformation()">Submit</button>
                 </div>
             </div>
         </div>
@@ -38,20 +46,36 @@ import axios from 'axios';
 import * as comm from '../../configuration/communication.js'
 export default {
     name:'TherapyPage',
+    props: ['id'],
     data() {
         return {
-            examination : {},
-            patient : {}
+            patient : {},
+            information: "",
         }
     },
-    mounted(){
-        console.log('kreiram se')
-        this.$root.$on('therapy',(value)=>{
-            console.log("hvatam",value);
-            this.examination = value;
-        });
-        axios.get('http://'+ comm.server +'/api/examinations/patient',{params:{"examination-id": this.examination.id}})
+    created(){
+        axios.get('http://'+ comm.server +'/api/examinations/patient',{ params:{"examination-id" : this.id}})
             .then(response => {this.patient = response.data; console.log(response.data) });
+    },
+    methods:{
+        submitInformation: function(){
+            console.log("saljem zahtev");
+            let request = {
+                "examinationId" : this.id,
+                "information" : this.information,
+            }
+            console.log(request)
+            axios.put('http://'+ comm.server +'/api/examinations/information',{
+                "examinationId" : this.id,
+                "information" : this.information
+            })
+            .then(response =>{
+                if (response.status == 200)
+                    alert("Uspesno unete informacije");
+                else
+                    alert("Informacije neuspesno unete");
+            });
+        }
     }
 }
 </script>

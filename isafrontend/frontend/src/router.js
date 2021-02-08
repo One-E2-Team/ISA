@@ -121,9 +121,10 @@ const router = new VueRouter({
       props: true
     },
     {
-      path: '/therapy',
+      path: '/therapy/:id',
       name: 'Therapy',
       component: TherapyPage,
+      props: true,
     }
   ]
 })

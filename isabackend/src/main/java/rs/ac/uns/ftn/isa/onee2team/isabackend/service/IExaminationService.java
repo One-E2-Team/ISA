@@ -31,6 +31,6 @@ public interface IExaminationService {
 
 	void punishPatientAndUpdateExaminationStatus(Long id);
 
-	void updateInformation(Long examinationId, String infromation);
+	boolean updateInformation(Long examinationId, String infromation);
 
 }

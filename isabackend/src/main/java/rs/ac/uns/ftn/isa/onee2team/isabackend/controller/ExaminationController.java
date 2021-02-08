@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.UserTokenState;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
@@ -90,8 +92,10 @@ public class ExaminationController {
 	
 	@PutMapping(value="/information")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public void updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
-		examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInfromation());
+	public HttpStatus updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
+		if( examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInfromation()))
+			return HttpStatus.OK;
+		return HttpStatus.METHOD_NOT_ALLOWED;
 	}
 	
 }

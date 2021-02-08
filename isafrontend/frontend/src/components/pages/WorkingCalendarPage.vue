@@ -33,9 +33,6 @@
         </div>
     </div>
 </template>
-
-
-
 <script>
 import axios from 'axios';
 import * as comm from '../../configuration/communication.js'
@@ -55,7 +52,7 @@ export default {
                 pharmacyId: ""
             },
             examinations: [],
-            selectedExamination: {},
+            selectedExamination: "",
         }
     },
     methods: {
@@ -81,10 +78,7 @@ export default {
                 });
         },
         openExamination: function(examination){
-
-            this.selectedExamination = examination;
-            console.log("emitujem ",this.selectedExamination)
-            this.$root.$emit('therapy',examination);
+            this.selectedExamination = examination.id;         
         }
     },
     filters:{
