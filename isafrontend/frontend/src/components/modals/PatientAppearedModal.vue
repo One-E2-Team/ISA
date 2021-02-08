@@ -4,7 +4,7 @@
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" >Start therapy</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button ref="patientAppearedModalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 Is patient appear?
@@ -19,24 +19,26 @@
 </template>
 
 <script>
+import axios from 'axios';
+import * as comm from '../../configuration/communication.js'
+
 export default {
     name : 'PatientAppearedModal',
-    data(){
-        return{
-            examination : {}
-        }
-    },
-    mounted(){
-        this.$root.$on('therapy',(value)=>{
-            this.examination = value;
-        });
-    },
+    props : ['examination'],
+ 
     methods:{
         restrictPatient: function(){
-            // TODO: kazniti pacijenta
+            console.log(this.examination)
+            axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination.id)
+                .then(this.closeDialog()); 
         },
         startTherapy: function(){
             window.location.href = '#/therapy';
+            this.$root.$emit('therapy',this.examination)
+            this.closeDialog();
+        },
+        closeDialog: function(){
+            this.$refs.patientAppearedModalCloseBtn.click();
         }
     }
 }

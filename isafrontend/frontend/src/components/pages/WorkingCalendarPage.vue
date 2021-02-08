@@ -1,5 +1,6 @@
 <template>
     <div>
+        <PatientAppearedModal v-bind:examination="selectedExamination"/>
         <div>
         <input type="date" v-model="params.startDate" />
         <input type="date" v-model="params.endDate" />
@@ -21,13 +22,14 @@
                         <td> {{e.date | dateFormat('DD.MM.YYYY ')}} </td>
                         <td>  {{e.pharmacyName }} </td>
                         <td> {{e.startTime | dateFormat('HH:mm')}} - {{e.endTime | dateFormat('HH:mm')}} </td>
-                        <td> <button type="button" class="btn btn-primary" @click="openExamination()" data-bs-toggle="modal" data-bs-target="#PatientAppeared">
+                        <td> <button type="button" class="btn btn-primary" @click="openExamination(e)" data-bs-toggle="modal" data-bs-target="#PatientAppeared">
                             Start therapy
                         </button></td>
 
                     </tr>
                 </tbody>
             </table>
+            
         </div>
     </div>
 </template>
@@ -37,10 +39,14 @@
 <script>
 import axios from 'axios';
 import * as comm from '../../configuration/communication.js'
+import PatientAppearedModal from '../modals/PatientAppearedModal'
 import moment from 'moment'
 
 export default {
     name : 'WorkingCalendar',
+    components:{
+        PatientAppearedModal
+    },
     data(){
         return {
             params : {
@@ -49,6 +55,7 @@ export default {
                 pharmacyId: ""
             },
             examinations: [],
+            selectedExamination: {},
         }
     },
     methods: {
@@ -62,17 +69,21 @@ export default {
         
             let start = startTime.getTime()
             let end = endTime.getTime()
-            axios.post('http://'+ comm.server +'/api/examination/all/scheduled',
+            axios.post('http://'+ comm.server +'/api/examinations/all/scheduled',
                 {
                     start: start,
                     end: end,
                     pharmacyId : ""
                 }
                 ).then(response => {
+                    console.log(response.data)
                     this.examinations = response.data;
                 });
         },
         openExamination: function(examination){
+
+            this.selectedExamination = examination;
+            console.log("emitujem ",this.selectedExamination)
             this.$root.$emit('therapy',examination);
         }
     },
