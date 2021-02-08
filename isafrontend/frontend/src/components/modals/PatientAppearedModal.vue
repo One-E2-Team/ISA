@@ -29,8 +29,7 @@ export default {
     methods:{
         restrictPatient: function(){
             console.log(this.examination)
-            axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination)
-                .then(this.closeDialog()); 
+            axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination); 
         },
         startTherapy: function(){
             this.$router.push({name: 'Therapy', params: {id: this.examination}})
