@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
@@ -155,5 +156,11 @@ public class UserController {
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
 		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
+	}
+	
+	@GetMapping("free-pharmacists")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public List<CredentialsAndIdDTO> getAllFreePharmacists(){
+		return userService.getAllFreePharmacists();
 	}
 }

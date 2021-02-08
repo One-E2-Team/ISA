@@ -66,4 +66,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	@Query(value = "select penalties from all_users where id = ?1", nativeQuery = true)
 	Integer getPatientsPenalties(Long id);
 
+	@Query(value = "select * from all_users u where u.pharmacists_pharmacy_id is null and u.user_type = 1", nativeQuery = true)
+	List<Pharmacist> getAllFreePharmacists();
 }

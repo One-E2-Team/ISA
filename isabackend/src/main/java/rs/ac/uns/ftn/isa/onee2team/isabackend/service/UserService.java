@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
@@ -226,5 +227,15 @@ public class UserService implements IUserService, UserDetailsService {
 	@Override
 	public void changePassword(Long id, String password) {
 		userRepository.changePassword(id, password);
+	}
+
+	@Override
+	public List<CredentialsAndIdDTO> getAllFreePharmacists() {
+		List<CredentialsAndIdDTO> ret = new ArrayList<CredentialsAndIdDTO>();
+		for (Pharmacist pharmacist : userRepository.getAllFreePharmacists()) {
+			CredentialsAndIdDTO dto = new CredentialsAndIdDTO(pharmacist.getId(), pharmacist.getFirstName(), pharmacist.getLastName());
+			ret.add(dto);
+		}
+		return ret;
 	}
 }
