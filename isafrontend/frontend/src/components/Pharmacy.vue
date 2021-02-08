@@ -15,7 +15,8 @@
                 <td class="table-light">{{medicine.name}}</td>
                 <td class="table-light">{{medicine.manufacturer}}</td>
                 <td class="table-light">{{medicine.sideEffects}}</td>
-                <td class="table-light" v-if="isPatient()"><button name="scheduleExamination" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
+                <td class="table-light"><input type="date" class="form-control" v-model = "selectedDate"></td>
+                <td class="table-light" v-if="isPatient()"><button name="scheduleExamination" data-bs-toggle="modal" data-bs-target="#datePicker" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
             </tr>
             </table>
         </div>
@@ -76,11 +77,10 @@ import * as comm from '../configuration/communication.js'
 export default {
     name: "Pharmacy",
     components: {
-        AddPromotion,
+        AddPromotion
     },
     data() {
         return {
-            id : 1, //TODO: proper implement getting pharmacyId
             description : '',
             pharmacy : {},
             showDermatologists : false,
@@ -88,8 +88,10 @@ export default {
             showMedicines : false,
             showExaminations : false,
             examinationsToShow : [],
+            selectedDate : null
         }
     },
+    props: ['id'],
     methods : {
         toggleMedicines : function(){
             this.showMedicines = !this.showMedicines;
@@ -108,7 +110,20 @@ export default {
             console.log(examinationId);
         },
         reserveMedicine : function(medicineId){
-            console.log(medicineId);
+            if(this.selectedDate == null){
+                alert("You need to select a date!");
+            }
+            else{
+                let dto = {"pharmacy_id" : this.id, "medicine_id" : medicineId, "expireDate" : this.selectedDate }
+            axios.post('http://' + comm.server + '/api/reservations/reserve', dto)
+            .then(response => {
+                if(response.data){
+                    alert('Reservation successfully made!')
+                }else{
+                    alert('You have 3 penalties! This action is forbidden');
+                }
+            })
+            }
         },
         isPatient : function(){
             return comm.getCurrentUserRole() === 'PATIENT';
@@ -124,9 +139,6 @@ export default {
         }
     },
     mounted() {
-        //axios.get('http://localhost:8083/api/pharmacies?id=1')
-        //    .then(response => {
-         //   });
         axios.get('http://' + comm.server + '/api/pharmacies/?id=' + this.id)
             .then(response => {
                 if (response.status == 200) {
