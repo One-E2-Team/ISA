@@ -14,4 +14,6 @@ public interface IMedicineService {
 	Medicine createMedicine(NewMedicineDTO nmdto);
 	List<RequestForMissingMedicinesDTO> getMissingMedicines(Long userId);
 	Boolean deleteMedicineFromPharmacy(Long medicineId, Long loggedUserId);
+	boolean reserveMedicine(Long pharmacyId, Long medicineId, Integer quantity);
+	void addMissingMedicine(Long pharmacyId, Long medicineId);
 }

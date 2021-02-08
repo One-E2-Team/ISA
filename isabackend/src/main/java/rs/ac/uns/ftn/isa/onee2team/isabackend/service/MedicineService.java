@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRequestForMissingMedicinesRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
@@ -28,16 +30,18 @@ public class MedicineService implements IMedicineService {
 	private IUserRepository userRepository;
 	private IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository;
 	private IWarehouseRepository warehouseRepository;
+	private IPharmacyRepository pharmacyRepository;
 
 	@Autowired
 	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines,
-			IUserRepository userRepository,
-			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository, IWarehouseRepository warehouseRepository) {
+			IUserRepository userRepository,IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository,
+			IWarehouseRepository warehouseRepository, IPharmacyRepository pharmacyRepository) {
 		this.medicineRepository = medicineRepository;
 		this.equivalentMedicines = equivalentMedicines;
 		this.userRepository = userRepository;
 		this.requestForMissingMedicinesRepository = requestForMissingMedicinesRepository;
 		this.warehouseRepository = warehouseRepository;
+		this.pharmacyRepository = pharmacyRepository;
 	}
 
 	@Override
@@ -118,4 +122,32 @@ public class MedicineService implements IMedicineService {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean reserveMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
+		Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
+		int availableQuantity = warehouse.getAmount();
+		if (availableQuantity < quantity) {
+			addMissingMedicine(pharmacyId, medicineId);
+			return false;
+		}
+		
+		warehouse.setAmount(availableQuantity-quantity);
+		int reservedQuantity = warehouse.getReservedAmount();
+		warehouse.setReservedAmount(reservedQuantity+quantity);
+		warehouseRepository.save(warehouse);
+		
+		return true;
+	}
+
+	@Override
+	public void addMissingMedicine(Long pharmacyId, Long medicineId) {
+		RequestForMissingMedicines request = new RequestForMissingMedicines();
+		request.setDate(new Date());
+		request.setMedicine(medicineRepository.getOne(medicineId));
+		request.setPharmacy(pharmacyRepository.getOne(pharmacyId));
+		requestForMissingMedicinesRepository.save(request);		
+	}
+	
+	
 }
