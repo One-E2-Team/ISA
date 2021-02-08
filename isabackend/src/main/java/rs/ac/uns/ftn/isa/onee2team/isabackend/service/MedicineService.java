@@ -12,11 +12,13 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestForMissingMedici
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.RequestForMissingMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.EquivalentMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRequestForMissingMedicinesRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
 
 @Service
 public class MedicineService implements IMedicineService {
@@ -25,15 +27,17 @@ public class MedicineService implements IMedicineService {
 	private IEquivalentMedicines equivalentMedicines;
 	private IUserRepository userRepository;
 	private IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository;
+	private IWarehouseRepository warehouseRepository;
 
 	@Autowired
 	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines,
 			IUserRepository userRepository,
-			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository) {
+			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository, IWarehouseRepository warehouseRepository) {
 		this.medicineRepository = medicineRepository;
 		this.equivalentMedicines = equivalentMedicines;
 		this.userRepository = userRepository;
 		this.requestForMissingMedicinesRepository = requestForMissingMedicinesRepository;
+		this.warehouseRepository = warehouseRepository;
 	}
 
 	@Override
@@ -96,5 +100,22 @@ public class MedicineService implements IMedicineService {
 			ret.add(dto);
 		}
 		return ret;
+	}
+
+	@Override
+	public Boolean deleteMedicineFromPharmacy(Long medicineId, Long loggedUserId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		if(admin == null)
+			return null;
+		List<Long> medicinesInPharmacy = warehouseRepository.getAllMedicinesInPharmacy(admin.getPharmacy().getId());
+		if(!medicinesInPharmacy.contains(medicineId))
+			return false;
+		Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, admin.getPharmacy().getId());
+		if(warehouse.getReservedAmount() == 0) {
+			warehouse.setAmount(0);
+			warehouseRepository.save(warehouse);
+			return true;
+		}
+		return false;
 	}
 }

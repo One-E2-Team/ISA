@@ -13,4 +13,5 @@ public interface IMedicineService {
 	void addAllergy(Long patientId, Long medicineId);
 	Medicine createMedicine(NewMedicineDTO nmdto);
 	List<RequestForMissingMedicinesDTO> getMissingMedicines(Long userId);
+	Boolean deleteMedicineFromPharmacy(Long medicineId, Long loggedUserId);
 }
