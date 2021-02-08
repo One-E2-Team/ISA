@@ -21,8 +21,9 @@ import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
 import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
-import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import CreateExamination from './components/pages/CreateExamination'
+import ScheduleAtPharmacist  from './components/ScheduleAtPharmacist'
+import History from './components/pages/History'
 
 
 Vue.use(VueRouter)
@@ -135,6 +136,11 @@ const router = new VueRouter({
       name: 'createExamination',
       path: '/examination/create',
       component: CreateExamination,
+	},
+	{
+      name: 'history',
+      path: '/history',
+      component: History,
       props: true
     }
   ]

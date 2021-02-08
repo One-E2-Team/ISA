@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -71,4 +72,6 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ " and e.date = ?2 and e.pharmacy_id = ?3", nativeQuery = true)
 	Integer getNumFreeExaminationsForHealthWorkerInPharmacyInDate(Long workerId, Date date, Long pharmacyId);
 
+	@Query("select e from Examination e where e.patient.id = ?1 and e.status = 1")
+	List<Examination> getPatientsFinishedAppointments(Long id);
 }

@@ -17,11 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
 
 @RestController
@@ -31,11 +35,14 @@ public class UserController {
 	private IUserService userService;
 	
 	private PasswordEncoder passwordEncoder;
+	
+	private IPromotionService promotionService;
 
 	@Autowired
-	public UserController(IUserService userService, PasswordEncoder passwordEncoder) {
+	public UserController(IUserService userService, PasswordEncoder passwordEncoder, IPromotionService promotionService) {
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
+		this.promotionService = promotionService;
 	}
 
 	@GetMapping(value = "/all")
@@ -72,8 +79,29 @@ public class UserController {
 	public UserProfileDTO getLoggedPatient() {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		UserProfileDTO patientDTO = new UserProfileDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getCity(), user.getState(), user.getPhoneNumber());
-		return patientDTO;
+		
+		UserProfileDTO userDTO = new UserProfileDTO(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getCity(), user.getState(), user.getPhoneNumber());
+		
+		if(user.getUserType() == UserType.PATIENT) {
+			Patient p = (Patient) auth.getPrincipal();
+			List<CategoryType> cts = promotionService.getPatientType(p.getPoints());
+			double discount = 0;
+			String category = "";
+			if(cts == null || cts.size() == 0) { category = "NO TYPE"; }
+			else { 
+				CategoryType ct = cts.get(cts.size() - 1);
+				discount = promotionService.getDiscount(ct);
+				category =  ct.toString();
+			}	
+			
+			PatientProfileDTO patientDTO = new PatientProfileDTO (
+					p.getId(), p.getEmail(), p.getFirstName(), p.getLastName(), 
+					p.getAddress(), p.getCity(), p.getState(), p.getPhoneNumber(), p.getPoints(), 
+					category, discount);
+			return patientDTO;
+		}
+		
+		return userDTO;
 	}
 
 	@GetMapping(value = "/pharmacists")

@@ -63,13 +63,20 @@ export default {
             if (this.selectedExamination == null)
                 alert("You have to select an appointment!");
             else{
-                axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id );
+                axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id )
+                .then(response => 
+                {
+                    if(response.data){ 
+                        alert("Appointment scheduled successfully!");
+                        axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
+                        .then(response => this.freeExaminations = response.data);
+                    }
+                    else alert("You have 3 penalties! This action is forbidden");
+                });
 
-                setTimeout(alert("Appointment scheduled successfully!"), 3000);
                 this.selectedExamination = {};
 
-                axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
-                .then(response => this.freeExaminations = response.data);
+                
                 
                 
 
