@@ -61,13 +61,13 @@ public class FeedbackService implements IFeedbackService {
 		List<NewComplaintDTO> ret = new ArrayList<NewComplaintDTO>();
 		NewComplaintDTO temp;
 		for (Examination e : examinationService.getExaminationsFromHistoryByPatientToDate(patient.getId())) {
-			temp = new NewComplaintDTO(e.getHealthWokrer().getId(), e.getHealthWokrer().getUserType().equals(UserType.DERMATOLOGIST) ? "DERMATOLOGIST" : "PHARMACIST", "");
+			temp = new NewComplaintDTO(e.getHealthWokrer().getId(), e.getHealthWokrer().getFirstName() + " " + e.getHealthWokrer().getLastName(), e.getHealthWokrer().getUserType().equals(UserType.DERMATOLOGIST) ? "DERMATOLOGIST" : "PHARMACIST", "");
 			if(!ret.contains(temp)) ret.add(temp);
-			temp = new NewComplaintDTO(e.getPharmacy().getId(), "PHARMACY", "");
+			temp = new NewComplaintDTO(e.getPharmacy().getId(), e.getHealthWokrer().getFirstName() + " " + e.getHealthWokrer().getLastName(), "PHARMACY", "");
 			if(!ret.contains(temp)) ret.add(temp);
 		}
 		for (MedicineReservation mr : medicineReservationService.findAllDoneReservationsByPatient(patient.getId())) {
-			temp = new NewComplaintDTO(mr.getPharmacy().getId(), "PHARMACY", "");
+			temp = new NewComplaintDTO(mr.getPharmacy().getId(), mr.getPharmacy().getName(), "PHARMACY", "");
 			if(!ret.contains(temp)) ret.add(temp);
 		}
 		return ret;
