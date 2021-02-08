@@ -155,7 +155,13 @@ export default {
                 date = new Date(date);
                  let dto = {"pharmacy_id" : this.selectedPharmacist.id, "date" : date}
                 axios.put('http://' + comm.server + '/api/examinations/scheduleAtPharmacist', dto)
-                .then(alert("Appointment scheduled successfully!"));
+                .then(response => {
+                    if(response.data)
+                        alert("Appointment scheduled successfully!");
+                    else
+                        alert("You have 3 penalties! This action is forbidden");
+                    this.showModal = false;
+                });
             }
         }
     }

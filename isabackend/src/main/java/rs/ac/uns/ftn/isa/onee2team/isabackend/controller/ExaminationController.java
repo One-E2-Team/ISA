@@ -43,10 +43,10 @@ public class ExaminationController {
 	
 	@PostMapping(value = "/scheduleAtDermatologist")
 	@PreAuthorize("hasRole('PATIENT')")
-	public void scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
+	public boolean scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		examinationService.scheduleAtDermatologist(user.getId(), examinationId);
+		return examinationService.scheduleAtDermatologist(user.getId(), examinationId);
 	}
 	
 	@PostMapping(value = "/cancelAppointment")
@@ -92,6 +92,14 @@ public class ExaminationController {
 		newExaminations.getDate().setHours(1);
 		newExaminations.getDate().setSeconds(0);
 		return examinationService.createNewExaminations(newExaminations, user.getId());
+	}
+	
+	@GetMapping(value = "/patientsFinishedAppointments")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<ScheduledExaminationDTO> getPatientsFinishedAppointments() {
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return examinationService.getPatientsFinishedAppointments(user.getId());
 	}
 	
 }

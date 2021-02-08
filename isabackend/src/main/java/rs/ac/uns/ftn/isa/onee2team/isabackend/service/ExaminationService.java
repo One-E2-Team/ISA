@@ -93,7 +93,9 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public void scheduleAtDermatologist(Long patientId, Long examinationId) {
+	public boolean scheduleAtDermatologist(Long patientId, Long examinationId) {
+		if(userRepository.getPatientsPenalties(patientId) >= 3)
+			return false;
 		Examination examination =  examinationRepository.findById(examinationId).orElse(null);
 		examination.setPatient((Patient)(userRepository.findById(patientId).orElse(null)));
 		examination.setStatus(ExaminationStatus.SCHEDULED);
@@ -101,6 +103,7 @@ public class ExaminationService implements IExaminationService {
 		User user = userRepository.findById(patientId).orElse(null);
 		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
 				"You have successfully scheduled an appointment at dermatologist.");
+		return true;
 	}
 
 	@Override
@@ -169,18 +172,18 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public void scheduleAtPharmacist(Long user_id, Long id, Date date) {
+	public boolean scheduleAtPharmacist(Long user_id, Long id, Date date) {
+		if(userRepository.getPatientsPenalties(user_id) >= 3)
+			return false;
+		
 		Examination ex = examinationRepository.getExaminationByPharmacistAndDate(id, date);
-		
 		ex.setPatient((Patient)(userRepository.findById(user_id).orElse(null)));
-		
 		ex.setStatus(ExaminationStatus.SCHEDULED);
-		
 		examinationRepository.save(ex);
-		
 		User user = userRepository.findById(user_id).orElse(null);
 		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
 				"You have successfully scheduled an appointment at pharmacist.");
+		return true;
 	}
 
 	@Override
@@ -213,6 +216,19 @@ public class ExaminationService implements IExaminationService {
 			examinationRepository.save(e);
 		}
 		return "Successfully created examinations!";
+	}
+
+	@Override
+	public List<ScheduledExaminationDTO> getPatientsFinishedAppointments(Long id) {
+		List<Examination> examinations =  examinationRepository.getPatientsFinishedAppointments(id);
+		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
+		for(Examination ex : examinations) {
+			ret_list.add(new ScheduledExaminationDTO(
+					ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(),
+					ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(),
+					ex.getHealthWokrer().getUserType().toString(), ex.getPrice())
+					);}
+		return ret_list;
 	}
 	
 }

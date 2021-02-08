@@ -22,6 +22,7 @@ import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
 import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
 import ScheduleAtPharmacist  from './components/ScheduleAtPharmacist'
+import History from './components/pages/History'
 
 
 Vue.use(VueRouter)
@@ -128,6 +129,12 @@ const router = new VueRouter({
       name: 'scheduleAtPharmacist',
       path: '/scheduleAtPharmacist',
       component: ScheduleAtPharmacist,
+      props: true
+    },
+    {
+      name: 'history',
+      path: '/history',
+      component: History,
       props: true
     }
   ]

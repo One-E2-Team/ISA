@@ -20,7 +20,7 @@ public interface IExaminationService {
 
 	List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist();
 	
-	void scheduleAtDermatologist(Long patientId, Long examinationId);
+	boolean scheduleAtDermatologist(Long patientId, Long examinationId);
 	
 	void cancelAppointment(Long examinationId);
 	
@@ -30,7 +30,9 @@ public interface IExaminationService {
 	
 	List<PharmacistWithFreeAppointmentDTO> getFreePharmacistInPharmacy(Long id, Date date);
 	
-	void scheduleAtPharmacist(Long user_id, Long id, Date date);
+	boolean scheduleAtPharmacist(Long user_id, Long id, Date date);
 	
 	String createNewExaminations(NewExaminationsDTO newExaminations, Long userId);
+	
+	List<ScheduledExaminationDTO> getPatientsFinishedAppointments(Long id);
 }
