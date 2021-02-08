@@ -15,6 +15,7 @@
 
 import {DatePicker} from 'v-calendar';
 import axios from 'axios';
+import * as comm from '../configuration/communication.js'
 
 export default {
     name: "Promotion",
@@ -31,7 +32,11 @@ export default {
     },
     methods : {
         addPromotion(){
-            let url = 'http://localhost:8083/api/promotions/save';
+            let url = 'http://' + comm.server + '/api/promotions/save';
+            if(this.description === '' || this.startDate > this.endDate){
+                alert("Invalid input!");
+                return;
+            }
             let promotion = {
                 description: this.description, 
                 startDate : this.startDate, 
@@ -43,7 +48,9 @@ export default {
                 .then(response => {
                     if(response.data != "")
                         alert("Uspesno dodata promocija");
-                        this.$router.push('/welcome');
+                        this.description = '';
+                        this.startDate = new Date();
+                        this.endDate = new Date();
             });
         }
     }
