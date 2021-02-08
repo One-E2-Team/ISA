@@ -103,7 +103,7 @@ public class ExaminationController {
 	@PutMapping(value="/information")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public HttpStatus updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
-		if( examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInfromation()))
+		if( examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInformation()))
 			return HttpStatus.OK;
 		return HttpStatus.METHOD_NOT_ALLOWED;
 	}

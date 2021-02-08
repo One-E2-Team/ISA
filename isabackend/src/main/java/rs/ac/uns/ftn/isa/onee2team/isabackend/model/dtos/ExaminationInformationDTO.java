@@ -17,10 +17,11 @@ public class ExaminationInformationDTO {
 	public void setExaminationId(Long examinationId) {
 		this.examinationId = examinationId;
 	}
-	public String getInfromation() {
+	public String getInformation() {
 		return information;
 	}
-	public void setInfromation(String infromation) {
-		this.information = infromation;
+	public void setInformation(String information) {
+		this.information = information;
 	}
+	
 }
