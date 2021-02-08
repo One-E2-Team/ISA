@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.List;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
@@ -38,4 +39,8 @@ public interface IUserService {
 	void changePassword(Long id, String password);
 	
 	User saveUserAndFlush(User user);
+	
+	List<CredentialsAndIdDTO> getAllFreePharmacists();
+	
+	List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Long loggedUserId);
 }
