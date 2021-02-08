@@ -59,5 +59,11 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	@Transactional
 	@Query(value = "update all_users set password = ?2 where id = ?1", nativeQuery = true)
 	void changePassword(Long id, String password);
+	
+	@Query(value = "select d.pharmacies_id from dermatologists_in_pharmacies d where d.dermatologist_id = ?1", nativeQuery = true)
+	List<Long> getPharmacyIdsForDermatologist(Long dermatologistId);
+	
+	@Query(value = "select penalties from all_users where id = ?1", nativeQuery = true)
+	Integer getPatientsPenalties(Long id);
 
 }

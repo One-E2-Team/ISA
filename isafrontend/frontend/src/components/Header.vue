@@ -25,8 +25,8 @@
                 <li v-if='role == "SYSTEM_ADMIN"' class="nav-item">
                 <a class="nav-link" href="#/sysadmin/medicine">Add Medicine</a>
                 </li>
-                <li class="nav-item d-none">
-                <a class="nav-link" href="#/welcome">Link</a>
+                <li v-if='role == "DEALER"' class="nav-item">
+                <a class="nav-link" href="#/dealer/ordersOffers">Orders and Offers</a>
                 </li>
                 <li v-if='role == "PHARMACY_ADMIN" || role == "PATIENT"' class="nav-item">
                 <a class="nav-link" href="#/pharmacy">Pharmacy</a>
@@ -37,17 +37,17 @@
                  <li class="nav-item" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
                 <a class="nav-link" href="#/healthworker/working-calendar">Working calendar</a>
                 </li>
-                <li class="nav-item dropdown" v-if="role == 'PATIENT'">
-                <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                <li v-if="role == 'PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/history">History</a>
                 </li>
-                <li class="nav-item dropdown d-none">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item dropdown" v-if="role == 'PATIENT'">
+                <a class="nav-link dropdown-toggle" href="#" id="schedule" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Schedule an appointment
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="schedule">
                     <li><a class="dropdown-item" href="#/scheduleAtDermatologist">At dermatologist</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#">At pharmacist</a></li>
+                    <li><a class="dropdown-item" href="#/scheduleAtPharmacist">At pharmacist</a></li>
                 </ul>
                 </li>
                 <li v-if="role=='PATIENT'" class="nav-item">

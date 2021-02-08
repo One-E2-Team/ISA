@@ -13,16 +13,18 @@ import VacationRequestPage from './components/pages/VacationRequestPage'
 import ReviewVacationRequestsPage from './components/pages/ReviewVacationRequestsPage'
 import ScheduleAtDermatologist from './components/ScheduleAtDermatologist'
 import SysadminRegisterPage from './components/pages/SysadminRegisterPage'
-
 import WorkingCalendar from './components/pages/WorkingCalendarPage'
 import TherapyPage from './components/pages/TherapyPage'
-
 import SysadminRegisterPharmacyPage from './components/pages/SysadminRegisterPharmacyPage'
 import SysadminComplaints from './components/pages/SysadminComplaints'
 import LoyaltyProgram from './components/pages/DefineLoyalty'
 import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
+import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
+import CreateExamination from './components/pages/CreateExamination'
+import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
+import History from './components/pages/History'
 
 
 Vue.use(VueRouter)
@@ -121,10 +123,34 @@ const router = new VueRouter({
       props: true
     },
     {
+
       path: '/therapy/:id',
       name: 'Therapy',
       component: TherapyPage,
       props: true,
+
+      path: '/dealer/ordersOffers',
+      name: 'dealerOrdersOffers',
+      component: DealerOrdersOffers
+    },
+    {
+      name: 'scheduleAtPharmacist',
+      path: '/scheduleAtPharmacist',
+      component: ScheduleAtPharmacist,
+      props: true
+    },
+    {
+      name: 'createExamination',
+      path: '/examination/create',
+      component: CreateExamination,
+      props: true
+    },
+    {
+      name: 'history',
+      path: '/history',
+      component: History,
+      props: true
+
     }
   ]
 })

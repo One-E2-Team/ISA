@@ -2,12 +2,14 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.LoyaltyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPromotionDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.Loyalty;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.Promotion;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
@@ -63,6 +65,15 @@ public class PromotionService implements IPromotionService {
 	public List<Loyalty> getAllLoyalties() {
 		return this.loyaltyRepository.findAll();
 	}
-	
+
+	@Override
+	public List<CategoryType> getPatientType(Integer points) {
+		return loyaltyRepository.getPatientType(points);
+	}
+
+	@Override
+	public Double getDiscount(CategoryType type) {
+		return loyaltyRepository.getDiscount(type);
+	}
 	
 }
