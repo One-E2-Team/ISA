@@ -24,6 +24,7 @@ import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
 import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist  from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
+import ReservedMedicines from './components/pages/ReservedMedicines'
 
 
 Vue.use(VueRouter)
@@ -36,9 +37,10 @@ const router = new VueRouter({
       component: Welcome
     },
     {
-      path: '/pharmacy',
+      path: '/pharmacy/:id',
       name: 'pharmacy',
-      component: Pharmacy
+      component: Pharmacy,
+      props: true
     },
     {
       path: '/allPharmacies',
@@ -142,7 +144,13 @@ const router = new VueRouter({
       path: '/history',
       component: History,
       props: true
-    }
+  },
+  {
+    name: 'reservedMedicines',
+    path: '/reservedMedicines',
+    component: ReservedMedicines,
+    props: true
+  }
   ]
 })
 
