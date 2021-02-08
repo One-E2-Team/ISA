@@ -79,7 +79,7 @@ public class CalendarController {
 			Authentication authentication) {
 		User loggedUser = (User) authentication.getPrincipal();
 		dto.getDate().setMinutes(0);
-		dto.getDate().setHours(1);
+		dto.getDate().setHours(0);
 		dto.getDate().setSeconds(0);
 		WorkingCalendar ret = workingCalendarService.getWorkingTimeForDermatologist(dto, loggedUser.getId());
 		if (ret == null)

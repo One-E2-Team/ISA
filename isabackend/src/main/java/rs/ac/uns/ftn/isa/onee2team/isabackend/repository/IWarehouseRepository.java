@@ -16,4 +16,6 @@ public interface IWarehouseRepository extends JpaRepository<Warehouse, Long> {
 	@Query("select w from Warehouse w where w.pharmacy.id = ?1 and w.medicine.id = ?2")
 	Warehouse getWarehouseByPharmacyAndMedicine(Long pharmacy_id, Long medicine_id);
 	
+	@Query(value = "select * from warehouses w where w.pharmacy_id = ?2 and w.medicine_id = ?1", nativeQuery = true)
+	Warehouse getByMedicineAndPharmacy(Long medicineId, Long pharmacyId);
 }
