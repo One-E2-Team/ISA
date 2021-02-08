@@ -90,10 +90,10 @@
             </div><br/>
             <div class="row justify-content-center">
                 <div class="col-1">
-                    <label v-if="isPatient()">0 POINTS</label>
+                    <label v-if="isPatient()" >{{user.points}} POINTS</label>
                 </div>
                 <div class="col-2">
-                    <input v-if="isPatient()" type="text" value="SILVER USER" name="phone" disabled>
+                    <label v-if="isPatient()" >{{user.category}} USER (discount: {{user.discount}}%)</label>
                 </div>
                 <div class = "col-1"></div>
                 <div class = "col-2">

@@ -86,12 +86,20 @@ public class UserController {
 		
 		if(user.getUserType() == UserType.PATIENT) {
 			Patient p = (Patient) auth.getPrincipal();
-			CategoryType ct = promotionService.getPatientType(p.getPoints()).get(0);
-			double discount = promotionService.getDiscount(ct);
+			List<CategoryType> cts = promotionService.getPatientType(p.getPoints());
+			double discount = 0;
+			String category = "";
+			if(cts == null || cts.size() == 0) { category = "NO TYPE"; }
+			else { 
+				CategoryType ct = cts.get(cts.size() - 1);
+				discount = promotionService.getDiscount(ct);
+				category =  ct.toString();
+			}	
+			
 			PatientProfileDTO patientDTO = new PatientProfileDTO (
 					p.getId(), p.getEmail(), p.getFirstName(), p.getLastName(), 
 					p.getAddress(), p.getCity(), p.getState(), p.getPhoneNumber(), p.getPoints(), 
-					ct.toString(), discount);
+					category, discount);
 			return patientDTO;
 		}
 		
