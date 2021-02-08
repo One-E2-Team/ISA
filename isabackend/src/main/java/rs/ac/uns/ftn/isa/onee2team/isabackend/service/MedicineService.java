@@ -3,35 +3,46 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestForMissingMedicinesDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.RequestForMissingMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.EquivalentMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRequestForMissingMedicinesRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
 public class MedicineService implements IMedicineService {
-	
+
 	private IMedicineRepository medicineRepository;
 	private IEquivalentMedicines equivalentMedicines;
+	private IUserRepository userRepository;
+	private IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository;
 
 	@Autowired
-	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines) {
+	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines,
+			IUserRepository userRepository,
+			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository) {
 		this.medicineRepository = medicineRepository;
 		this.equivalentMedicines = equivalentMedicines;
+		this.userRepository = userRepository;
+		this.requestForMissingMedicinesRepository = requestForMissingMedicinesRepository;
 	}
-	
+
 	@Override
-	public List<MedicineDTO> findMedicineByPharmacyid(Long id){
+	public List<MedicineDTO> findMedicineByPharmacyid(Long id) {
 		List<Medicine> allMedicines = medicineRepository.findMedicineByPharmacyid(id);
 		List<MedicineDTO> medicinesDTO = new ArrayList<MedicineDTO>();
 		for (Medicine m : allMedicines) {
-			medicinesDTO.add(new MedicineDTO(m.getId(), m.getCode(), m.getName(), m.getContexture(), m.getManufacturer()));
+			medicinesDTO
+					.add(new MedicineDTO(m.getId(), m.getCode(), m.getName(), m.getContexture(), m.getManufacturer()));
 		}
 		return medicinesDTO;
 	}
@@ -40,7 +51,7 @@ public class MedicineService implements IMedicineService {
 	public List<Medicine> getAll() {
 		return medicineRepository.findAll();
 	}
-	
+
 	@Override
 	public void addAllergy(Long patientId, Long medicineId) {
 		medicineRepository.addAllergy(patientId, medicineId);
@@ -60,8 +71,8 @@ public class MedicineService implements IMedicineService {
 		m.setRecipeNeeded(nmdto.getRecipeNeeded());
 		m.setSideEffects(nmdto.getSideEffects());
 		m = this.medicineRepository.save(m);
-		if(nmdto.getEquivalentMedicines()!=null)
-			for(Medicine simm : nmdto.getEquivalentMedicines()) {
+		if (nmdto.getEquivalentMedicines() != null)
+			for (Medicine simm : nmdto.getEquivalentMedicines()) {
 				EquivalentMedicine em = new EquivalentMedicine();
 				em.setPrimaryMedicineId(m.getId());
 				em.setSimilarMedicineId(simm.getId());
@@ -72,5 +83,18 @@ public class MedicineService implements IMedicineService {
 				equivalentMedicines.save(eminv);
 			}
 		return m;
+	}
+
+	@Override
+	public List<RequestForMissingMedicinesDTO> getMissingMedicines(Long userId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(userId).orElse(null);
+		if(admin == null)
+			return null;
+		List<RequestForMissingMedicinesDTO> ret = new ArrayList<RequestForMissingMedicinesDTO>();
+		for (RequestForMissingMedicines req : requestForMissingMedicinesRepository.getAllByPharmacy(admin.getPharmacy().getId())) {
+			RequestForMissingMedicinesDTO dto = new RequestForMissingMedicinesDTO(req.getId(), req.getDate(), req.getMedicine().getId());
+			ret.add(dto);
+		}
+		return ret;
 	}
 }

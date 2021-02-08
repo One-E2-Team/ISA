@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestForMissingMedicinesDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
@@ -47,5 +48,11 @@ public class MedicineController {
 	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
 	public Medicine createMedicine(@RequestBody NewMedicineDTO nmdto) {
 		return medicineService.createMedicine(nmdto);
+	}
+	
+	@GetMapping(value = "/missing")
+	public List<RequestForMissingMedicinesDTO> getMissingMedicines(Authentication auth){
+		User user = (User) auth.getPrincipal();
+		return medicineService.getMissingMedicines(user.getId());
 	}
 }
