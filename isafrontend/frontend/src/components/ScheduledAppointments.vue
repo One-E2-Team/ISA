@@ -8,7 +8,7 @@
             </div><br/>
             <div class = "row justify-content-center">
                 <div class = "col-6-auto">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered" v-if="myExaminations.length != 0">
                         <thead>
                             <tr> 
                                 <th> Date </th>
@@ -32,7 +32,7 @@
             </div>
             <div class = "row justify-content-center">
                 <div class = "col-md-auto">
-                    <button type="button" class="btn btn-danger" v-on:click="cancelAppointment()">Cancel an appointment</button>
+                    <button v-if="myExaminations.length != 0" type="button" class="btn btn-danger" v-on:click="cancelAppointment()">Cancel an appointment</button>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@ import * as comm from '../configuration/communication.js'
 export default {
     data(){
         return{
-            myExaminations: {},
+            myExaminations: [],
             selectedAppointment : null
         }
     },
