@@ -63,7 +63,7 @@ public class FeedbackService implements IFeedbackService {
 		for (Examination e : examinationService.getExaminationsFromHistoryByPatientToDate(patient.getId())) {
 			temp = new NewComplaintDTO(e.getHealthWokrer().getId(), e.getHealthWokrer().getFirstName() + " " + e.getHealthWokrer().getLastName(), e.getHealthWokrer().getUserType().equals(UserType.DERMATOLOGIST) ? "DERMATOLOGIST" : "PHARMACIST", "");
 			if(!ret.contains(temp)) ret.add(temp);
-			temp = new NewComplaintDTO(e.getPharmacy().getId(), e.getHealthWokrer().getFirstName() + " " + e.getHealthWokrer().getLastName(), "PHARMACY", "");
+			temp = new NewComplaintDTO(e.getPharmacy().getId(), e.getPharmacy().getName(), "PHARMACY", "");
 			if(!ret.contains(temp)) ret.add(temp);
 		}
 		for (MedicineReservation mr : medicineReservationService.findAllDoneReservationsByPatient(patient.getId())) {
