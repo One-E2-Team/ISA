@@ -128,7 +128,8 @@ const router = new VueRouter({
       name: 'Therapy',
       component: TherapyPage,
       props: true,
-
+    },
+    {
       path: '/dealer/ordersOffers',
       name: 'dealerOrdersOffers',
       component: DealerOrdersOffers
