@@ -33,7 +33,7 @@ public class Examination {
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWokrer;
 
-	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
