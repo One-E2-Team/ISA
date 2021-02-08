@@ -127,6 +127,46 @@ public class ExaminationService implements IExaminationService {
 		}
 
 	@Override
+
+	public Patient getPatientFromExamination(Long id) {
+		return (examinationRepository.findById(id).orElse(null)).getPatient();
+	}
+
+	@Override
+	public Examination updateStatus(Long id, ExaminationStatus status) {
+		Examination examination = examinationRepository.findById(id).orElse(null);
+		if(examination == null) return null;
+		
+		examination.setStatus(status);
+		return examinationRepository.save(examination);
+	}
+
+	@Override
+	public void punishPatientAndUpdateExaminationStatus(Long id) {
+		Examination examination = updateStatus(id, ExaminationStatus.NOT_REALIZED);
+		if(examination != null)
+			punishPatient(examination.getPatient());
+		
+	}
+	
+	private void punishPatient(Patient patient) {
+		int penalties = patient.getPenalties() + 1;
+		patient.setPenalties(penalties);
+		userRepository.save(patient);
+	}
+
+	@Override
+	public boolean updateInformation(Long examinationId, String infromation) {
+		Examination examination = examinationRepository.findById(examinationId).orElse(null);
+		if(examination != null && examination.getStatus().equals(ExaminationStatus.SCHEDULED)) {
+			examination.setInformation(infromation);
+			examinationRepository.save(examination);
+			return true;
+		}
+		return false;
+	}
+
+
 	public List<PharmacyWithFreeAppointmentDTO> getFreePharmaciesAppointments(Date date) {
 		List<Long> pharmacyIds = examinationRepository.getFreePharmaciesAppointments(date);
 		List<PharmacyWithFreeAppointmentDTO> ret_list = new ArrayList<PharmacyWithFreeAppointmentDTO>();
@@ -231,4 +271,5 @@ public class ExaminationService implements IExaminationService {
 		return ret_list;
 	}
 	
+
 }
