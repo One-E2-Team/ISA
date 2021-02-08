@@ -41,4 +41,6 @@ public interface IUserService {
 	User saveUserAndFlush(User user);
 	
 	List<CredentialsAndIdDTO> getAllFreePharmacists();
+	
+	List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Long loggedUserId);
 }

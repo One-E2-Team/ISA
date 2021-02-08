@@ -44,7 +44,8 @@ public class UserService implements IUserService, UserDetailsService {
 	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
 
 	@Autowired
-	public UserService(IUserRepository userRepository, IAuthorityService authService, IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
+	public UserService(IUserRepository userRepository, IAuthorityService authService,
+			IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
 		this.userRepository = userRepository;
 		this.authService = authService;
 		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
@@ -107,14 +108,12 @@ public class UserService implements IUserService, UserDetailsService {
 
 		return user;
 	}
-	
-	
 
 	@Override
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
-	
+
 	@Override
 	public User saveUserAndFlush(User user) {
 		return userRepository.saveAndFlush(user);
@@ -233,7 +232,23 @@ public class UserService implements IUserService, UserDetailsService {
 	public List<CredentialsAndIdDTO> getAllFreePharmacists() {
 		List<CredentialsAndIdDTO> ret = new ArrayList<CredentialsAndIdDTO>();
 		for (Pharmacist pharmacist : userRepository.getAllFreePharmacists()) {
-			CredentialsAndIdDTO dto = new CredentialsAndIdDTO(pharmacist.getId(), pharmacist.getFirstName(), pharmacist.getLastName());
+			CredentialsAndIdDTO dto = new CredentialsAndIdDTO(pharmacist.getId(), pharmacist.getFirstName(),
+					pharmacist.getLastName());
+			ret.add(dto);
+		}
+		return ret;
+	}
+
+	@Override
+	public List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Long loggedUserId) {
+		List<CredentialsAndIdDTO> ret = new ArrayList<CredentialsAndIdDTO>();
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		if (admin == null)
+			return null;
+		for (Dermatologist dermatologist : userRepository
+				.getDermatologistsWhoAreNotInPharmacy(admin.getPharmacy().getId())) {
+			CredentialsAndIdDTO dto = new CredentialsAndIdDTO(dermatologist.getId(), dermatologist.getFirstName(),
+					dermatologist.getLastName());
 			ret.add(dto);
 		}
 		return ret;

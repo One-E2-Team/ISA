@@ -163,4 +163,11 @@ public class UserController {
 	public List<CredentialsAndIdDTO> getAllFreePharmacists(){
 		return userService.getAllFreePharmacists();
 	}
+	
+	@GetMapping(value = "/dermatologists-not-in-pharmacy")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Authentication auth){
+		User user = (User) auth.getPrincipal();
+		return userService.getDermatologistsWhoAreNotInPharmacy(user.getId());
+	}
 }
