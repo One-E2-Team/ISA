@@ -22,6 +22,12 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
 public class MedicineReservationService implements IMedicineReservationService {
 
 	private IMedicineReservationRepository medicineReservationRepository;
+
+	@Override
+	public List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId) {
+		return medicineReservationRepository.getDoneReservationsByPatient(patientId);
+	}
+	
 	private IWarehouseRepository warehouseRepository;
 	private IMedicineRepository medicineRepository;
 	private IPharmacyRepository pharmacyRepository;

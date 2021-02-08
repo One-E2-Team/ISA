@@ -4,8 +4,11 @@ import java.util.List;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
 
 public interface IMedicineReservationService {
+
+	List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId);
 
 	List<ReservedMedicineDTO> getPatientsReservations(Long patient_id);
 	
