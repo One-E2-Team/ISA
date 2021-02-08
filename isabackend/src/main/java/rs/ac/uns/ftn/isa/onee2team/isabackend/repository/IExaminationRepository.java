@@ -71,4 +71,6 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ " and e.date = ?2 and e.pharmacy_id = ?3", nativeQuery = true)
 	Integer getNumFreeExaminationsForHealthWorkerInPharmacyInDate(Long workerId, Date date, Long pharmacyId);
 
+	@Query(value = "select * from examinations where patient_id = ?1 and endTime <= now()", nativeQuery = true)
+	List<Examination> getExaminationsFromHistoryByPatientToDate(Long patientId);
 }

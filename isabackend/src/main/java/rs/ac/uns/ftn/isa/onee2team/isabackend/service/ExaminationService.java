@@ -214,5 +214,10 @@ public class ExaminationService implements IExaminationService {
 		}
 		return "Successfully created examinations!";
 	}
+
+	@Override
+	public List<Examination> getExaminationsFromHistoryByPatientToDate(Long patientId) {
+		return examinationRepository.getExaminationsFromHistoryByPatientToDate(patientId);
+	}
 	
 }
