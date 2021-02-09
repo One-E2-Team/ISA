@@ -23,6 +23,7 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
+          heroku container:login
           cd isabackend
           mvn --batch-mode --update-snapshots verify
           docker build . -t registry.heroku.com/isa-eu-backend/web
@@ -33,6 +34,7 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           ISA_BACKEND_HOST: isa-eu-backend.herokuapp.com
         run: |
+          heroku container:login
           cd isafrontend/frontend
           npm install
           npm run dockerbuild
