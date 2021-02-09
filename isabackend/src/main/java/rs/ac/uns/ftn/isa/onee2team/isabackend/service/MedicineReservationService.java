@@ -1,11 +1,14 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
@@ -112,6 +115,26 @@ public class MedicineReservationService implements IMedicineReservationService {
 				"Reservation number: " + mr.getId() , "You have successfully reserved a medicine!");
 		
 		return true;
+	}
+
+	@Override
+	public List<NewRateDTO> getMedicinesForRate(Long patientId) {
+		List<MedicineReservation> reservations = medicineReservationRepository.getDoneReservationsByPatient(patientId);
+		List<NewRateDTO> ret_list = new ArrayList<NewRateDTO>();
+		NewRateDTO dto;
+		
+		for(MedicineReservation mr : reservations) {
+			dto = new NewRateDTO();
+			dto.setRateEntityId(mr.getMedicine().getId());
+			dto.setRateEntityName(mr.getMedicine().getName());
+			dto.setRateEntityType("MEDICINE");
+			dto.setRate(-1);
+			
+			if(!ret_list.contains(dto))
+				ret_list.add(dto);
+		}
+		
+		return ret_list;
 	}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
@@ -276,6 +277,29 @@ public class ExaminationService implements IExaminationService {
 					);}
 		return ret_list;
 	}
-	
 
+	@Override
+	public List<NewRateDTO> getHealthWorkersForRate(Long patientId) {
+		List<Examination> examinations = examinationRepository.getPatientsFinishedAppointments(patientId);
+		List<NewRateDTO> ret_list = new ArrayList<NewRateDTO>();
+		NewRateDTO dto;
+		
+		for(Examination ex : examinations) {
+			dto = new NewRateDTO();
+			dto.setRateEntityId(ex.getHealthWokrer().getId());
+			dto.setRateEntityName(ex.getHealthWokrer().getFirstName() + " " + ex.getHealthWokrer().getLastName());
+			dto.setRateEntityType(ex.getHealthWokrer().getUserType().toString());
+			dto.setRate(-1);
+			
+			if(!ret_list.contains(dto))
+				ret_list.add(dto);
+		}
+		
+		return ret_list;
+	}
+	
+	@Override
+	public List<Examination> getPatientsFinishedEx(Long patient_id){
+		return examinationRepository.getPatientsFinishedAppointments(patient_id);
+	}
 }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +73,7 @@ public class OrderController {
 		return orderService.getAllOrdersByPharmacy(user.getId());
 	}
 	
-	@GetMapping(value = "offer-by-order")
+	@GetMapping(value = "/offer-by-order")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public List<OfferDTO> getAllOffersByOrder(@RequestParam Long orderId){
 		return orderService.getAllOffersByOrder(orderId);
@@ -83,9 +84,19 @@ public class OrderController {
 	public ResponseEntity<String> acceptOffer(@RequestParam Long offerId, Authentication auth) {
 		User user = (User) auth.getPrincipal();
 		String ret = orderService.acceptOffer(offerId, user.getId());
-		if(ret == null) {
+		if(!ret.equals("Succesfully accepted offer!")) {
 			return new ResponseEntity<>(ret, HttpStatus.BAD_REQUEST);
 		}
+		return new ResponseEntity<>(ret, HttpStatus.OK);
+	}
+	
+	@DeleteMapping(value = "/delete")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public ResponseEntity<String> deleteOrder(@RequestParam Long orderId, Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		String ret = orderService.deleteOrder(orderId, user.getId());
+		if(!ret.equals("Successfully deleted order!"))
+			return new ResponseEntity<>(ret, HttpStatus.BAD_REQUEST);
 		return new ResponseEntity<>(ret, HttpStatus.OK);
 	}
 }

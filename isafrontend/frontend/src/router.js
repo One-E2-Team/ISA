@@ -28,6 +28,7 @@ import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
 import ReservedMedicines from './components/pages/ReservedMedicines'
+import OrdersPage from './components/pages/OrdersPage'
 
 
 Vue.use(VueRouter)
@@ -172,6 +173,11 @@ const router = new VueRouter({
       name: 'Medicines',
       component: Medicines
     },
+    {
+      name: 'ordersPage',
+      path: '/orders',
+      component: OrdersPage
+    }
   ]
 })
 

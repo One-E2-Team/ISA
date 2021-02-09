@@ -37,7 +37,7 @@ public class Order {
 	@Column(name = "pharmacyId", nullable = false)
 	private Long pharmacyId;
 	
-	@Column(name = "finished", nullable = false)
+	@Column(name = "finished", nullable = true)
 	private Boolean finished;
 
 	public Long getId() {
