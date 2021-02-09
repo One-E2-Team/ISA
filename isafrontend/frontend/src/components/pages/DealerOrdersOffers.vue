@@ -19,6 +19,7 @@
             <tr class="table-light">
                 <th class="table-light">Order Expire Date</th>
                 <th class="table-light">Requested Medicines and Quantities</th>
+                <th class="table-light">Offer Status</th>
                 <th class="table-light">Offered Price</th>
                 <th class="table-light">Delivery Date</th>
                 <th class="table-light">Send Offer</th>
@@ -26,7 +27,8 @@
             <tr v-for="(value, key) in table" v-bind:key="value.key" class="table-light">
                 <td class="table-light">{{value.expireDate | dateFormat("DD.MM.YYYY.")}}</td>
                 <td class="table-light"><textarea disabled type="text" v-model="table[key].mwq" class="form-control"></textarea></td>
-                <td class="table-light"><input :disabled="value.status!='NONE' && value.status!='CREATED'" type="text" v-model="table[key].fullPrice" class="form-control"></td>
+                <td class="table-light">{{value.status}}</td>
+                <td class="table-light"><input :disabled="value.status!='NONE' && value.status!='CREATED'" type="number" v-model="table[key].fullPrice" class="form-control"></td>
                 <td class="table-light"><input :disabled="value.status!='NONE' && value.status!='CREATED'" type="date" :value="dateToYYYYMMDD(table[key].deliveryDate)" @input="table[key].deliveryDate = $event.target.valueAsDate" class="form-control"/></td>
                 <td class="table-light"><button v-if="value.status=='NONE' || value.status=='CREATED'" type="button" class="btn btn-primary" @click="sendOffer(value.id, value.fullPrice, value.deliveryDate)">Confirm</button></td>
             </tr>
@@ -93,12 +95,13 @@ export default {
                 console.log(response.data);
                 if(response.data)  document.getElementById("offerInformation").classList.remove("d-none");
                 else document.getElementById("offerAlert").classList.remove("d-none");
+                this.getTable();
             }).catch(reason => {
                 console.log(reason);
                 document.getElementById("offerAlert").classList.remove("d-none");
+                this.getTable();
             });
             console.log(id,fullPrice,deliveryDate);
-            this.getTable();
         },
         dateToYYYYMMDD(d) {
             // alternative implementations in https://stackoverflow.com/q/23593052/1850609
