@@ -70,7 +70,7 @@
                     <label>Old password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="oldPassword">
+                    <input type="password" v-model="oldPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -85,7 +85,7 @@
                     <label>New password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="newPassword">
+                    <input type="password" v-model="newPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -100,7 +100,7 @@
                     <label>Confirm new password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="repeatedPassword">
+                    <input type="password" v-model="repeatedPassword">
                 </div>
             </div><br/>
             <div class = "row justify-content-center">
@@ -128,6 +128,11 @@
                             <div id="unsubscribeAlert" class="alert alert-danger d-none" role="alert">Unsubscribe operation was unsuccessful! </div>
                         </div>
                     </form>
+                </div>
+            </div>
+            <div v-if="isPharmacyAdmin()" class="row justify-content-center mt-2">
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary" @click="goToMyPharmacy">My pharmacy</button>
                 </div>
             </div>
         </div>
@@ -183,6 +188,9 @@ export default {
         },
         isPatient : function(){
             return comm.getCurrentUserRole() === 'PATIENT';
+        },
+        isPharmacyAdmin : function(){
+            return comm.getCurrentUserRole() === 'PHARMACY_ADMIN';
         },
         updatePatientData : function(){
              axios.put('http://'+comm.server+'/api/users/profile', this.user)
@@ -242,6 +250,9 @@ export default {
                     this.subscriptionList = response.data;
                 }
             });
+        },
+        goToMyPharmacy : function(){
+            this.$router.push({name: 'pharmacy', params: {id: this.user.pharmacyId}});
         }
     }
 }
