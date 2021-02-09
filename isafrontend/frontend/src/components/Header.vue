@@ -62,6 +62,9 @@
                 <li class="nav-item">
                 <a class="nav-link" href="#/vacation/review" v-if="role == 'PHARMACY_ADMIN' || role == 'SYSTEM_ADMIN'">Vacation requests</a>
                 </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/orders" v-if="role == 'PHARMACY_ADMIN'">Orders</a>
+                </li>
                 <li v-if="role=='PATIENT'" class="nav-item">
                 <a class="nav-link" href="#/createComplaint">Complaint</a>
                 </li>
