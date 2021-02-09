@@ -6,7 +6,7 @@
     "serve": "preprocess src/configuration/unprocessed_communication.js . -SERVER_URL=localhost:8083 > src/configuration/communication.js && vue-cli-service serve",
     "build": "preprocess src/configuration/unprocessed_communication.js . -SERVER_URL=localhost:8083 > src/configuration/communication.js && vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "dockerbuild": "cross-var src/configuration/unprocessed_communication.js . -SERVER_URL=localhost > src/configuration/communication.js && vue-cli-service build"
+    "dockerbuild": "cross-var src/configuration/unprocessed_communication.js . -SERVER_URL=$ISA_BACKEND_HOST > src/configuration/communication.js && vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.21.1",
