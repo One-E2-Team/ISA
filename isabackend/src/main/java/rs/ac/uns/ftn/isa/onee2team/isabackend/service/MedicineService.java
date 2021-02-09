@@ -141,6 +141,14 @@ public class MedicineService implements IMedicineService {
 			for (RatedMedicine rm : rms)
 				temp.setRating(temp.getRating() + rm.getRate());
 			if(rms.size() != 0) temp.setRating(temp.getRating() / rms.size());
+			temp.setCode(m.getCode());
+			temp.setMedicineForm(m.getMedicineForm());
+			temp.setManufacturer(m.getManufacturer());
+			temp.setRecipeNeeded(m.getRecipeNeeded());
+			temp.setSideEffects(m.getSideEffects());
+			temp.setContexture(m.getContexture());
+			temp.setDailyIntake(m.getDailyIntake());
+			temp.setPoints(m.getPoints());
 			pmdto.add(temp);
 		}
 		return pmdto;

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 
 import Welcome from './components/Welcome'
+import Medicines from './components/Medicines'
 import Pharmacy from './components/Pharmacy'
 import AllPharmacies from './components/AllPharmacies'
 import DermatologistsPage from './components/pages/DermatologistsPage'
@@ -165,7 +166,12 @@ const router = new VueRouter({
       path: '/reservedMedicines',
       component: ReservedMedicines,
       props: true
-    }
+    },
+    {
+      path: '/medicines',
+      name: 'Medicines',
+      component: Medicines
+    },
   ]
 })
 
