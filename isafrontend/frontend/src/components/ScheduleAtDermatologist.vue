@@ -10,12 +10,12 @@
                 <div class = "col-6-auto">
                     <table class="table table-hover table-bordered">
                         <thead>
-                            <tr> 
+                            <tr>
                                 <th> Date </th>
                                 <th> Time </th>
                                 <th> Dermatologist </th>
-                                <th> Price </th>
-                                <th> Doctor's rate </th>
+                                <th v-on:click="sortByField('price')"><a> Price </a></th>
+                                <th v-on:click="sortByField('doctorRate')"><a> Doctor's rate </a></th> 
                             </tr>
                         </thead>
                         <tbody>
@@ -47,7 +47,7 @@ import * as comm from '../configuration/communication.js'
 export default {
     data(){
         return{
-            freeExaminations: {},
+            freeExaminations: [],
             selectedExamination : null
         }
     },
@@ -81,6 +81,12 @@ export default {
                 this.selectedExamination = {};
 
             }
+        },
+        sortByField : function(field){
+            if(field=='price')
+                this.freeExaminations.sort((a, b) => (a.price > b.price) ? 1 : -1);
+            else if(field == 'doctorRate')
+                this.freeExaminations.sort((a, b) => (a.doctorRate > b.doctorRate) ? 1 : -1);
         }
     }
 }

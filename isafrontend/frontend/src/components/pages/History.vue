@@ -11,11 +11,11 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr> 
-                                <th> Date </th>
+                                <th> <button class="btn" v-on:click="sort('startTime')"><b> Date </b></button></th>
                                 <th> Time </th>
                                 <th> Doctor </th>
                                 <th> Doctor type </th>
-                                <th> Price </th>
+                                <th> <button class="btn" v-on:click="sort('price')"><b> Price </b></button> </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +53,12 @@ export default {
     },
 
     methods : {
-        
+        sort : function(field){
+            if(field=='startTime')
+                this.myExaminations.sort((a, b) => (a.startTime > b.startTime) ? 1 : -1);
+            else if(field == 'price')
+                this.myExaminations.sort((a, b) => (a.price > b.price) ? 1 : -1);
+        }
     }
 }
 
