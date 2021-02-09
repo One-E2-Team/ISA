@@ -77,4 +77,5 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 	
 	@Query("select e from Examination e where e.patient.id = ?1 and e.status = 1")
 	List<Examination> getPatientsFinishedAppointments(Long id);
+	
 }

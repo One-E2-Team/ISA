@@ -1,19 +1,28 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewComplaintDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.Complaint;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.ComplaintType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedHealthWorker;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedMedicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedPharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IComplaintRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
 public class FeedbackService implements IFeedbackService {
@@ -22,15 +31,25 @@ public class FeedbackService implements IFeedbackService {
 	private IEmailNotificationService emailNotificationService;
 	private IExaminationService examinationService;
 	private IMedicineReservationService medicineReservationService;
+	private IPharmacyService pharmacyService;
+	private IRatedEntitiesService ratedEntitiesService;
+	private IMedicineRepository medicineRepository;
+	private IUserRepository userRepository;
 
 	@Autowired
 	public FeedbackService(IComplaintRepository complaintRepository, IEmailNotificationService emailNotificationService, 
-			IExaminationService examinationService, IMedicineReservationService medicineReservationService) {
+			IExaminationService examinationService, IMedicineReservationService medicineReservationService,
+			IPharmacyService pharmacyService, IRatedEntitiesService ratedEntitiesService, IMedicineRepository medicineRepository,
+			IUserRepository userRepository) {
 		super();
 		this.complaintRepository = complaintRepository;
 		this.emailNotificationService = emailNotificationService;
 		this.examinationService = examinationService;
 		this.medicineReservationService = medicineReservationService;
+		this.pharmacyService = pharmacyService;
+		this.ratedEntitiesService = ratedEntitiesService;
+		this.medicineRepository = medicineRepository;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -95,6 +114,55 @@ public class FeedbackService implements IFeedbackService {
 		}
 		return complaintRepository.save(c);
 	}
-	
-	
+
+	@Override
+	public List<NewRateDTO> findPossibleEntitiesForRate(Patient patient) {
+		List<NewRateDTO> ret = new ArrayList<NewRateDTO>();
+		ret.addAll(examinationService.getHealthWorkersForRate(patient.getId()));
+		ret.addAll(medicineReservationService.getMedicinesForRate(patient.getId()));
+		ret.addAll(pharmacyService.getPharmaciesForRate(patient.getId()));
+		return ret;
+	}
+
+	@Override
+	public void rate(NewRateDTO dto, Patient patient) {
+		if(dto.getRateEntityType().equals("MEDICINE")) {
+			RatedMedicine rm;
+			rm = ratedEntitiesService.getRatedMedicineByPatientAndMedicine(patient.getId(), dto.getRateEntityId());
+			if(rm != null)
+				rm.setRate(dto.getRate());
+			else {
+				rm = new RatedMedicine();
+				rm.setMedicine(medicineRepository.findById(dto.getRateEntityId()).orElse(null));
+				rm.setRate(dto.getRate());
+				rm.setPatient(patient);
+			}
+			ratedEntitiesService.saveRatedMedicine(rm);
+		}
+		else if(dto.getRateEntityType().equals("DERMATOLOGIST") || dto.getRateEntityType().equals("PHARMACIST")) {
+			RatedHealthWorker r = ratedEntitiesService.getRatedHealthWorkerByPatientAndWorker(patient.getId(), dto.getRateEntityId());
+			if(r != null)
+				r.setRate(dto.getRate());
+			else {
+				r = new RatedHealthWorker();
+				r.setHealthWorker((HealthWorker)userRepository.findById(dto.getRateEntityId()).orElse(null));
+				r.setPatient(patient);
+				r.setRate(dto.getRate());
+			}
+			ratedEntitiesService.saveRatedHealthWorker(r);
+		}
+		else if(dto.getRateEntityType().equals("PHARMACY")) {
+			RatedPharmacy r = ratedEntitiesService.getRatedPharmacyByPatientAndPharmacy(patient.getId(), dto.getRateEntityId());
+			if (r != null)
+				r.setRate(dto.getRate());
+			else {
+				r = new RatedPharmacy();
+				r.setPatient(patient);
+				r.setRate(dto.getRate());
+				r.setPharmacy(pharmacyService.getById(dto.getRateEntityId()));
+			}
+			ratedEntitiesService.saveRatedPharmacy(r);
+		}
+	}
+
 }
