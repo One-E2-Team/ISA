@@ -14,4 +14,5 @@ public interface IMedicineReservationRepository extends JpaRepository<MedicineRe
 	
 	@Query("select m from MedicineReservation m where m.patient.id = ?1 and m.status = 0")
 	List<MedicineReservation> getPatientsReservations(Long patient_id);
+	
 }
