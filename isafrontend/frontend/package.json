@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "cross-var": "^1.1.0",
     "moment": "^2.29.1",
+    "preprocessor": "^1.4.0",
     "v-calendar": "^2.2.3",
     "vue": "^2.6.12",
     "vue-moment": "^4.1.0",
