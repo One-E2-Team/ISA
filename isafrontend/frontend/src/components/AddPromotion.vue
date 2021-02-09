@@ -1,12 +1,13 @@
 <template>
     <div>
+        <h2>Add promotion: </h2>
         <label>Description: </label>
         <input type="text" name="description" v-model="description">
         <label>From: </label>
         <DatePicker :min-date="new Date()" v-model="startDate"/>
         <label>To: </label>
         <DatePicker :min-date="startDate" v-model="endDate"/>
-        <button name="Add" @click="addPromotion">Add</button>
+        <button name="Add" @click="addPromotion" class="btn btn-primary">Add</button>
     </div>
 
 </template>
@@ -47,7 +48,7 @@ export default {
             axios.post(url, promotion)
                 .then(response => {
                     if(response.data != "")
-                        alert("Uspesno dodata promocija");
+                        alert("Promotion successfully added!");
                         this.description = '';
                         this.startDate = new Date();
                         this.endDate = new Date();

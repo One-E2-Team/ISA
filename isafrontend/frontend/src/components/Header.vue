@@ -51,7 +51,16 @@
                 <a class="nav-link" href="#/scheduledAppointments">My appointments</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#/allPharmacies">All pharmacies</a>
+                <a class="nav-link" href="#/allPharmacies" v-if="role == 'PATIENT'">All pharmacies</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/dermatologists" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">Dermatologists</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/pharmacists" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">Pharmacists</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/vacation/review" v-if="role == 'PHARMACY_ADMIN' || role == 'SYSTEM_ADMIN'">Vacation requests</a>
                 </li>
                 <li v-if="role=='PATIENT'" class="nav-item">
                 <a class="nav-link" href="#/createComplaint">Complaint</a>
