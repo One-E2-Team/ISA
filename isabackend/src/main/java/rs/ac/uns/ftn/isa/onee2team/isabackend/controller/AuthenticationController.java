@@ -88,7 +88,7 @@ public class AuthenticationController {
 		User user = this.userService.createPatient(userRequest);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(ucBuilder.path("/api/user/{userId}").buildAndExpand(user.getId()).toUri());
-		this.emailNotificationService.sendNotificationAsync(user.getEmail(), "Account Validation", "Visit this link and validate your account: http://localhost:8083/api/auth/validate/" + user.getId() + "/");
+		this.emailNotificationService.sendNotificationAsync(user.getEmail(), "Account Validation", "Visit this link and validate your account: http://" + System.getenv("ISA_SPRING_HOST") + ":" + (System.getenv("PORT") != null ? System.getenv("PORT") : System.getenv("ISA_SPRING_PORT")) + "/api/auth/validate/" + user.getId() + "/");
 		return new ResponseEntity<>(user, HttpStatus.CREATED);
 	}
 	
