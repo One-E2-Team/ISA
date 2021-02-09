@@ -80,10 +80,11 @@ public class ExaminationService implements IExaminationService {
 		List<Examination> examinations = examinationRepository.getFreeExaminationsAtDermatologist();
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 						ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(), 
 						ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(), 
-						ex.getHealthWokrer().getUserType().toString(),ex.getPrice()
+						ex.getHealthWokrer().getUserType().toString(),rate,ex.getPrice()
 					));
 		}
 		
@@ -116,10 +117,11 @@ public class ExaminationService implements IExaminationService {
 		List<Examination> examinations =  examinationRepository.getScheduledAppointments(patientId);
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 					ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(),
 					ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(),
-					ex.getHealthWokrer().getUserType().toString(), ex.getPrice())
+					ex.getHealthWokrer().getUserType().toString(),rate, ex.getPrice())
 					);}
 		return ret_list;
 		}
@@ -266,10 +268,11 @@ public class ExaminationService implements IExaminationService {
 		List<Examination> examinations =  examinationRepository.getPatientsFinishedAppointments(id);
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 					ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(),
 					ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(),
-					ex.getHealthWokrer().getUserType().toString(), ex.getPrice())
+					ex.getHealthWokrer().getUserType().toString(),rate, ex.getPrice())
 					);}
 		return ret_list;
 	}
