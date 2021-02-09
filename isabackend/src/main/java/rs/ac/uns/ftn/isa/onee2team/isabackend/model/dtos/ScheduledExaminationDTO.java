@@ -8,12 +8,13 @@ public class ScheduledExaminationDTO {
 	private String firstName;
 	private String lastName;
 	private String doctorType;
+	private double doctorRate;
 	private double price;
 	
 	public ScheduledExaminationDTO() {}
 
 	public ScheduledExaminationDTO(Long id, String startTime, Long healthWorkerId, String firstName,
-			String lastName, String doctorType, double price) {
+			String lastName, String doctorType, double doctorRate, double price) {
 		super();
 		this.id = id;
 		this.startTime = startTime;
@@ -21,6 +22,7 @@ public class ScheduledExaminationDTO {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.doctorType = doctorType;
+		this.doctorRate = doctorRate;
 		this.price = price;
 	}
 	
@@ -78,6 +80,14 @@ public class ScheduledExaminationDTO {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public double getDoctorRate() {
+		return doctorRate;
+	}
+
+	public void setDoctorRate(double doctorRate) {
+		this.doctorRate = doctorRate;
 	}
 	
 }
