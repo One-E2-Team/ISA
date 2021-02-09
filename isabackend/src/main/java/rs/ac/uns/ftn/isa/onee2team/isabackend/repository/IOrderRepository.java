@@ -11,4 +11,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
 
 	@Query(value = "select o from Order o where o.expireDate > CURRENT_TIMESTAMP")
 	List<Order> findAllActive();
+	
+	@Query(value = "select * from orders o where o.pharmacy_id = ?1 and o.finished = false", nativeQuery = true)
+	List<Order> getAllByPharmacy(Long pharmacyId);
 }
