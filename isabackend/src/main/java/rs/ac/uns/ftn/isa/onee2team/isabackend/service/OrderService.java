@@ -157,11 +157,17 @@ public class OrderService implements IOrderService {
 	public String acceptOffer(Long offerId, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		Offer accepting = offerRepository.findById(offerId).orElse(null);
+		if(admin == null || accepting == null)
+			return "Error";
 		Order order = orderRepository.findById(accepting.getOrder().getId()).orElse(null);
-		if (admin == null || accepting == null || order == null)
+		if (order == null)
 			return "Error";
 		if (admin.getId() != accepting.getOrder().getCreatorId())
 			return "Only creator of order can accept offer!";
+		if(order.getExpireDate().after(new Date())) 
+			return "Can't accept offer before expire date!";
+		if(order.getFinished())
+			return "Order has already finished!";
 		Dealer dealer = accepting.getDealer();
 
 		List<Offer> allOffers = offerRepository.getAllOffersByOrder(accepting.getOrder().getId());
@@ -181,7 +187,6 @@ public class OrderService implements IOrderService {
 		}
 		order.setFinished(true);
 		List<MedicineWithQuantity> mwdsDealer = accepting.getDealer().getMedicinesWithQuantity();
-		//List<MedicineWithQuantity> newDealerMwd = new ArrayList<MedicineWithQuantity>();
 		for (MedicineWithQuantity mwdOrder : order.getMedicinesWithQuantity()) {
 			for (MedicineWithQuantity mwdDealer : mwdsDealer) {
 				if(mwdOrder.getMedicine().getId() == mwdDealer.getMedicine().getId()) {
@@ -190,21 +195,30 @@ public class OrderService implements IOrderService {
 					Warehouse w = warehouseRepository.getByMedicineAndPharmacy(mwdOrder.getMedicine().getId(), admin.getPharmacy().getId());
 					w.setAmount(w.getAmount() + mwdOrder.getQuantity());
 					warehouseRepository.save(w);
-					//MedicineWithQuantity newMwd = new MedicineWithQuantity();
-					//newMwd.setMedicine(mwdDealer.getMedicine());
-					//newMwd.setQuantity(mwdDealer.getQuantity() - mwdOrder.getQuantity());
-					//newDealerMwd.add(newMwd);
-					//medicineWithQuantityRepository.save(newMwd);
 				}
-				//else
-					//newDealerMwd.add(mwdDealer);
 			}
 		}
 		dealer.setMedicinesWithQuantity(mwdsDealer);
 		userRepository.save(dealer);
-		
 		orderRepository.save(order);
 		return "Succesfully accepted offer!";
+	}
+
+	@Override
+	public String deleteOrder(Long orderId, Long loggedUserId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		Order order = orderRepository.findById(orderId).orElse(null);
+		if(admin == null || order == null)
+			return "Error";
+		if (admin.getId() != order.getCreatorId())
+			return "Only creator of order can delete order!";
+		List<Offer> offers = offerRepository.getAllOffersByOrder(orderId);
+		if(offers == null || offers.size() == 0) {
+			order.setFinished(null);
+			orderRepository.save(order);
+			return "Successfully deleted order!";
+		}
+		return "Can't delete order that has offers!";
 	}
 
 }

@@ -23,4 +23,6 @@ public interface IOrderService {
 	List<OfferDTO> getAllOffersByOrder(Long orderId);
 	
 	String acceptOffer(Long offerId, Long loggedUserId);
+	
+	String deleteOrder(Long orderId, Long loggedUserId);
 }
