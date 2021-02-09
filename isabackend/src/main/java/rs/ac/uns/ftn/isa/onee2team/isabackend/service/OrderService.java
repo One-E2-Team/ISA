@@ -187,7 +187,6 @@ public class OrderService implements IOrderService {
 		}
 		order.setFinished(true);
 		List<MedicineWithQuantity> mwdsDealer = accepting.getDealer().getMedicinesWithQuantity();
-		//List<MedicineWithQuantity> newDealerMwd = new ArrayList<MedicineWithQuantity>();
 		for (MedicineWithQuantity mwdOrder : order.getMedicinesWithQuantity()) {
 			for (MedicineWithQuantity mwdDealer : mwdsDealer) {
 				if(mwdOrder.getMedicine().getId() == mwdDealer.getMedicine().getId()) {
@@ -196,19 +195,11 @@ public class OrderService implements IOrderService {
 					Warehouse w = warehouseRepository.getByMedicineAndPharmacy(mwdOrder.getMedicine().getId(), admin.getPharmacy().getId());
 					w.setAmount(w.getAmount() + mwdOrder.getQuantity());
 					warehouseRepository.save(w);
-					//MedicineWithQuantity newMwd = new MedicineWithQuantity();
-					//newMwd.setMedicine(mwdDealer.getMedicine());
-					//newMwd.setQuantity(mwdDealer.getQuantity() - mwdOrder.getQuantity());
-					//newDealerMwd.add(newMwd);
-					//medicineWithQuantityRepository.save(newMwd);
 				}
-				//else
-					//newDealerMwd.add(mwdDealer);
 			}
 		}
 		dealer.setMedicinesWithQuantity(mwdsDealer);
 		userRepository.save(dealer);
-		
 		orderRepository.save(order);
 		return "Succesfully accepted offer!";
 	}
@@ -223,7 +214,7 @@ public class OrderService implements IOrderService {
 			return "Only creator of order can delete order!";
 		List<Offer> offers = offerRepository.getAllOffersByOrder(orderId);
 		if(offers == null || offers.size() == 0) {
-			order.setFinished(true);
+			order.setFinished(null);
 			orderRepository.save(order);
 			return "Successfully deleted order!";
 		}
