@@ -13,7 +13,7 @@
                 <td class="table-light">{{dermatologist.lastName}}</td>
                 <td class="table-light">{{dermatologist.rate}}</td>
                 <td class="table-light">{{dermatologist.pharmacyNames}}</td>
-                <td><button @click="goToCreateExam(dermatologist.id)">Create free examinations</button></td>
+                <td v-if="isPharmacyAdmin()"><button @click="goToCreateExam(dermatologist.id)">Create free examinations</button></td>
             </tr>
         </table>
     </div>
@@ -22,6 +22,7 @@
 <script>
 
 import SearchUsers from '../SearchUsers.vue';
+import * as comm from '../../configuration/communication.js'
 
 export default {
     name: "DermatologistsPage",
@@ -40,6 +41,9 @@ export default {
                 name: 'createExamination',
                 params: { dermatologistId: id }
             })
+        },
+        isPharmacyAdmin : function(){
+            return comm.getCurrentUserRole() === 'PHARMACY_ADMIN';
         }
     }
 }

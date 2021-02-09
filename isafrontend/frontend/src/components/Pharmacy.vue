@@ -64,7 +64,7 @@
         </div>
         <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
-        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()">Create order</button>
+        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-primary">Create order</button>
     </div>
 </template>
 
