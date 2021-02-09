@@ -3,6 +3,13 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 public class PharmacyWithPrice {
 	private Long id;
 	private String name;
+	private String address;
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	private double price;
 	
 	public Long getId() {
@@ -23,10 +30,12 @@ public class PharmacyWithPrice {
 	public void setPrice(double price) {
 		this.price = price;
 	}
-	public PharmacyWithPrice(Long id, String name, double price) {
+
+	public PharmacyWithPrice(Long id, String name, String address, double price) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.address = address;
 		this.price = price;
 	}
 	public PharmacyWithPrice() {

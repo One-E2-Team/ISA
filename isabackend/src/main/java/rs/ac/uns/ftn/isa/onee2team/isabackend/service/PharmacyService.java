@@ -140,7 +140,7 @@ public class PharmacyService implements IPharmacyService {
 				if(w.getAmount() - w.getReservedAmount() > 0) {
 					List<Pricelist> pls = pricelistRepository.getValidPricelistForMedicine(w.getPharmacy().getId(), pmdto.getId());
 					if(pls.size()!=0) {
-						pmdto.getPharmacies().add(new PharmacyWithPrice(w.getPharmacy().getId(), w.getPharmacy().getName(), pls.get(0).getPrice() * (1.0 - discount/100.0)));
+						pmdto.getPharmacies().add(new PharmacyWithPrice(w.getPharmacy().getId(), w.getPharmacy().getName(), w.getPharmacy().getAddress(), pls.get(0).getPrice() * (1.0 - discount/100.0)));
 					} else System.out.println("Pricelist doesnt exist for item");
 				}
 			}
