@@ -1,0 +1,35 @@
+name: CD
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  buildndeply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build Backend and push to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          cd isabackend
+          mvn clean package
+          docker build . -t registry.heroku.com/isa-eu-backend/web
+          docker push registry.heroku.com/isa-eu-backend/web
+          cd ..
+      - name: Build Frontend and push to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          ISA_BACKEND_HOST: isa-eu-backend.herokuapp.com
+        run: |
+          cd isafrontend/frontend
+          npm install
+          npm run dockerbuild
+          docker build . -t registry.heroku.com/isa-frontend/web
+          docker push registry.heroku.com/isa-frontend/web
+          cd ../..
