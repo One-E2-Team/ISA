@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "serve": "preprocess src/configuration/unprocessed_communication.js . -SERVER_URL=localhost:8083 > src/configuration/communication.js && vue-cli-service serve",
+    "build": "preprocess src/configuration/unprocessed_communication.js . -SERVER_URL=localhost:8083 > src/configuration/communication.js && vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "dockerbuild": "cross-var src/configuration/unprocessed_communication.js . -SERVER_URL=localhost > src/configuration/communication.js && vue-cli-service build"
   },
   "dependencies": {
     "axios": "^0.21.1",
