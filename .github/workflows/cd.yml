@@ -28,6 +28,7 @@ jobs:
           mvn --batch-mode --update-snapshots verify
           docker build . -t registry.heroku.com/isa-eu-backend/web
           docker push registry.heroku.com/isa-eu-backend/web
+          heroku container:release web --app isa-eu-backend
           cd ..
       - name: Build Frontend and push to Heroku
         env:
@@ -40,4 +41,5 @@ jobs:
           npm run dockerbuild
           docker build . -t registry.heroku.com/isa-frontend/web
           docker push registry.heroku.com/isa-frontend/web
+          heroku container:release web --app isa-frontend
           cd ../..
