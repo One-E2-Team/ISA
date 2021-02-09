@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPrice;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestForMissingMedicinesDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.RequestForMissingMedicines;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.EquivalentMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRequestForMissingMedicinesRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
@@ -28,16 +32,19 @@ public class MedicineService implements IMedicineService {
 	private IUserRepository userRepository;
 	private IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository;
 	private IWarehouseRepository warehouseRepository;
+	private IRatedMedicineRepository ratedMedicineRepository;
 
 	@Autowired
 	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines,
 			IUserRepository userRepository,
-			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository, IWarehouseRepository warehouseRepository) {
+			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository, IWarehouseRepository warehouseRepository,
+			IRatedMedicineRepository ratedMedicineRepository) {
 		this.medicineRepository = medicineRepository;
 		this.equivalentMedicines = equivalentMedicines;
 		this.userRepository = userRepository;
 		this.requestForMissingMedicinesRepository = requestForMissingMedicinesRepository;
 		this.warehouseRepository = warehouseRepository;
+		this.ratedMedicineRepository = ratedMedicineRepository;
 	}
 
 	@Override
@@ -117,5 +124,25 @@ public class MedicineService implements IMedicineService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<PresentMedicineDTO> getAllMedicinesWithRating() {
+		List<Medicine> allMeds = this.getAll();
+		ArrayList<PresentMedicineDTO> pmdto = new ArrayList<PresentMedicineDTO>();
+		for (Medicine m : allMeds) {
+			PresentMedicineDTO temp = new PresentMedicineDTO();
+			temp.setId(m.getId());
+			temp.setName(m.getName());
+			temp.setType(m.getMedicineType());
+			temp.setPharmacies(new ArrayList<PharmacyWithPrice>());
+			temp.setRating(0.0);
+			List<RatedMedicine> rms = ratedMedicineRepository.findAllByMedicine(m);
+			for (RatedMedicine rm : rms)
+				temp.setRating(temp.getRating() + rm.getRate());
+			if(rms.size() != 0) temp.setRating(temp.getRating() / rms.size());
+			pmdto.add(temp);
+		}
+		return pmdto;
 	}
 }
