@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 import Welcome from './components/Welcome'
 import Medicines from './components/Medicines'
 import Pharmacy from './components/Pharmacy'
@@ -29,6 +28,7 @@ import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
 import ReservedMedicines from './components/pages/ReservedMedicines'
 import OrdersPage from './components/pages/OrdersPage'
+import PatientRatingPage from './components/pages/PatientRatingPage'
 
 
 Vue.use(VueRouter)
@@ -177,6 +177,11 @@ const router = new VueRouter({
       name: 'ordersPage',
       path: '/orders',
       component: OrdersPage
+    },
+    {
+      name: 'rate',
+      path: '/rate',
+      component: PatientRatingPage
     }
   ]
 })

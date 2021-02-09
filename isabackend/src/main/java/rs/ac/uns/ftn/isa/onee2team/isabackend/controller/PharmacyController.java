@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
@@ -20,6 +22,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
 
@@ -60,16 +63,16 @@ public class PharmacyController {
 	public List<MedicineDTO> getMedicinesByPharmacyId(@RequestParam Long id) {
 		return medicineService.findMedicineByPharmacyid(id);
 	}
-	
+
 	@PostMapping(value = "/register")
 	@PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
 	public Pharmacy registerPharmacy(@RequestBody NewPharmacyDTO phdto) {
 		return pharmacyService.registerPharmacy(phdto);
 	}
-  
+
 	@GetMapping(value = "/")
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
-	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(@RequestParam Long id){
+	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(@RequestParam Long id) {
 		return pharmacyService.getPharmacyById(id);
 	}
 	
@@ -85,4 +88,33 @@ public class PharmacyController {
 	}
 	
 	
+
+	@PostMapping(value = "/exam-stats")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public List<ExamStatsDTO> getNumOfExamsByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
+			Authentication auth) {
+		if (interval.getStart().after(interval.getEnd()))
+			return null;
+		User user = (User) auth.getPrincipal();
+		return pharmacyService.getNumOfExamsByDateInPharmacy(interval, user.getId());
+	}
+
+	@PostMapping(value = "/medicine-stats")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public List<MedStatsDTO> getNumOfMedicinesByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
+			Authentication auth) {
+		if (interval.getStart().after(interval.getEnd()))
+			return null;
+		User user = (User) auth.getPrincipal();
+		return pharmacyService.getNumOfMedicinesByDateInPharmacy(interval, user.getId());
+	}
+
+	@PostMapping(value = "/income)")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public Double getPharmacyIncomeInTimeInterval(@RequestBody TimeIntervalDTO interval, Authentication auth) {
+		if (interval.getStart().after(interval.getEnd()))
+			return null;
+		User user = (User) auth.getPrincipal();
+		return pharmacyService.getPharmacyIncomeInTimeInterval(interval, user.getId());
+	}
 }

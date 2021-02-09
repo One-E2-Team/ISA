@@ -68,8 +68,15 @@
                 <li class="nav-item">
                 <a class="nav-link" href="#/orders" v-if="role == 'PHARMACY_ADMIN'">Orders</a>
                 </li>
-                <li v-if="role=='PATIENT'" class="nav-item">
-                <a class="nav-link" href="#/createComplaint">Complaint</a>
+                <li class="nav-item dropdown" v-if="role == 'PATIENT'">
+                <a class="nav-link dropdown-toggle" href="#" id="feedback" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Feedback
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="feedback">
+                    <li><a class="dropdown-item" href="#/createComplaint">Complaint</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#/rate">Rate</a></li>
+                </ul>
                 </li>
                 <li class="nav-item d-none">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
