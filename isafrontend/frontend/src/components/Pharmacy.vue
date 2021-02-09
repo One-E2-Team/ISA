@@ -107,7 +107,20 @@ export default {
             this.examinationsToShow = examinations;
         },
         scheduleExamination : function(examinationId){
-            console.log(examinationId);
+            axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist/?examinationId=' + examinationId)
+            .then(response=>{
+                if(response){
+                    alert("Examination successfully scheduled!");
+                    axios.get('http://' + comm.server + '/api/pharmacies/?id=' + this.id)
+                    .then(response => {
+                    if (response.status == 200) {
+                        this.pharmacy = response.data;
+                    }
+            });
+                }else{
+                    alert("You have 3 penalties! This action is forbidden!");
+                }
+            })
         },
         reserveMedicine : function(medicineId){
             if(this.selectedDate == null){
@@ -159,7 +172,6 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     this.pharmacy = response.data;
-
                 }
             });
     },

@@ -15,6 +15,7 @@
                                 <th> Time </th>
                                 <th> Dermatologist </th>
                                 <th> Price </th>
+                                <th> Doctor's rate </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -23,6 +24,7 @@
                                 <td> {{e.startTime.substring(11,16)}} </td>
                                 <td> {{e.firstName}}  {{e.lastName}} </td>
                                 <td> {{e.price}} </td>
+                                <td> {{e.doctorRate}} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -50,6 +52,8 @@ export default {
         }
     },
 
+    props: ['id'],
+
     mounted() {
         axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
         .then(response => this.freeExaminations = response.data);
@@ -75,10 +79,6 @@ export default {
                 });
 
                 this.selectedExamination = {};
-
-                
-                
-                
 
             }
         }
