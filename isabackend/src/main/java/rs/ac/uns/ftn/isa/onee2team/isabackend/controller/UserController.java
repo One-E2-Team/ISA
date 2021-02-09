@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -169,5 +171,10 @@ public class UserController {
 	public List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Authentication auth){
 		User user = (User) auth.getPrincipal();
 		return userService.getDermatologistsWhoAreNotInPharmacy(user.getId());
+	}
+	
+	@GetMapping(value ="/patient-allergies-ids/")
+	public List<Long> getPatientAllergiesIds(@PathParam("id") Long patientId){
+		return userService.getPatientAllergiesIds(patientId);
 	}
 }

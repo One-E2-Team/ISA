@@ -1,5 +1,7 @@
 <template>
     <div class="container-fluid mt-3">
+        <MedicineContextureModal v-bind:medicine="selectedMedicine" />
+        <MedicineSideEffectsModal v-bind:medicine="selectedMedicine"/>
         <div class="row g-3 align-items-center justify-content-end">
             <div class="col-auto">
             <input type="text" class="form-control" >
@@ -40,9 +42,9 @@
                                 <td class="text-center">{{med.medicineForm}}</td>
                                 <td class="text-center">{{med.dailyIntake}}</td>
                                 <td class="text-center">{{med.medicineType}}</td>
-                                <td class="text-center"><button>SE</button></td>
-                                <td class="text-center"><button>CNTX</button></td>
-                                <td class="text-center"><button>+</button></td>
+                                <td class="text-center"><button type="button" class="btn btn-outline-primary" @click="selectMedicine(med)" data-bs-toggle="modal" data-bs-target="#MedicineSideEffecectModal">SE</button></td>
+                                <td class="text-center"><button type="button" class="btn btn-outline-primary" @click="selectMedicine(med)" data-bs-toggle="modal"  data-bs-target="#MedicineContextureModal">CNTX</button></td>
+                                <td class="text-center"><button type="button"  :class="isPatientAllergic(med) ? 'btn-danger':' btn-success' " class="btn" :disabled="isPatientAllergic(med)" @click="addToRecept(med)" >+</button></td>
 
                             </tr>
                         </tbody>
@@ -54,26 +56,24 @@
                     <h2>Reservated medicines</h2>
                     <i class="fa fa-shopping-cart fa-3x p-2"></i>
                 </div>
-                <!-- <div class="text-end"> -->
-                    <button class="btn btn-warning">Empty cart</button>
-                <!-- </div> -->
+                
+                <button class="btn btn-warning" @click="emptyRecept()">Empty recept</button>
+              
                 <div class="table-wrapper-scroll mt-2">
                     <table class="table table-hover">
                         <thead>
                             <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Code</th>
-                            <th scope="col">Quantity</th>
                             <th scope="col" class="text-center"><i class="fa fa-trash"></i></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="reservation in reservations" v-bind:key="reservation.id">
-                                <th scope="row">{{reservation.name}}</th>
-                                <td>{{reservation.code}}</td>
-                                <td>{{reservation.quantity}}</td>
+                            <tr v-for="item in recept" v-bind:key="item.id">
+                                <th scope="row">{{item.name}}</th>
+                                <td>{{item.code}}</td>
                                 <td class="text-end">
-                                    <button class="btn btn-danger">
+                                    <button class="btn btn-danger" @click="removeFromRecept(item)">
                                         Remove
                                     </button>
                                 </td>
@@ -91,6 +91,8 @@
 
 import axios from 'axios'
 import * as comm from '../configuration/communication.js'
+import MedicineContextureModal from './modals/MedicineContextureModal'
+import MedicineSideEffectsModal from './modals/MedicineSideEffectModal'
 
 export default {
     props: ['id'],
@@ -99,14 +101,23 @@ export default {
         return{
             medicines: [],
             reservations: [],
+            selectedMedicine: "",
+            pharmacyId: "",
+            recept: [],
+            patientAlergies : [{id:1},{id:3}],
         }
     },
+    components:{
+        MedicineContextureModal,
+        MedicineSideEffectsModal,
+    },
     created(){
-        console.log("u pharmacy medicines sam dobio ", this.id)
+        //axios.get('http://' + comm.server + '/api/users/patient-allergies-ids/',{params:})
         axios.get('http://' + comm.server + '/api/examinations/pharamcy', {
             params : {
                 "examination-id" : this.id 
             }}).then(response=> {
+                this.pharmacyId = response.data.id;
                 axios.get('http://' + comm.server + '/api/pharmacies/'+response.data.id+"/medicines/")
                 .then(response=>{
                         console.log(response.data);
@@ -114,6 +125,34 @@ export default {
                 })
 
             });
+    },
+    methods:{
+        selectMedicine : function(medicine){
+            this.selectedMedicine = medicine;
+        },
+        addToRecept: function(item){
+            for(let it of this.recept){
+                if(it.id == item.id)
+                        return;
+            }
+            console.log("saljem u recept")
+            this.recept.push(item);
+        },
+        removeFromRecept: function(item){
+            this.recept = this.recept.filter(function(it) {
+                return it.id != item.id
+            })
+        },
+        isPatientAllergic: function(item){
+            for(let it of this.patientAlergies){
+                if(it.id == item.id)
+                    return true;
+            }
+            return false;
+        },
+        emptyRecept: function(){
+            this.recept = [];
+        }
     }
 }
 </script>
