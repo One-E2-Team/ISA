@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
@@ -30,7 +32,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineReservationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineWithQuantityRepository;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IOrderRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
@@ -148,7 +149,7 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	@Override
-	public Map<Date, Integer> getNumOfExamsByDateInPharmacy(TimeIntervalDTO interval, Long loggedUserId) {
+	public List<ExamStatsDTO> getNumOfExamsByDateInPharmacy(TimeIntervalDTO interval, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		if (admin == null)
 			return null;
@@ -163,7 +164,7 @@ public class PharmacyService implements IPharmacyService {
 			} else
 				ret.put(examDate, 1);
 		}
-			return ret;
+			return getExamStatsDtoFromMap(ret);
 	}
 
 	@Override
@@ -175,7 +176,7 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	@Override
-	public Map<MedicineDTO, Integer> getNumOfMedicinesByDateInPharmacy(TimeIntervalDTO interval, Long loggedUserId) {
+	public List<MedStatsDTO> getNumOfMedicinesByDateInPharmacy(TimeIntervalDTO interval, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		if (admin == null)
 			return null;
@@ -206,6 +207,24 @@ public class PharmacyService implements IPharmacyService {
 			} else {
 				ret.put(dto, mwq.getQuantity());
 			}
+		}
+		return getMedStatsDtoFromMap(ret);
+	}
+	
+	private List<MedStatsDTO> getMedStatsDtoFromMap (Map<MedicineDTO, Integer> map){
+		List<MedStatsDTO> ret = new ArrayList<MedStatsDTO>();
+		for(MedicineDTO med : map.keySet()) {
+			MedStatsDTO dto = new MedStatsDTO(med, map.get(med));
+			ret.add(dto);
+		}
+		return ret;
+	}
+	
+	private List<ExamStatsDTO> getExamStatsDtoFromMap (Map<Date, Integer> map){
+		List<ExamStatsDTO> ret = new ArrayList<ExamStatsDTO>();
+		for(Date date : map.keySet()) {
+			ExamStatsDTO dto = new ExamStatsDTO(date, map.get(date));
+			ret.add(dto);
 		}
 		return ret;
 	}

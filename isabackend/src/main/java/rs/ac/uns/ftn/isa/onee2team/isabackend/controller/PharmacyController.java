@@ -1,8 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
@@ -76,7 +76,7 @@ public class PharmacyController {
 
 	@PostMapping(value = "/exam-stats")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
-	public Map<Date, Integer> getNumOfExamsByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
+	public List<ExamStatsDTO> getNumOfExamsByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
 			Authentication auth) {
 		if (interval.getStart().after(interval.getEnd()))
 			return null;
@@ -86,7 +86,7 @@ public class PharmacyController {
 
 	@PostMapping(value = "/medicine-stats")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
-	public Map<MedicineDTO, Integer> getNumOfMedicinesByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
+	public List<MedStatsDTO> getNumOfMedicinesByDateInPharmacy(@RequestBody TimeIntervalDTO interval,
 			Authentication auth) {
 		if (interval.getStart().after(interval.getEnd()))
 			return null;
