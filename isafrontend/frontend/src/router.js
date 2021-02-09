@@ -22,6 +22,7 @@ import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
 import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
+import PatientComplaintPage from './components/pages/PatientComplaintPage'
 import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
@@ -33,7 +34,7 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   mode: 'hash',
   routes: [{
-      path: '/welcome',
+      path: '/',
       name: 'welcome',
       component: Welcome
     },
@@ -141,6 +142,11 @@ const router = new VueRouter({
       path: '/scheduleAtPharmacist',
       component: ScheduleAtPharmacist,
       props: true
+    },
+    {
+      name: 'createComplaint',
+      path: '/createComplaint',
+      component: PatientComplaintPage,
     },
     {
       name: 'createExamination',
