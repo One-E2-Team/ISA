@@ -270,6 +270,11 @@ public class ExaminationService implements IExaminationService {
 					);}
 		return ret_list;
 	}
+
+	@Override
+	public Pharmacy getPharmacyByExamination(Long examinationId) {
+		return examinationRepository.getOne(examinationId).getPharmacy();
+	}
 	
 
 }

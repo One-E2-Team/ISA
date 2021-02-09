@@ -45,7 +45,7 @@ public class MedicineService implements IMedicineService {
 	}
 
 	@Override
-	public List<MedicineDTO> findMedicineByPharmacyid(Long id) {
+	public List<MedicineDTO> findMedicineDTOByPharmacyid(Long id) {
 		List<Medicine> allMedicines = medicineRepository.findMedicineByPharmacyid(id);
 		List<MedicineDTO> medicinesDTO = new ArrayList<MedicineDTO>();
 		for (Medicine m : allMedicines) {
@@ -147,6 +147,12 @@ public class MedicineService implements IMedicineService {
 		request.setMedicine(medicineRepository.getOne(medicineId));
 		request.setPharmacy(pharmacyRepository.getOne(pharmacyId));
 		requestForMissingMedicinesRepository.save(request);		
+	}
+
+	@Override
+	public List<Medicine> findMedicineByPharmacyid(Long id) {
+		
+		return medicineRepository.findMedicineByPharmacyid(id);
 	}
 	
 	

@@ -8,7 +8,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestForMissingMedici
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
 public interface IMedicineService {
-	List<MedicineDTO> findMedicineByPharmacyid(Long id);
+	List<MedicineDTO> findMedicineDTOByPharmacyid(Long id);
 	List<Medicine> getAll();
 	void addAllergy(Long patientId, Long medicineId);
 	Medicine createMedicine(NewMedicineDTO nmdto);
@@ -16,4 +16,5 @@ public interface IMedicineService {
 	Boolean deleteMedicineFromPharmacy(Long medicineId, Long loggedUserId);
 	boolean reserveMedicine(Long pharmacyId, Long medicineId, Integer quantity);
 	void addMissingMedicine(Long pharmacyId, Long medicineId);
+	List<Medicine> findMedicineByPharmacyid(Long id);
 }

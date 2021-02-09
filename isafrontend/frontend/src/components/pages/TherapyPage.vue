@@ -70,8 +70,10 @@ export default {
                 "information" : this.information
             })
             .then(response =>{
-                if (response.status == 200)
+                if (response.status == 200){
                     alert("Uspesno unete informacije");
+                    this.$router.push({name: 'Reservation', params: {id: this.id}})
+                }
                 else
                     alert("Informacije neuspesno unete");
             });

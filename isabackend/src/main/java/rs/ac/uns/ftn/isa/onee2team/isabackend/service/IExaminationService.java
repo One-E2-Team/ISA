@@ -4,15 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
-
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
-
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
-
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 
 public interface IExaminationService {
@@ -48,4 +46,6 @@ public interface IExaminationService {
 	String createNewExaminations(NewExaminationsDTO newExaminations, Long userId);
 	
 	List<ScheduledExaminationDTO> getPatientsFinishedAppointments(Long id);
+
+	Pharmacy getPharmacyByExamination(Long examinationId);
 }
