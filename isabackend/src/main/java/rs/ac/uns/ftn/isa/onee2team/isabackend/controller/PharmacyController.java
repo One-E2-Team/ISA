@@ -18,9 +18,11 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
 
@@ -73,6 +75,19 @@ public class PharmacyController {
 	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(@RequestParam Long id) {
 		return pharmacyService.getPharmacyById(id);
 	}
+	
+	@GetMapping(value = "/medicines/all")
+	public List<PresentMedicineDTO> getMedicinesWithPrice(Authentication auth){
+		return pharmacyService.getMedicinesWithPriceForUser(medicineService.getAllMedicinesWithRating(), auth == null ? 0 : (((User) auth.getPrincipal()).getUserType() != UserType.PATIENT ? 0 : ((User) auth.getPrincipal()).getId()));
+	}
+	
+	@GetMapping(value = "/medicines/all/authorized")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')")
+	public List<PresentMedicineDTO> getMedicinesWithPriceAuthenticated(Authentication auth){
+		return getMedicinesWithPrice(auth);
+	}
+	
+	
 
 	@PostMapping(value = "/exam-stats")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
