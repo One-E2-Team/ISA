@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  buildndeply:
+  buildndeploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: |
           cd isabackend
-          mvn clean package
+          mvn --batch-mode --update-snapshots verify
           docker build . -t registry.heroku.com/isa-eu-backend/web
           docker push registry.heroku.com/isa-eu-backend/web
           cd ..
