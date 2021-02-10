@@ -18,6 +18,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPrice;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
@@ -95,8 +96,13 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	@Override
-	public List<PharmacyDTO> findAllIPharmaciesDto() {
-		return pharmacyRepository.findAllIPharmaciesDto();
+	public List<PharmacyForSearchDTO> findAllIPharmaciesDto() {
+		List<PharmacyForSearchDTO> ret_list =  pharmacyRepository.findAllIPharmaciesDto();
+		for (PharmacyForSearchDTO dto : ret_list) {
+			double rate = pharmacyRepository.getAvgRateForPharmacy(dto.getId());
+			dto.setRate(rate);
+		}
+		return ret_list;
 	}
 
 	@Override
