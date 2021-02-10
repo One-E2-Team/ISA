@@ -253,4 +253,9 @@ public class UserService implements IUserService, UserDetailsService {
 		}
 		return ret;
 	}
+
+	@Override
+	public List<Long> getPatientAllergiesIds(Long patientId) {
+		return userRepository.getPatientAllergiesIds(patientId);
+	}
 }

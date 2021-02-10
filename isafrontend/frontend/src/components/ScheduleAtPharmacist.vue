@@ -28,8 +28,8 @@
                             <tr> 
                                 <th> Pharmacy name </th>
                                 <th> Address </th>
-                                <th> Rate </th>
-                                <th> Examination price </th>
+                                <th ><button class="btn" v-on:click="sortPharmacies('rate')"><b> Rate </b></button></th>
+                                <th ><button class="btn" v-on:click="sortPharmacies('price')"><b> Examination price </b> </button></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +64,7 @@
                                             <tr> 
                                                 <th> First name </th>
                                                 <th> Last name </th>
-                                                <th> Rate </th>
+                                                <th > <button class="btn" v-on:click="sortPharmacists()">Rate </button> </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -156,13 +156,26 @@ export default {
                  let dto = {"pharmacy_id" : this.selectedPharmacist.id, "date" : date}
                 axios.put('http://' + comm.server + '/api/examinations/scheduleAtPharmacist', dto)
                 .then(response => {
-                    if(response.data)
+                    if(response.data){
                         alert("Appointment scheduled successfully!");
-                    else
-                        alert("You have 3 penalties! This action is forbidden");
+                    }
+                    else{
+                        alert("This action is forbidden! You either have 3 penalties or you already canceled this appointment!");
+                    }
                     this.showModal = false;
                 });
             }
+        },
+
+        sortPharmacies : function(field){
+            if(field=='price')
+                this.foundPharmacies.sort((a, b) => (a.price > b.price) ? 1 : -1);
+            else if(field == 'rate')
+                this.foundPharmacies.sort((a, b) => (a.rate > b.rate) ? 1 : -1);
+        },
+
+        sortPharmacists : function(){
+            this.pharmacists.sort((a, b) => (a.rate > b.rate) ? 1 : -1);
         }
     }
 }

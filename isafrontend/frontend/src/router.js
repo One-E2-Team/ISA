@@ -26,9 +26,15 @@ import PatientComplaintPage from './components/pages/PatientComplaintPage'
 import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
+import MedicineReservationPage from './components/pages/MedicineReservationPage'
 import ReservedMedicines from './components/pages/ReservedMedicines'
 import OrdersPage from './components/pages/OrdersPage'
 import PatientRatingPage from './components/pages/PatientRatingPage'
+import RequestsForMedicines from './components/pages/RequestsForMedicinesPage'
+import StatisticsPage from './components/pages/StatisticsPage'
+import eRecipe from './components/pages/eRecipe'
+import PatientsRecipes from './components/pages/PatientsRecipes'
+import PricelistPage from './components/pages/PricelistPage'
 
 
 Vue.use(VueRouter)
@@ -128,10 +134,15 @@ const router = new VueRouter({
       props: true
     },
     {
-
       path: '/therapy/:id',
       name: 'Therapy',
       component: TherapyPage,
+      props: true,
+    },
+    {
+      path: '/reservation/:id',
+      name: 'Reservation',
+      component: MedicineReservationPage,
       props: true,
     },
     {
@@ -182,6 +193,32 @@ const router = new VueRouter({
       name: 'rate',
       path: '/rate',
       component: PatientRatingPage
+    },
+    {
+      name: 'requestsForMedicines',
+      path: '/requestsForMedicines',
+      component: RequestsForMedicines
+    },
+    {
+      name: 'statistics',
+      path: '/statistics',
+      component: StatisticsPage
+    },
+    {
+      name: 'eRecipe',
+      path: '/eRecipe',
+      component: eRecipe
+    },
+    {
+      name: 'recipes',
+      path: '/recipes',
+      component: PatientsRecipes
+    },
+    {
+      name: 'pricelist',
+      path: '/pricelist',
+      component: PricelistPage,
+      props: true
     }
   ]
 })

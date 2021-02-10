@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,11 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IEquivalentMedicines;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
+
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
+
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedMedicineRepository;
+
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRequestForMissingMedicinesRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
@@ -32,23 +37,26 @@ public class MedicineService implements IMedicineService {
 	private IUserRepository userRepository;
 	private IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository;
 	private IWarehouseRepository warehouseRepository;
+	private IPharmacyRepository pharmacyRepository;
 	private IRatedMedicineRepository ratedMedicineRepository;
 
 	@Autowired
 	public MedicineService(IMedicineRepository medicineRepository, IEquivalentMedicines equivalentMedicines,
-			IUserRepository userRepository,
-			IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository, IWarehouseRepository warehouseRepository,
+			IUserRepository userRepository, IRequestForMissingMedicinesRepository requestForMissingMedicinesRepository,
+			IWarehouseRepository warehouseRepository, IPharmacyRepository pharmacyRepository,
 			IRatedMedicineRepository ratedMedicineRepository) {
+		super();
 		this.medicineRepository = medicineRepository;
 		this.equivalentMedicines = equivalentMedicines;
 		this.userRepository = userRepository;
 		this.requestForMissingMedicinesRepository = requestForMissingMedicinesRepository;
 		this.warehouseRepository = warehouseRepository;
+		this.pharmacyRepository = pharmacyRepository;
 		this.ratedMedicineRepository = ratedMedicineRepository;
 	}
 
 	@Override
-	public List<MedicineDTO> findMedicineByPharmacyid(Long id) {
+	public List<MedicineDTO> findMedicineDTOByPharmacyid(Long id) {
 		List<Medicine> allMedicines = medicineRepository.findMedicineByPharmacyid(id);
 		List<MedicineDTO> medicinesDTO = new ArrayList<MedicineDTO>();
 		for (Medicine m : allMedicines) {
@@ -103,7 +111,7 @@ public class MedicineService implements IMedicineService {
 			return null;
 		List<RequestForMissingMedicinesDTO> ret = new ArrayList<RequestForMissingMedicinesDTO>();
 		for (RequestForMissingMedicines req : requestForMissingMedicinesRepository.getAllByPharmacy(admin.getPharmacy().getId())) {
-			RequestForMissingMedicinesDTO dto = new RequestForMissingMedicinesDTO(req.getId(), req.getDate(), req.getMedicine().getId());
+			RequestForMissingMedicinesDTO dto = new RequestForMissingMedicinesDTO(req.getId(), req.getDate(), req.getMedicine().getId(), req.getMedicine().getName());
 			ret.add(dto);
 		}
 		return ret;
@@ -125,6 +133,52 @@ public class MedicineService implements IMedicineService {
 		}
 		return false;
 	}
+
+
+
+	@Override
+	public void addMissingMedicine(Long pharmacyId, Long medicineId) {
+		RequestForMissingMedicines request = new RequestForMissingMedicines();
+		request.setDate(new Date());
+		request.setMedicine(medicineRepository.getOne(medicineId));
+		request.setPharmacy(pharmacyRepository.getOne(pharmacyId));
+		requestForMissingMedicinesRepository.save(request);		
+	}
+
+	@Override
+	public List<Medicine> findMedicineByPharmacyid(Long id) {
+		
+		return medicineRepository.findMedicineByPharmacyid(id);
+	}
+	
+
+	@Override
+	public Boolean takeMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
+		if(WarehouseContainsMedicine(pharmacyId, medicineId, quantity)) {
+			Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
+			warehouse.setAmount(warehouse.getAmount()-quantity);
+			warehouseRepository.save(warehouse);
+			return true;
+		}
+		addMissingMedicine(pharmacyId, medicineId);
+		return false;
+	}
+
+	@Override
+	public Boolean returnMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
+		Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
+		warehouse.setAmount(warehouse.getAmount()+quantity);
+		warehouseRepository.save(warehouse);
+		return true;
+	}
+	
+	@Override
+	public boolean WarehouseContainsMedicine(Long pharamacyId, Long medicineId, Integer quantity) {
+		Warehouse warehouse =  warehouseRepository.getByMedicineAndPharmacy(pharamacyId, medicineId);
+		return warehouse.getAmount()>=quantity;
+	}
+
+	
 
 	@Override
 	public List<PresentMedicineDTO> getAllMedicinesWithRating() {
@@ -153,4 +207,5 @@ public class MedicineService implements IMedicineService {
 		}
 		return pmdto;
 	}
+
 }

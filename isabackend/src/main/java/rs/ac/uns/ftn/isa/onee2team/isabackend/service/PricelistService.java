@@ -51,13 +51,41 @@ public class PricelistService implements IPricelistService {
 
 	@Override
 	public Boolean changePriceList(PricelistDTO pricelist) {
-		Pricelist newPricelist = new Pricelist();
-		newPricelist.setMedicine(medicineRepository.findById(pricelist.getMedicineId()).orElse(null));
-		newPricelist.setPharmacy(pharmacyRepository.findById(pricelist.getPharmacyId()).orElse(null));
-		newPricelist.setEndDate(pricelist.getEndDate());
-		newPricelist.setPrice(pricelist.getPrice());
-		newPricelist.setStartDate(pricelist.getStartDate());
-		pricelistRepository.save(newPricelist);
+		if(isValidNewPricelist(pricelist)) {
+			Pricelist newPricelist = new Pricelist();
+			newPricelist.setMedicine(medicineRepository.findById(pricelist.getMedicineId()).orElse(null));
+			newPricelist.setPharmacy(pharmacyRepository.findById(pricelist.getPharmacyId()).orElse(null));
+			newPricelist.setEndDate(pricelist.getEndDate());
+			newPricelist.setPrice(pricelist.getPrice());
+			newPricelist.setStartDate(pricelist.getStartDate());
+			pricelistRepository.save(newPricelist);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public PricelistDTO getValidPriceForMedicine(Long pharmacyId, Long medicineId) {
+		for(PricelistDTO pl : getValidPricelist(pharmacyId)) {
+			if(pl.getMedicineId().equals(medicineId))
+				return pl;
+		}
+		return null;
+	}
+	
+	private Boolean isValidNewPricelist(PricelistDTO pricelist) {
+		for(Pricelist p : pricelistRepository.getAllPricelistsForPharmacyAndMedicine(pricelist.getPharmacyId(), pricelist.getMedicineId())) {
+			if(pricelist.getStartDate().after(p.getStartDate()) && pricelist.getEndDate().before(p.getEndDate()))
+				return false;
+			if(p.getStartDate().after(pricelist.getStartDate()) && p.getEndDate().before(pricelist.getEndDate()))
+				return false;
+			if(p.getStartDate().equals(pricelist.getStartDate()) || p.getEndDate().equals(pricelist.getEndDate()))
+				return false;
+			if(p.getStartDate().after(pricelist.getStartDate()) && p.getStartDate().before(pricelist.getEndDate()))
+				return false;
+			if(pricelist.getStartDate().after(p.getStartDate()) && pricelist.getStartDate().before(p.getEndDate()))
+				return false;
+		}
 		return true;
 	}
 

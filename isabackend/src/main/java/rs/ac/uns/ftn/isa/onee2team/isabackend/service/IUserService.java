@@ -43,4 +43,6 @@ public interface IUserService {
 	List<CredentialsAndIdDTO> getAllFreePharmacists();
 	
 	List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Long loggedUserId);
+
+	List<Long> getPatientAllergiesIds(Long patientId);
 }

@@ -22,6 +22,7 @@
                                 <td> {{r.medicineName}} </td>
                                 <td> {{r.pharmacyName}}</td>
                                 <td> {{r.expireDate | dateFormat("DD.MM.YYYY. HH:mm")}} </td>
+                                 <td> <button type="button" class="btn btn-success" v-on:click="takeMedicine(r)">Take</button> </td>
                                 <td> <button type="button" class="btn btn-danger" v-on:click="cancelReservation(r)">Cancel</button> </td>
                             </tr>
                         </tbody>
@@ -52,17 +53,30 @@ export default {
 
     methods : {
         cancelReservation : function(r){
-            
-            axios.put('http://' + comm.server + '/api/reservations/cancelReservation?reservation_id=' + r.id )
+            if(r.expireDate - Date.now() > 86400000 ){
+                axios.put('http://' + comm.server + '/api/reservations/cancelReservation?reservation_id=' + r.id )
+                .then(response => {
+                    if(response.data){
+                        axios.get('http://' + comm.server + '/api/reservations/patientsReservations')
+                        .then(response => this.myReservations = response.data);
+                        alert('Reservation canceled!');
+                    }
+                });
+            }
+            else{
+                alert('Reservation cannot be canceled less than 24h before expire time!');
+            }
+        },
+        takeMedicine : function(r){
+            axios.put('http://' + comm.server + '/api/reservations/takeMedicine' , r )
             .then(response => {
-                if(response.data){
+                if(response.status == 200){
                     axios.get('http://' + comm.server + '/api/reservations/patientsReservations')
                     .then(response => this.myReservations = response.data);
-                    alert('Reservation canceled!');
-                }
-            });
-            
 
+                    alert("You successfully took medicine!");
+                }
+            })
         }
     },
 

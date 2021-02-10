@@ -73,7 +73,6 @@ export default {
                     pharmacyId : ""
                 }
                 ).then(response => {
-                    console.log(response.data)
                     this.examinations = response.data;
                 });
         },

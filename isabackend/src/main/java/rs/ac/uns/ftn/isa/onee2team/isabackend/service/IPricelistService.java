@@ -8,4 +8,5 @@ public interface IPricelistService {
 
 	List<PricelistDTO> getValidPricelist(Long pharmacyId);
 	Boolean changePriceList(PricelistDTO pricelist);
+	PricelistDTO getValidPriceForMedicine(Long pharmacyId, Long medicineId);
 }
