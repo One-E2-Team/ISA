@@ -54,7 +54,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ "health_wokrer_id in (select id from all_users where user_type = 1)", nativeQuery = true)
 	double getPriceForAppointment(Long id);
 	
-	@Query(value = "select avg(rate) from rated_pharmacies where pharmacy_id = ?1",  nativeQuery = true)
+	@Query(value = "select IFNULL(avg(rate),0) from rated_pharmacies where pharmacy_id = ?1",  nativeQuery = true)
 	double getAvgRateForPharmacy(Long id);
 	
 	@Query(value = "select distinct health_wokrer_id from examinations where pharmacy_id = ?1 "
@@ -62,7 +62,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			"and health_wokrer_id in (select id from all_users where user_type = 1)",  nativeQuery = true)
 	List<Long> getFreePharmacistInPharmacy(Long id, Date date);
 	
-	@Query(value = "select avg(rate) from rated_health_workers where health_worker_id = ?1", nativeQuery = true)
+	@Query(value = "select IFNULL(avg(rate),0) from rated_health_workers where health_worker_id = ?1", nativeQuery = true)
 	double getAvgRateForHealthWorker(Long id);
 	
 	@Query("select e from Examination e where e.healthWokrer.id = ?1 and e.startTime = ?2")
