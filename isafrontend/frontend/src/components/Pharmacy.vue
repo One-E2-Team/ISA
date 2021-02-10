@@ -83,6 +83,7 @@
         <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe" v-if="isPatient()">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
         <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-outline-success">Create order</button>
+        <button name="viewPricelist" v-if="isPharmacyAdmin()" @click="openPricelistPage()" class="btn btn-outline-success">View pricelist</button>
     </div>
 </template>
 
@@ -212,6 +213,12 @@ export default {
                     alert("Successfully edited!");
                 }
             });
+        },
+        openPricelistPage : function(){
+            this.$router.push({
+                name: 'pricelist',
+                params: { pid: this.id }
+            })
         }
     },
     mounted() {
