@@ -82,4 +82,10 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 			+ "and e.date <= ?3 and e.status not in (0, 2)", nativeQuery = true)
 	List<Examination> getAllFinishedByPharmacyInTimeInterval(Long pharmacyId, Date start, Date end);
 	
+	@Query(value = "select * from examinations e where e.pharmacy_id = ?1 and e.date >= ?2 "
+			+ "and e.date <= ?3 and e.health_wokrer_id = ?4  and e.status in (0,2)", nativeQuery = true)
+	List<Examination> searchAllFreeExaminations(Long pharmacyId, Date start, Date end,Long healthworkerId);
+	
+	@Query(value = "select * from examinations where patient_id = ?1 and date >= now()", nativeQuery = true)
+	List<Examination> getPatientFutureExaminations(Long patientId);
 }

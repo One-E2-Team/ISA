@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,7 +56,7 @@ public class ExaminationController {
 	public boolean scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		return examinationService.scheduleAtDermatologist(user.getId(), examinationId);
+		return examinationService.scheduleExamination(user.getId(), examinationId);
 	}
 	
 	@PostMapping(value = "/cancelAppointment")
@@ -145,4 +147,14 @@ public class ExaminationController {
 		return examinationService.getPharmacyByExamination(id);
 	}
 	
+	@PostMapping(value= "/pharmacy/{pid}/healthworker/{mid}/available")
+	public List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(@PathVariable("pid")Long pharmacyId,@PathVariable("mid") Long healthworkerId,@RequestBody TimeIntervalDTO timeInterval){
+		return examinationService.searchAllFreeExaminationsInSpecificDays(pharmacyId, timeInterval.getStart(), timeInterval.getEnd(), healthworkerId);
+	}
+	
+	@PostMapping(value="/health-worker/schedule")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean scheduleExemination(@PathParam("patinet-id") Long patientId, @PathParam("examination-id") Long examinationId){	
+		return examinationService.scheduleExamination(patientId,examinationId);
+	}
 }
