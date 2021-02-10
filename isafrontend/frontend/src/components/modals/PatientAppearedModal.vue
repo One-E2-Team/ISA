@@ -28,7 +28,6 @@ export default {
  
     methods:{
         restrictPatient: function(){
-            console.log(this.examination)
             axios.put('http://'+ comm.server +'/api/examinations/not-realized/'+this.examination); 
         },
         startTherapy: function(){

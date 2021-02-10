@@ -278,6 +278,13 @@ public class ExaminationService implements IExaminationService {
 		return ret_list;
 	}
 
+
+	@Override
+	public Pharmacy getPharmacyByExamination(Long examinationId) {
+		return examinationRepository.getOne(examinationId).getPharmacy();
+	}
+
+
 	@Override
 	public List<NewRateDTO> getHealthWorkersForRate(Long patientId) {
 		List<Examination> examinations = examinationRepository.getPatientsFinishedAppointments(patientId);

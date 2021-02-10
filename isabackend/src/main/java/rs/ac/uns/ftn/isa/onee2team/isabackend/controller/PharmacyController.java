@@ -3,9 +3,11 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineWithQuantityDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
+
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
@@ -61,9 +67,12 @@ public class PharmacyController {
 
 	@GetMapping(value = "/medicinesByPharmacyId")
 	public List<MedicineDTO> getMedicinesByPharmacyId(@RequestParam Long id) {
+		return medicineService.findMedicineDTOByPharmacyid(id);
+	}
+	@GetMapping(value = "/{id}/medicines/")
+	public List<Medicine> getMedicinesInPharmacy(@PathVariable("id") Long id) {
 		return medicineService.findMedicineByPharmacyid(id);
 	}
-
 	@PostMapping(value = "/register")
 	@PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
 	public Pharmacy registerPharmacy(@RequestBody NewPharmacyDTO phdto) {
@@ -76,6 +85,23 @@ public class PharmacyController {
 		return pharmacyService.getPharmacyById(id);
 	}
 	
+
+	@PostMapping(value="/{id}/take-medicine")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean takeMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
+		if(medicineService.takeMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
+			return true;
+		return false;
+	}
+	
+	@PostMapping(value="/{id}/return-medicine")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean returneMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
+		if(medicineService.returnMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
+			return true;
+		return false;
+	}
+
 	@GetMapping(value = "/medicines/all")
 	public List<PresentMedicineDTO> getMedicinesWithPrice(Authentication auth){
 		return pharmacyService.getMedicinesWithPriceForUser(medicineService.getAllMedicinesWithRating(), auth == null ? 0 : (((User) auth.getPrincipal()).getUserType() != UserType.PATIENT ? 0 : ((User) auth.getPrincipal()).getId()));

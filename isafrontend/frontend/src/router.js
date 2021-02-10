@@ -26,6 +26,7 @@ import PatientComplaintPage from './components/pages/PatientComplaintPage'
 import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
+import MedicineReservationPage from './components/pages/MedicineReservationPage'
 import ReservedMedicines from './components/pages/ReservedMedicines'
 import OrdersPage from './components/pages/OrdersPage'
 import PatientRatingPage from './components/pages/PatientRatingPage'
@@ -128,10 +129,15 @@ const router = new VueRouter({
       props: true
     },
     {
-
       path: '/therapy/:id',
       name: 'Therapy',
       component: TherapyPage,
+      props: true,
+    },
+    {
+      path: '/reservation/:id',
+      name: 'Reservation',
+      component: MedicineReservationPage,
       props: true,
     },
     {

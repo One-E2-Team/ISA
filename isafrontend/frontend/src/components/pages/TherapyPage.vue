@@ -55,23 +55,19 @@ export default {
     },
     created(){
         axios.get('http://'+ comm.server +'/api/examinations/patient',{ params:{"examination-id" : this.id}})
-            .then(response => {this.patient = response.data; console.log(response.data) });
+            .then(response => {this.patient = response.data; });
     },
     methods:{
         submitInformation: function(){
-            console.log("saljem zahtev");
-            let request = {
-                "examinationId" : this.id,
-                "information" : this.information,
-            }
-            console.log(request)
             axios.put('http://'+ comm.server +'/api/examinations/information',{
                 "examinationId" : this.id,
                 "information" : this.information
             })
             .then(response =>{
-                if (response.status == 200)
+                if (response.status == 200){
                     alert("Uspesno unete informacije");
+                    this.$router.push({name: 'Reservation', params: {id: this.id}})
+                }
                 else
                     alert("Informacije neuspesno unete");
             });

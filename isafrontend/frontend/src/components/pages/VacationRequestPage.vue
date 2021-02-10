@@ -39,9 +39,7 @@ export default {
                 "end" : end,
                 "type" : this.reason
             }
-            console.log(start,end)
             axios.post('http://' + comm.server + '/api/calendar/vacation',request).then(response=>{
-                console.log("zavrsio");
                 console.log(response);
             }
             )
