@@ -22,6 +22,7 @@
                                 <td> {{r.medicineName}} </td>
                                 <td> {{r.pharmacyName}}</td>
                                 <td> {{r.expireDate | dateFormat("DD.MM.YYYY. HH:mm")}} </td>
+                                 <td> <button type="button" class="btn btn-success" v-on:click="takeMedicine(r)">Take</button> </td>
                                 <td> <button type="button" class="btn btn-danger" v-on:click="cancelReservation(r)">Cancel</button> </td>
                             </tr>
                         </tbody>
@@ -65,8 +66,17 @@ export default {
             else{
                 alert('Reservation cannot be canceled less than 24h before expire time!');
             }
-            
+        },
+        takeMedicine : function(r){
+            axios.put('http://' + comm.server + '/api/reservations/takeMedicine' , r )
+            .then(response => {
+                if(response.status == 200){
+                    axios.get('http://' + comm.server + '/api/reservations/patientsReservations')
+                    .then(response => this.myReservations = response.data);
 
+                    alert("You successfully took medicine!");
+                }
+            })
         }
     },
 

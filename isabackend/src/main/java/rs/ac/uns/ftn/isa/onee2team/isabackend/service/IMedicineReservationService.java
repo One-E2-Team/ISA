@@ -19,4 +19,8 @@ public interface IMedicineReservationService {
 	boolean reserve(RequestReservationDTO dto, Long patient_id);
 	
 	List<NewRateDTO> getMedicinesForRate(Long patientId);
+	
+	void takeMedicine(Long patientId, ReservedMedicineDTO dto);
+	
+	List<MedicineReservation> getAllMedicineReservations();
 }

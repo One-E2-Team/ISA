@@ -53,4 +53,12 @@ public class ReservationController {
 		User user = (User) auth.getPrincipal();
 		return medicineReservationService.reserve(dto, user.getId());
 	}
+	
+	@PutMapping(value = "/takeMedicine")
+	@PreAuthorize("hasRole('PATIENT')")
+	public void takeMedicine(@RequestBody ReservedMedicineDTO dto){
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		medicineReservationService.takeMedicine(user.getId(), dto);
+	}
 }
