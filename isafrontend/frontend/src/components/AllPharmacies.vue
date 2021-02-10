@@ -19,7 +19,7 @@
                     <td>{{p.address}}</td>
                     <td>{{p.description}}</td>
                     <td><button class="btn btn-info" v-on:click="showMedicines(p)">Show medicines</button></td>
-                    <td><button class="btn btn-info" v-on:click="selectPharmacy(p)">Visit pharmacy</button></td>
+                    <td v-if="isPatient()"><button class="btn btn-info" v-on:click="selectPharmacy(p)">Visit pharmacy</button></td>
                 </tr>
             </tbody>
         </table><br/>
@@ -77,6 +77,9 @@ export default {
         },
         selectPharmacy: function(p){
             this.$router.push({name: 'pharmacy', params: {id: p.id}})
+        },
+        isPatient : function(){
+            return comm.getCurrentUserRole() === 'PATIENT';
         }
     }
 }
