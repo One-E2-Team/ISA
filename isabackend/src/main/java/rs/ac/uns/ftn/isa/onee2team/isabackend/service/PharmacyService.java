@@ -68,6 +68,7 @@ public class PharmacyService implements IPharmacyService {
 	private IMedicineWithQuantityRepository mwqRepository;
 	private IERecipeRepository eRecipeRepository;
 	private IWarehouseRepository wearehouseRepository;
+	private IEmailNotificationService emailNotificationService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
@@ -76,7 +77,8 @@ public class PharmacyService implements IPharmacyService {
 			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository, 
 			IMedicineReservationRepository reservationRepository, 
 			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
-			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository) {
+			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
+			IEmailNotificationService emailNotificationService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -90,6 +92,7 @@ public class PharmacyService implements IPharmacyService {
 		this.mwqRepository = mwqRepository;
 		this.eRecipeRepository = eRecipeRepository;
 		this.warehouseRepository = warehouseRepository;
+		this.emailNotificationService = emailNotificationService;
 	}
 
 	@Override
@@ -343,6 +346,7 @@ public class PharmacyService implements IPharmacyService {
 			e.getMedicinesWithQuantity().add(mwq);
 		}
 		e = eRecipeRepository.save(e);
+		emailNotificationService.sendNotificationAsync(e.getPatient().getEmail(), "ERecipe reservation", "Your eRecipe reservation was successfull!");
 		return e;
 	}
 }
