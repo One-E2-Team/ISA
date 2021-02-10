@@ -27,7 +27,7 @@ public class ERecipe {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 	
-	@Column(name = "code", unique = true, nullable = false)
+	@Column(name = "code", nullable = false)
 	private String code;
 
 	@ManyToOne(optional = false)
@@ -47,6 +47,22 @@ public class ERecipe {
 	
 	@Column(name = "status", nullable = false)
 	private ERecipeStatus status;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public ERecipeStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ERecipeStatus status) {
+		this.status = status;
+	}
 
 	public Long getId() {
 		return id;
@@ -87,21 +103,4 @@ public class ERecipe {
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
 	}
-	
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public ERecipeStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(ERecipeStatus status) {
-		this.status = status;
-	}
-
 }

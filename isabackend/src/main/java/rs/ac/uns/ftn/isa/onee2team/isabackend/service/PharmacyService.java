@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.EditPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
@@ -22,11 +25,14 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPrice;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPriceAndGradeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.MedicineWithQuantity;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipe;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipeStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pricelist;
@@ -36,6 +42,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IERecipeRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineReservationRepository;
@@ -60,6 +67,9 @@ public class PharmacyService implements IPharmacyService {
 	private IMedicineReservationRepository reservationRepository;
 	private IExaminationRepository examRepository;
 	private IMedicineWithQuantityRepository mwqRepository;
+	private IERecipeRepository eRecipeRepository;
+	private IWarehouseRepository wearehouseRepository;
+	private IEmailNotificationService emailNotificationService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
@@ -67,7 +77,9 @@ public class PharmacyService implements IPharmacyService {
 			IExaminationService examinationService, IPromotionService promotionService,
 			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository, 
 			IMedicineReservationRepository reservationRepository, 
-			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository) {
+			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
+			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
+			IEmailNotificationService emailNotificationService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -79,6 +91,9 @@ public class PharmacyService implements IPharmacyService {
 		this.reservationRepository = reservationRepository;
 		this.examRepository = examRepository;
 		this.mwqRepository = mwqRepository;
+		this.eRecipeRepository = eRecipeRepository;
+		this.warehouseRepository = warehouseRepository;
+		this.emailNotificationService = emailNotificationService;
 	}
 
 	@Override
@@ -278,6 +293,64 @@ public class PharmacyService implements IPharmacyService {
 		return ret;
 	}
 
+	private boolean checkERecipeValidity(String code) {
+		if(eRecipeRepository.findByCodeNotRejected(code).size()!=0) return false;
+		else return true;
+	}
+	
+	private double getDiscountForPatient(Long patientId) {
+		Patient p = (Patient) userRepository.findById(patientId).get();
+		List<CategoryType> ct = promotionService.getPatientType(p.getPoints());
+		CategoryType type = ct.get(0);
+		for (CategoryType categoryType : ct)
+			if(type.ordinal() < categoryType.ordinal()) 
+				type = categoryType;
+		double discount = promotionService.getDiscount(type);
+		return discount;
+	}
+	
+	@Override
+	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(ERecipeDTO erdto) {
+		if(checkERecipeValidity(erdto.getCode()) == false) return null;
+		List<PharmacyWithPriceAndGradeDTO> ret = new ArrayList<PharmacyWithPriceAndGradeDTO>();
+		List<Long> pharmacyIds = new ArrayList<Long>();
+		double discount = getDiscountForPatient(erdto.getPatientId());
+		pharmacyIds.addAll(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(erdto.getMedicine().get(0).getId(), erdto.getMedicine().get(0).getQuantity()));
+		for (ERecipeMedicine ermed : erdto.getMedicine())
+			pharmacyIds = pharmacyIds.stream().distinct().filter(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(ermed.getId(), ermed.getQuantity())::contains).collect(Collectors.toList());
+		for (Long pid : pharmacyIds) {
+			Pharmacy p = pharmacyRepository.findById(pid).get();
+			double price = 0.0;
+			for (ERecipeMedicine ermed : erdto.getMedicine()) 
+				price += pricelistRepository.getValidPricelistForMedicine(pid, ermed.getId()).get(0).getPrice();
+			ret.add(new PharmacyWithPriceAndGradeDTO(pid, p.getName(), p.getAddress(), price * (1.0 - discount/100.0), ratedPharmacyRepository.getAverageRateByPharmacyId(pid)));
+		}
+		return ret;
+	}
+
+	@Override
+	public ERecipe buyByERecipe(Long pharmacyId, ERecipeDTO erdto, Long patientId) {
+		if(checkERecipeValidity(erdto.getCode()) == false) return null;
+		ERecipe e = new ERecipe();
+		e.setDate(erdto.getDate());
+		e.setCode(erdto.getCode());
+		e.setPatient((Patient) userRepository.findById(patientId).get());
+		e.setPharmacy(pharmacyRepository.findById(pharmacyId).get());
+		e.setStatus(ERecipeStatus.CREATED);
+		e.setMedicinesWithQuantity(new ArrayList<MedicineWithQuantity>());
+		for (ERecipeMedicine ermed : erdto.getMedicine()) {
+			MedicineWithQuantity mwq = new MedicineWithQuantity();
+			mwq.setQuantity(ermed.getQuantity());
+			mwq.setMedicine(medicineRepository.findById(ermed.getId()).get());
+			Warehouse w = warehouseRepository.getByMedicineAndPharmacy(ermed.getId(), pharmacyId);
+			w.setReservedAmount(w.getReservedAmount() + ermed.getQuantity());
+			warehouseRepository.save(w);
+			e.getMedicinesWithQuantity().add(mwq);
+		}
+		e = eRecipeRepository.save(e);
+		emailNotificationService.sendNotificationAsync(e.getPatient().getEmail(), "ERecipe reservation", "Your eRecipe reservation was successfull!");
+		return e;
+	}
 	@Override
 	public Boolean editPharmacy(EditPharmacyDTO editPharmacy, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);

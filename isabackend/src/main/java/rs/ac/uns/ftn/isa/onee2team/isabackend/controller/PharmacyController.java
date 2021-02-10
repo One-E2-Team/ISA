@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.EditPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
@@ -24,10 +25,11 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPriceAndGradeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
-
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipe;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
@@ -147,6 +149,21 @@ public class PharmacyController {
 		return pharmacyService.getPharmacyIncomeInTimeInterval(interval, user.getId());
 	}
 	
+	@PostMapping(value = "/eRecipe/getAllWhereAvailable")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(@RequestBody ERecipeDTO erdto, Authentication auth){
+		if(((User) auth.getPrincipal()).getId().equals(erdto.getPatientId()))
+			return pharmacyService.getAllWhereAvailableWithERecipe(erdto);
+		else return null;
+	}
+	
+	@PostMapping(value = "/{id}/eRecipe/buy")
+	@PreAuthorize("hasRole('PATIENT')")
+	public ERecipe buyByERecipe(@PathVariable("id") Long pharmacyId, @RequestBody ERecipeDTO erdto, Authentication auth) {
+		if(((User) auth.getPrincipal()).getId().equals(erdto.getPatientId()))
+			return pharmacyService.buyByERecipe(pharmacyId, erdto, ((User) auth.getPrincipal()).getId());
+		else return null;
+	}
 	@PutMapping(value = "/edit")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public Boolean editPharmacy(@RequestBody EditPharmacyDTO editPharmacy, Authentication auth) {
