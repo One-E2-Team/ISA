@@ -16,7 +16,7 @@
                     <td class="table-light">{{pharmacist.pharmacyNames}}</td>
                 </tr>
             </table>
-            <div>
+            <div  v-if="this.pharmacists != ''">
                 <div>
                     <label>Filter by pharmacy name:</label>
                     <input type="text" v-model="filterPharmacyName">

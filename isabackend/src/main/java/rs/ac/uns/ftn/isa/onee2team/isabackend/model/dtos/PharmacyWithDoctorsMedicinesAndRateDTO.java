@@ -8,6 +8,7 @@ public class PharmacyWithDoctorsMedicinesAndRateDTO {
 
 	private String name;
 	private String address;
+	private String description;
 	private List<DermatologistWithFreeExaminationsDTO> pharmacists;
 	private List<DermatologistWithFreeExaminationsDTO> dermatologists;
 	private List<Medicine> medicines;
@@ -62,5 +63,13 @@ public class PharmacyWithDoctorsMedicinesAndRateDTO {
 
 	public void setRate(Double rate) {
 		this.rate = rate;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
