@@ -41,6 +41,9 @@
                 <a class="nav-link" href="#/history">History</a>
                 </li>
                 <li v-if="role == 'PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/recipes">eRecipes</a>
+                </li>
+                <li v-if="role == 'PATIENT'" class="nav-item">
                 <a class="nav-link" href="#/reservedMedicines">My reservations</a>
                 </li>
                 <li class="nav-item dropdown" v-if="role == 'PATIENT'">

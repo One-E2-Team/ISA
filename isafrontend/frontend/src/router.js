@@ -32,6 +32,7 @@ import OrdersPage from './components/pages/OrdersPage'
 import PatientRatingPage from './components/pages/PatientRatingPage'
 import RequestsForMedicines from './components/pages/RequestsForMedicinesPage'
 import StatisticsPage from './components/pages/StatisticsPage'
+import PatientsRecipes from './components/pages/PatientsRecipes'
 
 
 Vue.use(VueRouter)
@@ -200,6 +201,11 @@ const router = new VueRouter({
       name: 'statistics',
       path: '/statistics',
       component: StatisticsPage
+    },
+    {
+      name: 'recipes',
+      path: '/recipes',
+      component: PatientsRecipes
     }
   ]
 })

@@ -115,10 +115,10 @@ public class ExaminationController {
 	
 	@PutMapping(value = "/scheduleAtPharmacist")
 	@PreAuthorize("hasRole('PATIENT')")
-	public void scheduleAtPharmacist(@RequestBody RequestDTO dto) {
+	public boolean scheduleAtPharmacist(@RequestBody RequestDTO dto) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		examinationService.scheduleAtPharmacist(user.getId(), dto.getPharmacy_id(), dto.getDate());
+		return examinationService.scheduleAtPharmacist(user.getId(), dto.getPharmacy_id(), dto.getDate());
 	}
 	
 	@SuppressWarnings("deprecation")

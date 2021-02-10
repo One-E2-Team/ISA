@@ -78,7 +78,7 @@ export default {
                     else alert("You have 3 penalties! This action is forbidden");
                 });
 
-                this.selectedExamination = {};
+                this.selectedExamination = null;
 
             }
         },
