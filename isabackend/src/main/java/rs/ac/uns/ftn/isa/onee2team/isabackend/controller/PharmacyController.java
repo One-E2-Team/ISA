@@ -150,12 +150,16 @@ public class PharmacyController {
 	@PostMapping(value = "/eRecipe/getAllWhereAvailable")
 	@PreAuthorize("hasRole('PATIENT')")
 	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(@RequestBody ERecipeDTO erdto, Authentication auth){
-		return null;
+		if(((User) auth.getPrincipal()).getId().equals(erdto.getPatientId()))
+			return pharmacyService.getAllWhereAvailableWithERecipe(erdto);
+		else return null;
 	}
 	
 	@PostMapping(value = "/{id}/eRecipe/buy")
 	@PreAuthorize("hasRole('PATIENT')")
 	public ERecipe buyByERecipe(@PathVariable("id") Long pharmacyId, @RequestBody ERecipeDTO erdto, Authentication auth) {
-		return null;
+		if(((User) auth.getPrincipal()).getId().equals(erdto.getPatientId()))
+			return pharmacyService.buyByERecipe(pharmacyId, erdto, ((User) auth.getPrincipal()).getId());
+		else return null;
 	}
 }
