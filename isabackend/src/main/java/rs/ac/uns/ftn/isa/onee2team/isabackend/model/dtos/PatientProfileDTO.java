@@ -5,22 +5,17 @@ public class PatientProfileDTO extends UserProfileDTO{
 	private Integer points;
 	private String category;
 	private double discount;
+	private Integer penalties;
 	
 	public PatientProfileDTO() {}
-
-	public PatientProfileDTO(Integer points, String category, double discount) {
-		super();
-		this.points = points;
-		this.category = category;
-		this.discount = discount;
-	}
 	
 	public PatientProfileDTO(Long id, String email, String firstName, String lastName, String address, String city,
-			String state, String phone, Integer points, String category, double discount) {
+			String state, String phone, Integer points, String category, double discount, Integer penalties) {
 		super(id, email, firstName, lastName, address, city, state, phone);
 		this.points = points;
 		this.category = category;
 		this.discount = discount;
+		this.penalties = penalties;
 	}
 
 	public Integer getPoints() {
@@ -40,6 +35,14 @@ public class PatientProfileDTO extends UserProfileDTO{
 	}
 	public void setDiscount(double discount) {
 		this.discount = discount;
+	}
+
+	public Integer getPenalties() {
+		return penalties;
+	}
+
+	public void setPenalties(Integer penalties) {
+		this.penalties = penalties;
 	}
 	
 }

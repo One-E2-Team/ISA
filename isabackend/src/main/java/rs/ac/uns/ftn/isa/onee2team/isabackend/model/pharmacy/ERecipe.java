@@ -26,6 +26,9 @@ public class ERecipe {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
+	
+	@Column(name = "code", unique = true, nullable = false)
+	private String code;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "patientId")
@@ -41,6 +44,9 @@ public class ERecipe {
 
 	@Column(name = "date", nullable = false)
 	private Date date;
+	
+	@Column(name = "status", nullable = false)
+	private ERecipeStatus status;
 
 	public Long getId() {
 		return id;
