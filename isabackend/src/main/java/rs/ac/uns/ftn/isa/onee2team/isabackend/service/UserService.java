@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.calendar.WorkingCalendar;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HireHealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -29,6 +31,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedHealthWorkerRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWorkingCalendarRepository;
 
 @Service
 public class UserService implements IUserService, UserDetailsService {
@@ -39,16 +42,18 @@ public class UserService implements IUserService, UserDetailsService {
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 
 	private IUserRepository userRepository;
+	private IWorkingCalendarRepository workingCalendarRepository;
 
 	private IAuthorityService authService;
 	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
 
 	@Autowired
 	public UserService(IUserRepository userRepository, IAuthorityService authService,
-			IRatedHealthWorkerRepository ratedHealthWorkerRepository) {
+			IRatedHealthWorkerRepository ratedHealthWorkerRepository, IWorkingCalendarRepository workingCalendarRepository) {
 		this.userRepository = userRepository;
 		this.authService = authService;
 		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
+		this.workingCalendarRepository = workingCalendarRepository;
 	}
 
 	public List<User> getAll() {
@@ -257,5 +262,26 @@ public class UserService implements IUserService, UserDetailsService {
 	@Override
 	public List<Long> getPatientAllergiesIds(Long patientId) {
 		return userRepository.getPatientAllergiesIds(patientId);
+	}
+
+	@Override
+	public Boolean hirePharmacist(HireHealthWorkerDTO hireWorker, Long loggedUserId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		if(admin == null)
+			return false;
+		Pharmacist pharmacist = userRepository.getPharmacistById(hireWorker.getWorkerId());
+		if(pharmacist == null || pharmacist.getPharmacy() != null)
+			return false;
+		pharmacist.setPharmacy(admin.getPharmacy());
+		WorkingCalendar wc = new WorkingCalendar();
+		wc.setPharmacy(admin.getPharmacy());
+		wc.setEndDate(hireWorker.getEndDate());
+		wc.setEndHour(hireWorker.getEndTime());
+		wc.setHealthWorker(pharmacist);
+		wc.setStartDate(hireWorker.getStartDate());
+		wc.setStartHour(hireWorker.getStartTime());
+		userRepository.save(pharmacist);
+		workingCalendarRepository.save(wc);
+		return true;
 	}
 }
