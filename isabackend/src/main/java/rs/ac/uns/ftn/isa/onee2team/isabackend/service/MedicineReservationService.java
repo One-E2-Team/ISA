@@ -156,4 +156,9 @@ public class MedicineReservationService implements IMedicineReservationService {
 		userRepository.save(p);
 	}
 
+	@Override
+	public List<MedicineReservation> getAllMedicineReservations() {
+		return medicineReservationRepository.findAll();
+	}
+
 }

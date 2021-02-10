@@ -21,4 +21,6 @@ public interface IMedicineReservationService {
 	List<NewRateDTO> getMedicinesForRate(Long patientId);
 	
 	void takeMedicine(Long patientId, ReservedMedicineDTO dto);
+	
+	List<MedicineReservation> getAllMedicineReservations();
 }
