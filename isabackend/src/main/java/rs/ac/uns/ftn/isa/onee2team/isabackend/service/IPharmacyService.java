@@ -7,6 +7,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PresentMedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
@@ -19,7 +20,7 @@ public interface IPharmacyService {
 
 	List<Pharmacy> findAll();
 
-	List<PharmacyDTO> findAllIPharmaciesDto();
+	List<PharmacyForSearchDTO> findAllIPharmaciesDto();
 
 	Pharmacy registerPharmacy(NewPharmacyDTO ph);
 
