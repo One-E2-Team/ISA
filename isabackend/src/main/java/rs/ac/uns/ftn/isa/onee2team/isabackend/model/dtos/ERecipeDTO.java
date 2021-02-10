@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ERecipeDTO {
 	private Long patientId;
+	private String code;
 	private Date date;
 	private List<ERecipeMedicine> medicine;
 	public Long getPatientId() {
@@ -24,6 +25,12 @@ public class ERecipeDTO {
 	}
 	public void setMedicine(List<ERecipeMedicine> medicine) {
 		this.medicine = medicine;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
 	}
 	
 }
