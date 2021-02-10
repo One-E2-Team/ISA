@@ -17,7 +17,7 @@
                     <td v-if="isPharmacyAdmin()"><button @click="goToCreateExam(dermatologist.id)" class="btn-outline-success">Create free examinations</button></td>
                 </tr>
             </table>
-            <div>
+            <div v-if="this.dermatologists != ''">
                 <div>
                     <label>Filter by pharmacy name:</label>
                     <input type="text" v-model="filterPharmacyName">
