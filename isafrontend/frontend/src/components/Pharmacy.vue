@@ -1,7 +1,24 @@
 <template>
     <div>
-        <h2>{{this.pharmacy.name}}</h2>
-        <h4>{{this.pharmacy.address}}</h4>
+        <div>
+            <label>Pharmacy name</label>
+            <input type="text" v-model="pharmacy.name" :disabled="isPatient()">
+        </div>
+        <div>
+            <label>Address</label>
+            <input type="text" v-model="pharmacy.address" :disabled="isPatient()">
+        </div>
+        <div v-if="isPharmacyAdmin()">
+            <label>Description</label>
+            <input type="text" v-model="pharmacy.description">
+        </div>
+        <div>
+            <label>Rate</label>
+            <input type="number" v-model="pharmacy.rate" disabled>
+        </div>
+        <div>
+            <button @click="editPharmacy()" class="btn btn-primary" v-if="isPharmacyAdmin()">Save changes</button>
+        </div>
         <button name="toggleMedicines" class="btn btn-outline-success" @click="toggleMedicines">ToggleMedicines</button>
         <div v-if="this.showMedicines">
             <h2>Medicines:</h2>
@@ -65,7 +82,8 @@
         </div>
         <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe" v-if="isPatient()">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
-        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn">Create order</button>
+        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-outline-success">Create order</button>
+        <button name="viewPricelist" v-if="isPharmacyAdmin()" @click="openPricelistPage()" class="btn btn-outline-success">View pricelist</button>
     </div>
 </template>
 
@@ -179,6 +197,28 @@ export default {
                     }
                 }
             });
+        },
+        editPharmacy : function(){
+            if(!this.pharmacy.description || !this.pharmacy.name || !this.pharmacy.address){
+                alert("Invalid input!");
+                return;
+            }
+            let request = {
+                description: this.pharmacy.description,
+                name: this.pharmacy.name,
+                address: this.pharmacy.name
+            }
+            axios.put('http://' + comm.server + '/api/pharmacies/edit', request).then(response => {
+                if(response.status == 200 && response.data == true){
+                    alert("Successfully edited!");
+                }
+            });
+        },
+        openPricelistPage : function(){
+            this.$router.push({
+                name: 'pricelist',
+                params: { pid: this.id }
+            })
         }
     },
     mounted() {

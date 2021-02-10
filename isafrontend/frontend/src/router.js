@@ -33,6 +33,8 @@ import PatientRatingPage from './components/pages/PatientRatingPage'
 import RequestsForMedicines from './components/pages/RequestsForMedicinesPage'
 import StatisticsPage from './components/pages/StatisticsPage'
 import eRecipe from './components/pages/eRecipe'
+import PatientsRecipes from './components/pages/PatientsRecipes'
+import PricelistPage from './components/pages/PricelistPage'
 
 
 Vue.use(VueRouter)
@@ -206,6 +208,17 @@ const router = new VueRouter({
       name: 'eRecipe',
       path: '/eRecipe',
       component: eRecipe
+    },
+    {
+      name: 'recipes',
+      path: '/recipes',
+      component: PatientsRecipes
+    },
+    {
+      name: 'pricelist',
+      path: '/pricelist',
+      component: PricelistPage,
+      props: true
     }
   ]
 })

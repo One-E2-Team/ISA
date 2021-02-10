@@ -52,15 +52,19 @@ export default {
 
     methods : {
         cancelReservation : function(r){
-            
-            axios.put('http://' + comm.server + '/api/reservations/cancelReservation?reservation_id=' + r.id )
-            .then(response => {
-                if(response.data){
-                    axios.get('http://' + comm.server + '/api/reservations/patientsReservations')
-                    .then(response => this.myReservations = response.data);
-                    alert('Reservation canceled!');
-                }
-            });
+            if(r.expireDate - Date.now() > 86400000 ){
+                axios.put('http://' + comm.server + '/api/reservations/cancelReservation?reservation_id=' + r.id )
+                .then(response => {
+                    if(response.data){
+                        axios.get('http://' + comm.server + '/api/reservations/patientsReservations')
+                        .then(response => this.myReservations = response.data);
+                        alert('Reservation canceled!');
+                    }
+                });
+            }
+            else{
+                alert('Reservation cannot be canceled less than 24h before expire time!');
+            }
             
 
         }

@@ -26,6 +26,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientProfileDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientsERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyAdminProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
@@ -35,6 +36,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IERecipeService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
 
@@ -47,13 +49,16 @@ public class UserController {
 	private PasswordEncoder passwordEncoder;
 
 	private IPromotionService promotionService;
+	
+	private IERecipeService eRecipeService;
 
 	@Autowired
 	public UserController(IUserService userService, PasswordEncoder passwordEncoder,
-			IPromotionService promotionService) {
+			IPromotionService promotionService, IERecipeService eRecipeService) {
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
 		this.promotionService = promotionService;
+		this.eRecipeService = eRecipeService;
 	}
 
 	@GetMapping(value = "/all")
@@ -205,5 +210,12 @@ public class UserController {
 	@GetMapping(value ="/patient-allergies-ids/{id}")
 	public List<Long> getPatientAllergiesIds(@PathVariable("id") Long patientId){
 		return userService.getPatientAllergiesIds(patientId);
+	}
+	
+	@GetMapping(value = "/myerecipes")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<PatientsERecipeDTO> getMyERecipes(Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		return eRecipeService.getPatientsERecipes(user.getId());
 	}
 }

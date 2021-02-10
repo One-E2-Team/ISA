@@ -9,12 +9,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.EditPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
@@ -138,7 +140,7 @@ public class PharmacyController {
 		return pharmacyService.getNumOfMedicinesByDateInPharmacy(interval, user.getId());
 	}
 
-	@PostMapping(value = "/income)")
+	@PostMapping(value = "/income")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public Double getPharmacyIncomeInTimeInterval(@RequestBody TimeIntervalDTO interval, Authentication auth) {
 		if (interval.getStart().after(interval.getEnd()))
@@ -161,5 +163,11 @@ public class PharmacyController {
 		if(((User) auth.getPrincipal()).getId().equals(erdto.getPatientId()))
 			return pharmacyService.buyByERecipe(pharmacyId, erdto, ((User) auth.getPrincipal()).getId());
 		else return null;
+	}
+	@PutMapping(value = "/edit")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public Boolean editPharmacy(@RequestBody EditPharmacyDTO editPharmacy, Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		return pharmacyService.editPharmacy(editPharmacy, user.getId());
 	}
 }

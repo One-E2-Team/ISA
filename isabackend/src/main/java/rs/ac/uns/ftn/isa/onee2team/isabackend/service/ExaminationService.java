@@ -218,6 +218,10 @@ public class ExaminationService implements IExaminationService {
 			return false;
 		
 		Examination ex = examinationRepository.getExaminationByPharmacistAndDate(id, date);
+		if(ex.getPatient() != null) {
+			if(ex.getPatient().getId() == user_id)
+				return false; }
+		
 		ex.setPatient((Patient)(userRepository.findById(user_id).orElse(null)));
 		ex.setStatus(ExaminationStatus.SCHEDULED);
 		examinationRepository.save(ex);
