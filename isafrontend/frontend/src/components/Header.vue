@@ -31,6 +31,9 @@
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Medicine</a>
                 </li>
+                <li v-if="role == 'PATIENT'" class="nav-item">
+                <a class="nav-link" href="#/eRecipe">ePrescription</a>
+                </li>
                  <li class="nav-item" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
                 <a class="nav-link" href="#/healthworker/working-calendar">Working calendar</a>
                 </li>
