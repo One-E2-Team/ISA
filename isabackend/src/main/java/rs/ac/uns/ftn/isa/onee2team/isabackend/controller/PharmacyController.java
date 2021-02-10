@@ -20,6 +20,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineWithQuantityDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
@@ -61,7 +62,7 @@ public class PharmacyController {
 	}
 
 	@GetMapping(value = "/pharmaciesDto")
-	public List<PharmacyDTO> getAllPharmaciesDto() {
+	public List<PharmacyForSearchDTO> getAllPharmaciesDto() {
 		return pharmacyService.findAllIPharmaciesDto();
 	}
 
