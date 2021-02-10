@@ -34,6 +34,9 @@
                  <li class="nav-item" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
                 <a class="nav-link" href="#/healthworker/working-calendar">Working calendar</a>
                 </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/allPharmacies" v-if="role == 'PATIENT' || role == 'Anon'">All pharmacies</a>
+                </li>
                 <li v-if="role == 'PATIENT'" class="nav-item">
                 <a class="nav-link" href="#/history">History</a>
                 </li>
@@ -53,14 +56,15 @@
                 <li v-if="role=='PATIENT'" class="nav-item">
                 <a class="nav-link" href="#/scheduledAppointments">My appointments</a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#/allPharmacies" v-if="role == 'PATIENT' || role == 'Anon'">All pharmacies</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#/dermatologists" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">Dermatologists</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#/pharmacists" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">Pharmacists</a>
+                <li class="nav-item dropdown" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">
+                <a class="nav-link dropdown-toggle" href="#" id="doctors" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Doctors
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="doctors">
+                    <li><a class="dropdown-item" href="#/dermatologists">Dermatologists</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#/pharmacists">Pharmacists</a></li>
+                </ul>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/vacation/review" v-if="role == 'PHARMACY_ADMIN' || role == 'SYSTEM_ADMIN'">Vacation requests</a>

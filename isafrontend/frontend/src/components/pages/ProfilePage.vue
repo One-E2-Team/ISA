@@ -3,6 +3,19 @@
         <div class = "container">
             <br/>
             <div class="row justify-content-center">
+                <div class = "col-1">
+                    <label>Penalties:</label>
+                </div>
+                <div class = "col-2">
+                     <input type="text" name="penalties" v-model="user.penalties" disabled>
+                </div><div class = "col-3"></div>
+                <div class = "col-3">
+                    <select  v-if="isPatient()" v-model="selectedMedicine" class="form-select" aria-label="Default select example" name="allergies" id="allergies">
+                        <option v-for="m in allMedicines" v-bind:key="m.id" v-bind:value="m.id" :disabled="myAllergies.includes(m.id)">{{m.name}}</option>
+                    </select>
+                </div>
+            </div><br/>
+            <div class="row justify-content-center">
                 <div class="col-1">
                     <label>Email:</label>
                 </div>
@@ -10,10 +23,8 @@
                     <input type="email" name="email" v-model="user.email" disabled>
                 </div>
                 <div class = "col-3"></div>
-                <div class = "col-3">
-                    <select  v-if="isPatient()" v-model="selectedMedicine" class="form-select" aria-label="Default select example" name="allergies" id="allergies">
-                        <option v-for="m in allMedicines" v-bind:key="m.id" v-bind:value="m.id">{{m.name}}</option>
-                    </select>
+                 <div class="col-3">
+                    <button v-if="isPatient()" v-on:click="addAllergy()" type="button" class="btn-dark"> Add allergy </button>
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -23,10 +34,7 @@
                 <div class="col-2">
                     <input type="text" v-model="user.firstName" name="firstName">
                 </div>
-                <div class = "col-3"></div>
-                 <div class="col-3">
-                    <button v-if="isPatient()" v-on:click="addAllergy()" type="button" class="btn-dark"> Add allergy </button>
-                </div>
+                <div class = "col-6"></div>
             </div><br/>
            <div class="row justify-content-center">
                 <div class="col-1">
@@ -149,6 +157,7 @@ export default {
             user : {},
             allMedicines : {},
             selectedMedicine : 0,
+            myAllergies : [],
             oldPassword : "",
             newPassword : "",
             repeatedPassword: "",
@@ -163,26 +172,33 @@ export default {
         }
     },
 
-
     created(){
         axios.get('http://' + comm.server + '/api/users/logged')
         .then(response => this.user = response.data);
         if(this.isPatient()){
             axios.get('http://'+comm.server+'/api/medicines/all')
             .then(response => this.allMedicines = response.data);
+            axios.get('http://'+comm.server+'/api/users/myAllergies')
+            .then(response => this.myAllergies = response.data);
         }
         this.getSubscriptions();
     },
     methods:{
         addAllergy : function(){
+            if(this.selectedMedicine == 0){
+                alert("Select a medicine!");
+            }
+            else{
             axios.post('http://'+comm.server+'/api/medicines/addAllergy/' + this.selectedMedicine)
             .then(response => {
+                axios.get('http://'+comm.server+'/api/users/myAllergies')
+                .then(response => this.myAllergies = response.data);
                 if(response.status == 200)
                     alert("Allergy on medicine saved!");
-                else
-                    alert("Select a medicine!");
-            }
-        )},
+                this.selectedMedicine = 0;
+                }
+            )}
+        },
         selectMedicine : function(s){
             this.selectedMedicine = s;
         },
