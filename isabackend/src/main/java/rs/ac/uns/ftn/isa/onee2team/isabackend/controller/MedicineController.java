@@ -67,12 +67,4 @@ public class MedicineController {
 		User user = (User) auth.getPrincipal();
 		return medicineService.deleteMedicineFromPharmacy(medicineId, user.getId());
 	}
-	
-	@PostMapping(value="/reserve/pharmacy/{id}/medicine")
-	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public HttpStatus reserveMedicine(@RequestBody NewMedicineWithQuantityDTO reservation, @PathVariable("id") Long id ) {
-		if(medicineService.reserveMedicine(id,reservation.getMedicineId(),reservation.getQuantity()))
-			return HttpStatus.ACCEPTED;
-		return HttpStatus.NOT_ACCEPTABLE;
-	}
 }

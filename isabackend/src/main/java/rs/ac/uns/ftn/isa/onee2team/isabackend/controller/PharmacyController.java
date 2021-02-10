@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineWithQuantityDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
@@ -74,5 +76,23 @@ public class PharmacyController {
 	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')")
 	public PharmacyWithDoctorsMedicinesAndRateDTO getPharmacyById(@RequestParam Long id){
 		return pharmacyService.getPharmacyById(id);
+	}
+	
+	@PostMapping(value="/{id}/take-medicine")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean takeMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
+		System.out.println("*************************************"+medWithQuant.getMedicineId()+"\n"+medWithQuant.getQuantity()+"\n"+pharmacyId);
+		if(medicineService.takeMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
+			return true;
+		return false;
+	}
+	
+	@PostMapping(value="/{id}/return-medicine")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean returneMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
+		System.out.println("*************************************"+medWithQuant.getMedicineId()+"\n"+medWithQuant.getQuantity()+"\n"+pharmacyId);
+		if(medicineService.returnMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
+			return true;
+		return false;
 	}
 }

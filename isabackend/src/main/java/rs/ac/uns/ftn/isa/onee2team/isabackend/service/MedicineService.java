@@ -123,22 +123,6 @@ public class MedicineService implements IMedicineService {
 		return false;
 	}
 
-	@Override
-	public boolean reserveMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
-		Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
-		int availableQuantity = warehouse.getAmount();
-		if (availableQuantity < quantity) {
-			addMissingMedicine(pharmacyId, medicineId);
-			return false;
-		}
-		
-		warehouse.setAmount(availableQuantity-quantity);
-		int reservedQuantity = warehouse.getReservedAmount();
-		warehouse.setReservedAmount(reservedQuantity+quantity);
-		warehouseRepository.save(warehouse);
-		
-		return true;
-	}
 
 	@Override
 	public void addMissingMedicine(Long pharmacyId, Long medicineId) {
@@ -155,5 +139,33 @@ public class MedicineService implements IMedicineService {
 		return medicineRepository.findMedicineByPharmacyid(id);
 	}
 	
+
+	@Override
+	public Boolean takeMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
+		if(WarehouseContainsMedicine(pharmacyId, medicineId, quantity)) {
+			Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
+			warehouse.setAmount(warehouse.getAmount()-quantity);
+			warehouseRepository.save(warehouse);
+			return true;
+		}
+		addMissingMedicine(pharmacyId, medicineId);
+		return false;
+	}
+
+	@Override
+	public Boolean returnMedicine(Long pharmacyId, Long medicineId, Integer quantity) {
+		Warehouse warehouse = warehouseRepository.getByMedicineAndPharmacy(medicineId, pharmacyId);
+		warehouse.setAmount(warehouse.getAmount()+quantity);
+		warehouseRepository.save(warehouse);
+		return true;
+	}
+	
+	@Override
+	public boolean WarehouseContainsMedicine(Long pharamacyId, Long medicineId, Integer quantity) {
+		System.out.println("--------------------------pharmacyId"+pharamacyId+"\nquantity"+quantity+"\nmedicineId"+medicineId);
+		Warehouse warehouse =  warehouseRepository.getByMedicineAndPharmacy(pharamacyId, medicineId);
+		return warehouse.getAmount()>=quantity;
+	}
+
 	
 }

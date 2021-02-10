@@ -12,7 +12,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" @click="confirm">Confirm</button>
+        <button type="button" class="btn btn-primary" @click="confirm()">Confirm</button>
       </div>
     </div>
   </div>
@@ -37,26 +37,29 @@ export default {
         confirm: function(){
             let data = {
                 medicineId: this.medicine.id,
-                quantity: this.quantity,
+                quantity: parseInt(this.quantity),
             }
-            axios.post('http://' + comm.server + '/api/medicines/reserve/pharmacy/'+ this.pharmacyId +'/medicine',data)
-                .then(response => {
-                        console.log(response.statusText);
-                        console.log("pharmacy id = "+this.pharmacyId)
-                        console.log("medicine id = "+this.medicine.id)
-                        axios.get('http://' + comm.server + '/api/pricelist/pharmacy/'+this.pharmacyId+'/medicine/'+this.medicine.id)
-                            .then(res => {                                
-                                let reservedMedicine = {
-                                    id: this.medicine.id,
-                                    name : this.medicine.name,
-                                    code : this.medicine.code,
-                                    quantity : this.quantity,
-                                    price : res.data.price
-                                }
-                                console.log("emitujem " + reservedMedicine);
-                                this.$emit('reserved',reservedMedicine);    
-                            })  
-                })
+            console.log(data);
+            axios.post('http://' + comm.server + '/api/pharmacies/'+ this.pharmacyId +'/take-medicine',data)
+                .then(response=> {
+                    if(response.data == false){
+                        alert("There is no more of this medicine in the warehouse ");
+                    }
+                    else{
+                      axios.get('http://' + comm.server + '/api/pricelist/pharmacy/'+this.pharmacyId+'/medicine/'+this.medicine.id)
+                              .then(res => {                                
+                                  let reservedMedicine = {
+                                      id: this.medicine.id,
+                                      name : this.medicine.name,
+                                      code : this.medicine.code,
+                                      quantity : parseInt(this.quantity),
+                                      price : parseFloat(res.data.price)
+                                  }
+                                  console.log("emitujem " , reservedMedicine);
+                                  this.$emit('taked',reservedMedicine);    
+                              })  
+                    }
+                })                        
         }
     }
 }

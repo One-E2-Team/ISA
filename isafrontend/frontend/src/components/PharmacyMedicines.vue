@@ -1,5 +1,6 @@
 <template>
     <div class="container-fluid mt-3">
+        <AddMedicineModal v-on:taked="addMedicine($event)" v-bind:medicine="selectedMedicine" v-bind:pharmacyId="pharmacyId"/>
         <MedicineContextureModal v-bind:medicine="selectedMedicine" />
         <MedicineSideEffectsModal v-bind:medicine="selectedMedicine"/>
         <div class="row g-3 align-items-center justify-content-end">
@@ -44,8 +45,7 @@
                                 <td class="text-center">{{med.medicineType}}</td>
                                 <td class="text-center"><button type="button" class="btn btn-outline-primary" @click="selectMedicine(med)" data-bs-toggle="modal" data-bs-target="#MedicineSideEffecectModal">SE</button></td>
                                 <td class="text-center"><button type="button" class="btn btn-outline-primary" @click="selectMedicine(med)" data-bs-toggle="modal"  data-bs-target="#MedicineContextureModal">CNTX</button></td>
-                                <td class="text-center"><button type="button"  :class="isPatientAllergic(med) ? 'btn-danger':' btn-success' " class="btn" :disabled="isPatientAllergic(med)" @click="addToRecept(med)" >+</button></td>
-
+                                <td class="text-center"><button type="button" @click="selectMedicine(med)"  :class="isPatientAllergic(med) ? 'btn-danger':' btn-success' " data-bs-toggle="modal"  data-bs-target="#AddMedicineModal" class="btn" :disabled="isPatientAllergic(med)">+</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -65,6 +65,9 @@
                             <tr>
                             <th scope="col">Name</th>
                             <th scope="col">Code</th>
+                            <td>Quantity</td>
+                            <td>Pice price</td>
+                            <td>Price</td>
                             <th scope="col" class="text-center"><i class="fa fa-trash"></i></th>
                             </tr>
                         </thead>
@@ -72,8 +75,11 @@
                             <tr v-for="item in recept" v-bind:key="item.id">
                                 <th scope="row">{{item.name}}</th>
                                 <td>{{item.code}}</td>
+                                <td>{{item.quantity}}</td>
+                                <td>{{item.price}}</td>
+                                <td>{{item.price * item.quantity}}</td>
                                 <td class="text-end">
-                                    <button class="btn btn-danger" @click="removeFromRecept(item)">
+                                    <button class="btn btn-danger" @click="returnMedicine(item)">
                                         Remove
                                     </button>
                                 </td>
@@ -93,6 +99,7 @@ import axios from 'axios'
 import * as comm from '../configuration/communication.js'
 import MedicineContextureModal from './modals/MedicineContextureModal'
 import MedicineSideEffectsModal from './modals/MedicineSideEffectModal'
+import AddMedicineModal from './modals/AddMedicineModal'
 
 export default {
     props: ['id'],
@@ -103,26 +110,34 @@ export default {
             reservations: [],
             selectedMedicine: "",
             pharmacyId: "",
+            patientId: "",
             recept: [],
-            patientAlergies : [{id:1},{id:3}],
+            patientAlergies : [],
         }
     },
     components:{
         MedicineContextureModal,
         MedicineSideEffectsModal,
+        AddMedicineModal
     },
     created(){
-        //axios.get('http://' + comm.server + '/api/users/patient-allergies-ids/',{params:})
+        axios.get('http://' + comm.server + '/api/examinations/patient',{params:{"examination-id": this.id}})
+            .then(response=>{
+                this.patientId = response.data.id;
+                axios.get('http://' + comm.server + '/api/users/patient-allergies-ids/'+response.data.id)
+                    .then(res => {
+                        console.log(res.data)
+                        this.patientAlergies = res.data
+                        })
+            })
+        
         axios.get('http://' + comm.server + '/api/examinations/pharamcy', {
             params : {
                 "examination-id" : this.id 
             }}).then(response=> {
                 this.pharmacyId = response.data.id;
                 axios.get('http://' + comm.server + '/api/pharmacies/'+response.data.id+"/medicines/")
-                .then(response=>{
-                        console.log(response.data);
-                        this.medicines = response.data;   
-                })
+                .then(response=>(this.medicines = response.data))
 
             });
     },
@@ -130,22 +145,32 @@ export default {
         selectMedicine : function(medicine){
             this.selectedMedicine = medicine;
         },
-        addToRecept: function(item){
+        addMedicine: function(item){
             for(let it of this.recept){
                 if(it.id == item.id)
-                        return;
+                    it.quantity= parseInt(it.quantity)+parseInt(it.quantity)
             }
-            console.log("saljem u recept")
             this.recept.push(item);
         },
-        removeFromRecept: function(item){
-            this.recept = this.recept.filter(function(it) {
-                return it.id != item.id
-            })
+        returnMedicine: function(item){
+            let data = {
+                "medicineId" : item.id,
+                "quantity" : item.quantity,
+            }
+            console.log("vrati",data);
+            axios.post('http://' + comm.server + '/api/pharmacies/'+ this.pharmacyId +'/return-medicine',data)
+                .then(response=>{
+                    if(response.data == true){
+                        this.recept = this.recept.filter(function(it) {
+                            return it.id != item.id
+                        })
+                    }
+                })
+            
         },
         isPatientAllergic: function(item){
             for(let it of this.patientAlergies){
-                if(it.id == item.id)
+                if(it == item.id)
                     return true;
             }
             return false;
