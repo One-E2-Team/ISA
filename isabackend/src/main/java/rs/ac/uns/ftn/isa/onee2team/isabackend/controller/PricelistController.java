@@ -35,6 +35,8 @@ public class PricelistController {
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	@PutMapping(value = "/change")
 	public Boolean changePriceList(@RequestBody PricelistDTO pricelist) {
+		if(pricelist.getStartDate().compareTo(pricelist.getEndDate()) >= 0)
+			return false;
 		return pricelistService.changePriceList(pricelist);
 	}
 	
