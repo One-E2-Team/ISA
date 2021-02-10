@@ -70,7 +70,7 @@
                     <label>Old password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="oldPassword">
+                    <input type="password" v-model="oldPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -85,7 +85,7 @@
                     <label>New password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="newPassword">
+                    <input type="password" v-model="newPassword">
                 </div>
             </div><br/>
             <div class="row justify-content-center">
@@ -100,7 +100,7 @@
                     <label>Confirm new password:</label>
                 </div>
                 <div class = "col-3">
-                    <input type="text" v-model="repeatedPassword">
+                    <input type="password" v-model="repeatedPassword">
                 </div>
             </div><br/>
             <div class = "row justify-content-center">
@@ -113,6 +113,27 @@
                     <button type="button" class="btn-primary" v-on:click="changePassword"> Change password </button>
                 </div>
                 <div class = "col-3"></div>
+            </div>
+            <div v-if="isPatient()" class="row justify-content-center mt-2">
+                <div class="col-2">
+                    <h3>Subscriptions:</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Unsubscribe from:</label>
+                            <v-select label="name" v-model="selectedSubscription" :options="subscriptionList"></v-select>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-primary" @click="unsubscribe">Unsubscribe</button>
+                            <div id="unsubscribeInformation" class="alert alert-primary d-none" role="alert">Unsubscribed. </div>
+                            <div id="unsubscribeAlert" class="alert alert-danger d-none" role="alert">Unsubscribe operation was unsuccessful! </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div v-if="isPharmacyAdmin()" class="row justify-content-center mt-2">
+                <div class="col-2">
+                    <button type="button" class="btn btn-primary" @click="goToMyPharmacy">My pharmacy</button>
+                </div>
             </div>
         </div>
     </div>
@@ -131,7 +152,14 @@ export default {
             oldPassword : "",
             newPassword : "",
             repeatedPassword: "",
-            labelText: ""
+            labelText: "",
+            subscriptionList: [],
+            selectedSubscription: {
+                id: 0,
+                name: "",
+                address: "",
+                description: ""
+            }
         }
     },
 
@@ -143,6 +171,7 @@ export default {
             axios.get('http://'+comm.server+'/api/medicines/all')
             .then(response => this.allMedicines = response.data);
         }
+        this.getSubscriptions();
     },
     methods:{
         addAllergy : function(){
@@ -159,6 +188,9 @@ export default {
         },
         isPatient : function(){
             return comm.getCurrentUserRole() === 'PATIENT';
+        },
+        isPharmacyAdmin : function(){
+            return comm.getCurrentUserRole() === 'PHARMACY_ADMIN';
         },
         updatePatientData : function(){
              axios.put('http://'+comm.server+'/api/users/profile', this.user)
@@ -188,6 +220,39 @@ export default {
                         this.labelText = "Passwords do not match!";
                     }
              });
+        },
+        unsubscribe: function(){
+            document.getElementById("unsubscribeAlert").classList.add("d-none"); 
+            document.getElementById("unsubscribeInformation").classList.add("d-none"); 
+            if(this.selectedSubscription.id == 0) {
+                document.getElementById("unsubscribeAlert").classList.remove("d-none"); 
+                return;
+            }
+            axios.get('http://' + comm.server + '/api/promotions/unsubscribe/' + this.selectedSubscription.id).then(response => {
+            if(response.status == 200 && response.data != null) {
+                document.getElementById("unsubscribeInformation").classList.remove("d-none"); 
+                this.getSubscriptions();
+            } else document.getElementById("unsubscribeAlert").classList.remove("d-none"); 
+            }).catch(reason => {
+                console.log(reason);
+                document.getElementById("unsubscribeAlert").classList.remove("d-none"); 
+            });
+        },
+        getSubscriptions: function(){
+            this.selectedSubscription = {
+                id: 0,
+                name: "",
+                address: "",
+                description: ""
+            }
+            axios.get('http://' + comm.server + '/api/promotions/subscriptions').then(response => {
+                if(response.status == 200){
+                    this.subscriptionList = response.data;
+                }
+            });
+        },
+        goToMyPharmacy : function(){
+            this.$router.push({name: 'pharmacy', params: {id: this.user.pharmacyId}});
         }
     }
 }

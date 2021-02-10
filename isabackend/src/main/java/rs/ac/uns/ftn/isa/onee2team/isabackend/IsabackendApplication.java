@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class IsabackendApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("server.port", System.getenv("PORT") != null ? System.getenv("PORT") : System.getenv("ISA_SPRING_PORT"));
 		SpringApplication.run(IsabackendApplication.class, args);
 	}
 

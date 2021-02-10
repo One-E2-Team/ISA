@@ -2,7 +2,6 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +10,12 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
@@ -82,10 +81,11 @@ public class ExaminationService implements IExaminationService {
 		List<Examination> examinations = examinationRepository.getFreeExaminationsAtDermatologist();
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 						ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(), 
 						ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(), 
-						ex.getHealthWokrer().getUserType().toString(),ex.getPrice()
+						ex.getHealthWokrer().getUserType().toString(),rate,ex.getPrice()
 					));
 		}
 		
@@ -118,10 +118,11 @@ public class ExaminationService implements IExaminationService {
 		List<Examination> examinations =  examinationRepository.getScheduledAppointments(patientId);
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 					ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(),
 					ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(),
-					ex.getHealthWokrer().getUserType().toString(), ex.getPrice())
+					ex.getHealthWokrer().getUserType().toString(),rate, ex.getPrice())
 					);}
 		return ret_list;
 		}
@@ -259,22 +260,53 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
+	public List<Examination> getExaminationsFromHistoryByPatientToDate(Long patientId) {
+		return examinationRepository.getExaminationsFromHistoryByPatientToDate(patientId);
+	}
+	
+	@Override
 	public List<ScheduledExaminationDTO> getPatientsFinishedAppointments(Long id) {
 		List<Examination> examinations =  examinationRepository.getPatientsFinishedAppointments(id);
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
+			double rate = examinationRepository.getAvgRateForHealthWorker(ex.getHealthWokrer().getId());
 			ret_list.add(new ScheduledExaminationDTO(
 					ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(),
 					ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(),
-					ex.getHealthWokrer().getUserType().toString(), ex.getPrice())
+					ex.getHealthWokrer().getUserType().toString(),rate, ex.getPrice())
 					);}
 		return ret_list;
 	}
+
 
 	@Override
 	public Pharmacy getPharmacyByExamination(Long examinationId) {
 		return examinationRepository.getOne(examinationId).getPharmacy();
 	}
-	
 
+
+	@Override
+	public List<NewRateDTO> getHealthWorkersForRate(Long patientId) {
+		List<Examination> examinations = examinationRepository.getPatientsFinishedAppointments(patientId);
+		List<NewRateDTO> ret_list = new ArrayList<NewRateDTO>();
+		NewRateDTO dto;
+		
+		for(Examination ex : examinations) {
+			dto = new NewRateDTO();
+			dto.setRateEntityId(ex.getHealthWokrer().getId());
+			dto.setRateEntityName(ex.getHealthWokrer().getFirstName() + " " + ex.getHealthWokrer().getLastName());
+			dto.setRateEntityType(ex.getHealthWokrer().getUserType().toString());
+			dto.setRate(-1);
+			
+			if(!ret_list.contains(dto))
+				ret_list.add(dto);
+		}
+		
+		return ret_list;
+	}
+	
+	@Override
+	public List<Examination> getPatientsFinishedEx(Long patient_id){
+		return examinationRepository.getPatientsFinishedAppointments(patient_id);
+	}
 }

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-
 import Welcome from './components/Welcome'
+import Medicines from './components/Medicines'
 import Pharmacy from './components/Pharmacy'
 import AllPharmacies from './components/AllPharmacies'
 import DermatologistsPage from './components/pages/DermatologistsPage'
@@ -22,10 +22,14 @@ import ScheduledAppointments from './components/ScheduledAppointments'
 import CreateMedicine from './components/pages/CreateMedicine'
 import CreateOrderPage from './components/pages/CreateOrderPage'
 import DealerOrdersOffers from './components/pages/DealerOrdersOffers'
+import PatientComplaintPage from './components/pages/PatientComplaintPage'
 import CreateExamination from './components/pages/CreateExamination'
 import ScheduleAtPharmacist from './components/ScheduleAtPharmacist'
 import History from './components/pages/History'
 import MedicineReservationPage from './components/pages/MedicineReservationPage'
+import ReservedMedicines from './components/pages/ReservedMedicines'
+import OrdersPage from './components/pages/OrdersPage'
+import PatientRatingPage from './components/pages/PatientRatingPage'
 
 
 Vue.use(VueRouter)
@@ -33,14 +37,15 @@ Vue.use(VueRouter)
 const router = new VueRouter({
   mode: 'hash',
   routes: [{
-      path: '/welcome',
+      path: '/',
       name: 'welcome',
       component: Welcome
     },
     {
-      path: '/pharmacy',
+      path: '/pharmacy/:id',
       name: 'pharmacy',
-      component: Pharmacy
+      component: Pharmacy,
+      props: true
     },
     {
       path: '/allPharmacies',
@@ -147,6 +152,11 @@ const router = new VueRouter({
       props: true
     },
     {
+      name: 'createComplaint',
+      path: '/createComplaint',
+      component: PatientComplaintPage,
+    },
+    {
       name: 'createExamination',
       path: '/examination/create',
       component: CreateExamination,
@@ -157,7 +167,27 @@ const router = new VueRouter({
       path: '/history',
       component: History,
       props: true
-
+    },
+    {
+      name: 'reservedMedicines',
+      path: '/reservedMedicines',
+      component: ReservedMedicines,
+      props: true
+    },
+    {
+      path: '/medicines',
+      name: 'Medicines',
+      component: Medicines
+    },
+    {
+      name: 'ordersPage',
+      path: '/orders',
+      component: OrdersPage
+    },
+    {
+      name: 'rate',
+      path: '/rate',
+      component: PatientRatingPage
     }
   ]
 })

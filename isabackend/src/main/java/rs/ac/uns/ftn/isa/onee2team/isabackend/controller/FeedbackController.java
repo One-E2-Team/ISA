@@ -2,9 +2,12 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ComplaintDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewComplaintDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.Complaint;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.ComplaintType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IFeedbackService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
@@ -56,5 +63,38 @@ public class FeedbackController {
 			ret.add(cdto);
 		}
 		return ret;
+	}
+	
+	@GetMapping(value = "/findPossibleComplaints")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<NewComplaintDTO> findPossibleComplaints(Authentication auth){
+		return feedbackService.findPossibleComplaints((Patient) userService.findById(((User) auth.getPrincipal()).getId()));
+	}
+	
+	@PostMapping(value = "/complaint")
+	@PreAuthorize("hasRole('PATIENT')")
+	public Complaint createComplaint(@RequestBody NewComplaintDTO ncdto, Authentication auth){
+		Long complaintOn;
+		switch (ncdto.getComplaintEntityType()) {
+		case "PHARMACY":
+			complaintOn = pharmacyService.getById(ncdto.getComplaintEntityId()).getId();
+			break;
+		default:
+			complaintOn = userService.findById(ncdto.getComplaintEntityId()).getId();
+			break;
+		}
+		return feedbackService.createComplaint((Patient) userService.findById(((User) auth.getPrincipal()).getId()), ncdto, complaintOn);
+	}
+	
+	@GetMapping(value = "/findPossibleEntitiesForRate")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<NewRateDTO> findPossibleEntitiesForRate(Authentication auth){
+		return feedbackService.findPossibleEntitiesForRate((Patient) userService.findById(((User) auth.getPrincipal()).getId()));
+	}
+	
+	@PostMapping(value = "/rate")
+	@PreAuthorize("hasRole('PATIENT')")
+	public void rate(@RequestBody NewRateDTO dto, Authentication auth) {
+		feedbackService.rate(dto, (Patient) userService.findById(((User) auth.getPrincipal()).getId()));
 	}
 }

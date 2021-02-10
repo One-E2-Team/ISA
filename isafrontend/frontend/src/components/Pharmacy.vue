@@ -15,7 +15,8 @@
                 <td class="table-light">{{medicine.name}}</td>
                 <td class="table-light">{{medicine.manufacturer}}</td>
                 <td class="table-light">{{medicine.sideEffects}}</td>
-                <td class="table-light" v-if="isPatient()"><button name="scheduleExamination" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
+                <td class="table-light"><input type="date" class="form-control" v-model = "selectedDate"></td>
+                <td class="table-light" v-if="isPatient()"><button name="scheduleExamination" data-bs-toggle="modal" data-bs-target="#datePicker" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
             </tr>
             </table>
         </div>
@@ -61,9 +62,9 @@
                 <td class="table-light"><button name="scheduleExamination" @click="scheduleExamination(examination.id)">Schedule this examination</button></td>
             </tr>
         </div>
-        <button class="btn btn-outline-success" name="subscribe">Subscribe on promotions</button>
+        <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
-        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()">Create order</button>
+        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-primary">Create order</button>
     </div>
 </template>
 
@@ -76,11 +77,10 @@ import * as comm from '../configuration/communication.js'
 export default {
     name: "Pharmacy",
     components: {
-        AddPromotion,
+        AddPromotion
     },
     data() {
         return {
-            id : 1, //TODO: proper implement getting pharmacyId
             description : '',
             pharmacy : {},
             showDermatologists : false,
@@ -88,8 +88,10 @@ export default {
             showMedicines : false,
             showExaminations : false,
             examinationsToShow : [],
+            selectedDate : null
         }
     },
+    props: ['id'],
     methods : {
         toggleMedicines : function(){
             this.showMedicines = !this.showMedicines;
@@ -105,10 +107,36 @@ export default {
             this.examinationsToShow = examinations;
         },
         scheduleExamination : function(examinationId){
-            console.log(examinationId);
+            axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist/?examinationId=' + examinationId)
+            .then(response=>{
+                if(response){
+                    alert("Examination successfully scheduled!");
+                    axios.get('http://' + comm.server + '/api/pharmacies/?id=' + this.id)
+                    .then(response => {
+                    if (response.status == 200) {
+                        this.pharmacy = response.data;
+                    }
+            });
+                }else{
+                    alert("You have 3 penalties! This action is forbidden!");
+                }
+            })
         },
         reserveMedicine : function(medicineId){
-            console.log(medicineId);
+            if(this.selectedDate == null){
+                alert("You need to select a date!");
+            }
+            else{
+                let dto = {"pharmacy_id" : this.id, "medicine_id" : medicineId, "expireDate" : this.selectedDate }
+            axios.post('http://' + comm.server + '/api/reservations/reserve', dto)
+            .then(response => {
+                if(response.data){
+                    alert('Reservation successfully made!')
+                }else{
+                    alert('You have 3 penalties! This action is forbidden');
+                }
+            })
+            }
         },
         isPatient : function(){
             return comm.getCurrentUserRole() === 'PATIENT';
@@ -121,19 +149,35 @@ export default {
                 name: 'createOrder',
                 params: { pid: this.id }
             })
+        },
+        toggleSubscribeButton: function(){
+            axios.get('http://' + comm.server + '/api/promotions/subscriptions').then(response => {
+                if(response.status == 200 && response.data != null)
+                    response.data.forEach(element => {
+                        if(element.id == this.id) document.getElementById("subscribeButton").classList.add("d-none");
+                    });
+            });
+        },
+        subscribe: function() {
+            axios.get('http://' + comm.server + '/api/promotions/subscribe/' + this.id).then(response => {
+                if(response.status == 200 && response.data != null){
+                    document.getElementById("subscribeButton").classList.add("d-none");
+                    this.toggleSubscribeButton();
+                }
+            });
         }
     },
     mounted() {
-        //axios.get('http://localhost:8083/api/pharmacies?id=1')
-        //    .then(response => {
-         //   });
         axios.get('http://' + comm.server + '/api/pharmacies/?id=' + this.id)
             .then(response => {
                 if (response.status == 200) {
                     this.pharmacy = response.data;
                 }
             });
-    }
+    },
+    created(){
+        this.toggleSubscribeButton();
+    },
 }
 </script>
 
