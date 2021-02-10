@@ -61,4 +61,13 @@ public class PricelistService implements IPricelistService {
 		return true;
 	}
 
+	@Override
+	public PricelistDTO getValidPriceForMedicine(Long pharmacyId, Long medicineId) {
+		for(PricelistDTO pl : getValidPricelist(pharmacyId)) {
+			if(pl.getMedicineId().equals(medicineId))
+				return pl;
+		}
+		return null;
+	}
+
 }

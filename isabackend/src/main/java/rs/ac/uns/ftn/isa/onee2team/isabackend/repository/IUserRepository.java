@@ -72,4 +72,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	@Query(value = "select * from all_users u where u.user_type = 2 and u.id not in "
 			+ "(select d.dermatologist_id from dermatologists_in_pharmacies d where d.pharmacies_id = ?1)", nativeQuery = true)
 	List<Dermatologist> getDermatologistsWhoAreNotInPharmacy(Long pharmacyId);
+
+	@Query(value = "select allergies_id from all_users_allergies where patient_id = ?1", nativeQuery = true)
+	List<Long> getPatientAllergiesIds(Long patientId);
 }

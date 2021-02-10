@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -61,7 +62,7 @@ public class Examination {
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicines")
-	private Set<Medicine> medicines;
+	private List<Medicine> medicines;
 
 	public Long getId() {
 		return id;
@@ -143,11 +144,13 @@ public class Examination {
 		this.status = status;
 	}
 
-	public Set<Medicine> getMedicines() {
+	public List<Medicine> getMedicines() {
 		return medicines;
 	}
 
-	public void setMedicines(Set<Medicine> medicines) {
+	public void setMedicines(List<Medicine> medicines) {
 		this.medicines = medicines;
 	}
+
+
 }

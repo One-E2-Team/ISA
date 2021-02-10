@@ -2,10 +2,17 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -185,5 +192,10 @@ public class UserController {
 	public List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Authentication auth) {
 		User user = (User) auth.getPrincipal();
 		return userService.getDermatologistsWhoAreNotInPharmacy(user.getId());
+	}
+	
+	@GetMapping(value ="/patient-allergies-ids/{id}")
+	public List<Long> getPatientAllergiesIds(@PathVariable("id") Long patientId){
+		return userService.getPatientAllergiesIds(patientId);
 	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,25 +16,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.UserTokenState;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationInformationDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
-
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
-
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IExaminationService;
 
@@ -145,6 +138,11 @@ public class ExaminationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		return examinationService.getPatientsFinishedAppointments(user.getId());
+	}
+	
+	@GetMapping(value = "/pharamcy")
+	public Pharmacy getPharmacyFromExamination(@RequestParam("examination-id") Long id) {
+		return examinationService.getPharmacyByExamination(id);
 	}
 	
 }
