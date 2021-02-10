@@ -8,10 +8,10 @@
             <thead>
                 <tr>
                     <th> Pharmacy ID </th>
-                    <th> Pharmacy name </th>
-                    <th> Pharmacy address </th>
+                    <th> <button class = "btn" v-on:click="sort('name')"> <b>Pharmacy name</b> </button> </th>
+                    <th> <button class = "btn" v-on:click="sort('address')"> <b> Pharmacy address </b> </button> </th>
                     <th> Pharmacy description </th>
-                    <th> Rate 
+                    <th> <button class = "btn" v-on:click="sort('rate')"> <b>  Rate  </b> </button>
                         <select v-model="selectedRate" class="custom-select mr-sm-2" v-on:change="filterByRate()">
                         <option value="1">>1</option>
                         <option value="2">>2</option>
@@ -31,29 +31,7 @@
                     <td>{{p.address}}</td>
                     <td>{{p.description}}</td>
                     <td>{{p.rate}}</td>
-                    <td><button class="btn btn-info" v-on:click="showMedicines(p)">Show medicines</button></td>
                     <td v-if="isPatient()"><button class="btn btn-info" v-on:click="selectPharmacy(p)">Visit pharmacy</button></td>
-                </tr>
-            </tbody>
-        </table><br/>
-        
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Medicine id</th>
-                    <th>Medicine code</th>
-                    <th>Medicine name</th>
-                    <th>Medicine contexture</th>
-                    <th>Medicine manufacturer</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="m in medicines" v-bind:key="m.id">
-                    <td>{{m.id}}</td>
-                    <td>{{m.code}}</td>
-                    <td>{{m.name}}</td>
-                    <td>{{m.contexture}}</td>
-                    <td>{{m.manufacturer}}</td>
                 </tr>
             </tbody>
         </table>
@@ -71,7 +49,6 @@ export default {
     data() {
         return {
             allPharmacies: [],
-            medicines: {},
             inputName: '',
             inputAddress : '',
             filteredPharmacies : [],
@@ -88,15 +65,19 @@ export default {
     },
 
     methods: {
-        showMedicines: function(p){
-            axios.get('http://' + comm.server + '/api/pharmacies/medicinesByPharmacyId/', {params:{"id": p.id }})
-            .then(response => this.medicines = response.data)
-        },
         selectPharmacy: function(p){
             this.$router.push({name: 'pharmacy', params: {id: p.id}})
         },
         isPatient : function(){
             return comm.getCurrentUserRole() === 'PATIENT';
+        },
+        sort : function(field){
+            if(field=='name')
+                this.filteredPharmacies.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            else if(field == 'address')
+                this.filteredPharmacies.sort((a, b) => (a.address > b.address) ? 1 : -1);
+            else if(field == 'rate')
+                this.filteredPharmacies.sort((a, b) => (a.rate > b.rate) ? 1 : -1);
         },
         search : function(){
             if(this.inputName == '' && this.inputAddress == ''){
