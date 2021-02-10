@@ -59,7 +59,9 @@ public class MedicineReservationService implements IMedicineReservationService {
 			ReservedMedicineDTO dto = new ReservedMedicineDTO();
 			dto.setId(mr.getId());
 			dto.setExpireDate(mr.getExpireDate());
+			dto.setMedicineId(mr.getMedicine().getId());
 			dto.setMedicineName(mr.getMedicine().getName());
+			dto.setPharmacyId(mr.getPharmacy().getId());
 			dto.setPharmacyName(mr.getPharmacy().getName());
 			ret_list.add(dto);
 		}
@@ -135,6 +137,23 @@ public class MedicineReservationService implements IMedicineReservationService {
 		}
 		
 		return ret_list;
+	}
+
+	@Override
+	public void takeMedicine(Long patientId, ReservedMedicineDTO dto) {
+		
+		MedicineReservation mr = medicineReservationRepository.findById(dto.getId()).orElse(null);
+		mr.setStatus(MedicineReservationStatus.DONE);
+		medicineReservationRepository.save(mr);
+		
+		Warehouse w = warehouseRepository.getWarehouseByPharmacyAndMedicine(dto.getPharmacyId(), dto.getMedicineId());
+		w.setAmount(w.getAmount() - 1);
+		w.setReservedAmount(w.getReservedAmount() -1);
+		warehouseRepository.save(w);
+		
+		Patient p = (Patient) userRepository.findById(patientId).orElse(null);
+		p.setPoints(p.getPoints() + medicineRepository.findById(dto.getMedicineId()).orElse(null).getPoints());
+		userRepository.save(p);
 	}
 
 }
