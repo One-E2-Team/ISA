@@ -12,7 +12,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
 public interface IMedicineRepository extends JpaRepository<Medicine, Long> {
 	
-	@Query("select w.medicine from Warehouse w where w.pharmacy.id = ?1")
+	@Query("select w.medicine from Warehouse w where w.pharmacy.id = ?1 and w.amount > 0")
 	public List<Medicine> findMedicineByPharmacyid(Long id);
 
 	@Modifying

@@ -9,7 +9,7 @@
                 <th class="table-light"> Start hour</th>
                 <th class="table-light">End hour</th>
                 <th class="table-light">Price</th>
-                <th class="table-light">Work time: {{this.startHour}}-{{this.endHour}}</th>
+                <th class="table-light">Work time (GMT): {{this.startHour}}-{{this.endHour}}</th>
                 <th><select name="duration" id="duration" @change="createExaminations($event)">
                     <option value="-">-</option>
                     <option value="30m">30minutes</option>
@@ -128,6 +128,8 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     alert(response.data);
+                    if(response.data.includes("Success"))
+                        this.$router.push('/profile');
                 }
             });
         }

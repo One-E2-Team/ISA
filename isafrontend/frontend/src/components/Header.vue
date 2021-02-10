@@ -54,7 +54,7 @@
                 <a class="nav-link" href="#/scheduledAppointments">My appointments</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#/allPharmacies" v-if="role == 'PATIENT'">All pharmacies</a>
+                <a class="nav-link" href="#/allPharmacies" v-if="role == 'PATIENT' || role == 'Anon'">All pharmacies</a>
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/dermatologists" v-if="role == 'PATIENT' || role == 'PHARMACY_ADMIN'">Dermatologists</a>
@@ -67,6 +67,12 @@
                 </li>
                 <li class="nav-item">
                 <a class="nav-link" href="#/orders" v-if="role == 'PHARMACY_ADMIN'">Orders</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/requestsForMedicines" v-if="role == 'PHARMACY_ADMIN'">Requests for medicines</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#/statistics" v-if="role == 'PHARMACY_ADMIN'">Statistics</a>
                 </li>
                 <li class="nav-item dropdown" v-if="role == 'PATIENT'">
                 <a class="nav-link dropdown-toggle" href="#" id="feedback" role="button" data-bs-toggle="dropdown" aria-expanded="false">

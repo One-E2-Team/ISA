@@ -15,7 +15,8 @@
                 <td class="table-light">{{medicine.name}}</td>
                 <td class="table-light">{{medicine.manufacturer}}</td>
                 <td class="table-light">{{medicine.sideEffects}}</td>
-                <td class="table-light"><input type="date" class="form-control" v-model = "selectedDate"></td>
+                <td class="table-light" v-if="isPharmacyAdmin()"><button @click="deleteMedicine(medicine.id)" class="btn btn-outline-success">Delete this medicine</button></td>
+                <td class="table-light" v-if="isPatient()"><input type="date" class="form-control" v-model = "selectedDate"></td>
                 <td class="table-light" v-if="isPatient()"><button name="scheduleExamination" data-bs-toggle="modal" data-bs-target="#datePicker" @click="reserveMedicine(medicine.id)">Reserve this medicine</button></td>
             </tr>
             </table>
@@ -57,14 +58,14 @@
                 <th class="table-light">EndTime</th>
             </tr>
             <tr v-for="examination in this.examinationsToShow" v-bind:key="examination.id" class="table-light">
-                <td class="table-light">{{examination.startTime}}</td>
-                <td class="table-light">{{examination.endTime}}</td>
+                <td class="table-light">{{examination.startTime | dateFormat('DD.MM.YYYY HH:mm')}}</td>
+                <td class="table-light">{{examination.endTime | dateFormat('DD.MM.YYYY HH:mm')}}</td>
                 <td class="table-light"><button name="scheduleExamination" @click="scheduleExamination(examination.id)">Schedule this examination</button></td>
             </tr>
         </div>
-        <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe">Subscribe on promotions</button>
+        <button id="subscribeButton" class="btn btn-outline-success" name="subscribe" @click="subscribe" v-if="isPatient()">Subscribe on promotions</button>
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
-        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-primary">Create order</button>
+        <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn">Create order</button>
     </div>
 </template>
 
@@ -73,6 +74,7 @@
 import axios from 'axios';
 import AddPromotion from './AddPromotion';
 import * as comm from '../configuration/communication.js'
+import moment from 'moment'
 
 export default {
     name: "Pharmacy",
@@ -165,6 +167,18 @@ export default {
                     this.toggleSubscribeButton();
                 }
             });
+        },
+        deleteMedicine : function(medicineId){
+            axios.delete('http://' + comm.server + '/api/medicines/delete-from-pharmacy?medicineId=' + medicineId).then(response => {
+                if(response.status == 200){
+                    if(response.data == true){
+                        alert("Successfully deleted medicine!");
+                        this.$router.push('/profile');
+                    } else {
+                        alert("Can't delete reserved medicine!");
+                    }
+                }
+            });
         }
     },
     mounted() {
@@ -178,6 +192,12 @@ export default {
     created(){
         this.toggleSubscribeButton();
     },
+    filters:{
+        dateFormat: function(value,pattern){
+            var time = moment(value);
+            return time.format(pattern)
+        }
+    }
 }
 </script>
 
