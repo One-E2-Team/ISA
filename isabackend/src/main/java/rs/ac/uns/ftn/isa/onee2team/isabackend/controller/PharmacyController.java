@@ -81,7 +81,6 @@ public class PharmacyController {
 	@PostMapping(value="/{id}/take-medicine")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public Boolean takeMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
-		System.out.println("*************************************"+medWithQuant.getMedicineId()+"\n"+medWithQuant.getQuantity()+"\n"+pharmacyId);
 		if(medicineService.takeMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
 			return true;
 		return false;
@@ -90,7 +89,6 @@ public class PharmacyController {
 	@PostMapping(value="/{id}/return-medicine")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public Boolean returneMedicine(@RequestBody NewMedicineWithQuantityDTO medWithQuant, @PathVariable("id") Long pharmacyId ) {
-		System.out.println("*************************************"+medWithQuant.getMedicineId()+"\n"+medWithQuant.getQuantity()+"\n"+pharmacyId);
 		if(medicineService.returnMedicine(pharmacyId,medWithQuant.getMedicineId(),medWithQuant.getQuantity()))
 			return true;
 		return false;

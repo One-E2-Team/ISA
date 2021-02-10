@@ -39,7 +39,6 @@ export default {
                 medicineId: this.medicine.id,
                 quantity: parseInt(this.quantity),
             }
-            console.log(data);
             axios.post('http://' + comm.server + '/api/pharmacies/'+ this.pharmacyId +'/take-medicine',data)
                 .then(response=> {
                     if(response.data == false){
@@ -55,7 +54,6 @@ export default {
                                       quantity : parseInt(this.quantity),
                                       price : parseFloat(res.data.price)
                                   }
-                                  console.log("emitujem " , reservedMedicine);
                                   this.$emit('taked',reservedMedicine);    
                               })  
                     }
