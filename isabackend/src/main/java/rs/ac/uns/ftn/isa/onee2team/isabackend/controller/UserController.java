@@ -112,7 +112,7 @@ public class UserController {
 
 			PatientProfileDTO patientDTO = new PatientProfileDTO(p.getId(), p.getEmail(), p.getFirstName(),
 					p.getLastName(), p.getAddress(), p.getCity(), p.getState(), p.getPhoneNumber(), p.getPoints(),
-					category, discount);
+					category, discount, p.getPenalties());
 			return patientDTO;
 		} else if (user.getUserType() == UserType.PHARMACY_ADMIN) {
 			PharmacyAdmin pa = (PharmacyAdmin) auth.getPrincipal();
@@ -179,6 +179,14 @@ public class UserController {
 			+ "||" + "hasRole('ROLE_PHARMACIST')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('DEALER')")
 	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
 		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
+	}
+	
+	@GetMapping(value ="/myAllergies")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<Long> getPatientAllergiesIds(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return userService.getPatientAllergiesIds(user.getId());
 	}
 
 	@GetMapping("free-pharmacists")
