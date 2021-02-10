@@ -87,5 +87,21 @@ public class ERecipe {
 	public void setPharmacy(Pharmacy pharmacy) {
 		this.pharmacy = pharmacy;
 	}
+	
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public ERecipeStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ERecipeStatus status) {
+		this.status = status;
+	}
 
 }
