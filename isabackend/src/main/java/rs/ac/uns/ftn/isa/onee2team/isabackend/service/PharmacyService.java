@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.EditPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
@@ -123,6 +124,7 @@ public class PharmacyService implements IPharmacyService {
 		PharmacyWithDoctorsMedicinesAndRateDTO dto = new PharmacyWithDoctorsMedicinesAndRateDTO();
 		dto.setName(pharmacy.getName());
 		dto.setAddress(pharmacy.getAddress());
+		dto.setDescription(pharmacy.getDescription());
 		dto.setPharmacists(getCredentialsFromHealthWorkers(id, true));
 		dto.setDermatologists(getCredentialsFromHealthWorkers(id, false));
 		dto.setMedicines(medicineRepository.findMedicineByPharmacyid(id));
@@ -274,5 +276,18 @@ public class PharmacyService implements IPharmacyService {
 			ret.add(dto);
 		}
 		return ret;
+	}
+
+	@Override
+	public Boolean editPharmacy(EditPharmacyDTO editPharmacy, Long loggedUserId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		if(admin == null)
+			return false;
+		Pharmacy pharmacy = admin.getPharmacy();
+		pharmacy.setAddress(editPharmacy.getAddress());
+		pharmacy.setDescription(editPharmacy.getDescription());
+		pharmacy.setName(editPharmacy.getName());
+		pharmacyRepository.save(pharmacy);
+		return true;
 	}
 }

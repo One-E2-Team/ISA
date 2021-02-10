@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.List;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.EditPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExamStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
@@ -35,4 +36,6 @@ public interface IPharmacyService {
 	List<MedStatsDTO> getNumOfMedicinesByDateInPharmacy(TimeIntervalDTO interval, Long loggedUserId);
 
 	Double getPharmacyIncomeInTimeInterval(TimeIntervalDTO interval, Long loggedUserId);
+	
+	Boolean editPharmacy(EditPharmacyDTO editPharmacy, Long loggedUserId);
 }
