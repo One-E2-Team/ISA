@@ -78,4 +78,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	
 	@Query(value = "select * from all_users u where u.id = ?1 and u.user_type = 1", nativeQuery = true)
 	Pharmacist getPharmacistById(Long id);
+	
+	@Query(value = "select * from all_users u where u.id = ?1 and u.user_type = 2", nativeQuery = true)
+	Dermatologist getDermatologistById(Long id);
 }

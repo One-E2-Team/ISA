@@ -1,6 +1,7 @@
 <template>
     <div  v-if="isAuthorized()">
         <div>
+            <h5>Pharmacists</h5>
             <table class="table table-striped">
                 <tr class="table-light">
                     <th class="table-light">Name</th>
@@ -9,7 +10,19 @@
                 <tr v-for="free in this.freePharmacists" v-bind:key="free.id" class="table-light">
                     <td class="table-light">{{free.firstName}}</td>
                     <td class="table-light">{{free.lastName}}</td>
-                    <td class="table-light"><button class="btn btn-outline-success" @click="showWorkingTimeInput(free.id)">Choose working time</button></td>
+                    <td class="table-light"><button class="btn btn-outline-success" @click="showWorkingTimeInput(free.id, true)">Choose working time</button></td>
+                </tr>
+            </table>
+            <h5>Dermatologists</h5>
+            <table class="table table-striped">
+                <tr class="table-light">
+                    <th class="table-light">Name</th>
+                    <th class="table-light">Surname</th>
+                </tr>
+                <tr v-for="free in this.freeDermatologists" v-bind:key="free.id" class="table-light">
+                    <td class="table-light">{{free.firstName}}</td>
+                    <td class="table-light">{{free.lastName}}</td>
+                    <td class="table-light"><button class="btn btn-outline-success" @click="showWorkingTimeInput(free.id, false)">Choose working time</button></td>
                 </tr>
             </table>
         </div>
@@ -46,9 +59,11 @@ export default {
     data() {
         return {
             freePharmacists: null,
+            freeDermatologists: null,
             selectedId: null,
             startDate: new Date(),
             endDate: new Date(),
+            isSelectedPharmacist: false,
             startTime: 0,
             endTime: 0
         }
@@ -60,7 +75,8 @@ export default {
         isAuthorized : function(){
             return comm.getCurrentUserRole() === 'PHARMACY_ADMIN';
         },
-        showWorkingTimeInput : function(id){
+        showWorkingTimeInput : function(id, isPharmacist){
+            this.isSelectedPharmacist = isPharmacist;
             this.selectedId = id;
         },
         hireWorker : function(){
@@ -79,14 +95,25 @@ export default {
                 startTime: this.dateWithoutZone(startTimeString),
                 endTime: this.dateWithoutZone(endTimeString)
             }
-            axios.post('http://' + comm.server + '/api/users/hire-pharmacist', request).then(response => {
-            if(response.status == 200 && response.data == true){
-                alert("Successfully hired worker!");
-                this.$router.push('/pharmacists');
+            if(this.isSelectedPharmacist){
+                axios.post('http://' + comm.server + '/api/users/hire-pharmacist', request).then(response => {
+                    if(response.status == 200 && response.data == true){
+                        alert("Successfully hired worker!");
+                        this.$router.push('/pharmacists');
+                    }
+                    else
+                        alert("Error");
+                });
+            } else {
+                axios.post('http://' + comm.server + '/api/users/hire-dermatologist', request).then(response => {
+                    if(response.status == 200 && response.data == true){
+                        alert("Successfully hired worker!");
+                        this.$router.push('/dermatologists');
+                    }
+                    else
+                        alert("Error");
+                });
             }
-            else
-                alert("Error");
-        });
         },
         ticksToYYYYMMDD : function(ticks){
             return new Date(ticks).toISOString().split('T')[0];
@@ -101,6 +128,11 @@ export default {
         axios.get('http://' + comm.server + '/api/users/free-pharmacists').then(response => {
             if(response.status == 200){
                 this.freePharmacists = response.data;
+            }
+        });
+        axios.get('http://' + comm.server + '/api/users/dermatologists-not-in-pharmacy').then(response => {
+            if(response.status == 200){
+                this.freeDermatologists = response.data;
             }
         });
     }

@@ -236,4 +236,13 @@ public class UserController {
 		User user = (User) auth.getPrincipal();
 		return userService.hirePharmacist(hireWorker, user.getId());
 	}
+	
+	@PostMapping(value = "/hire-dermatologist")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public Boolean hireDermatologist(@RequestBody HireHealthWorkerDTO hireWorker, Authentication auth) {
+		if(hireWorker.getWorkerId() == null || hireWorker.getStartDate().compareTo(hireWorker.getEndDate()) >= 0)
+			return false;
+		User user = (User) auth.getPrincipal();
+		return userService.hireDermatologist(hireWorker, user.getId());
+	}
 }
