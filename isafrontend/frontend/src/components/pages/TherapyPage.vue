@@ -64,12 +64,12 @@ export default {
                 "information" : this.information
             })
             .then(response =>{
-                if (response.status == 200){
-                    alert("Uspesno unete informacije");
+                if (response.data == true){
+                    this.$vToastify.success("Information about examination are updated");
                     this.$router.push({name: 'Reservation', params: {id: this.id}})
+                }else{
+                        this.$vToastify.error("It is not possible to change the examination information.\nEither the examination was finish or it didn’t even exist.  ")
                 }
-                else
-                    alert("Informacije neuspesno unete");
             });
         }
     }

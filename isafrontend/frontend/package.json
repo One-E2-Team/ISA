@@ -16,7 +16,8 @@
     "vue-moment": "^4.1.0",
     "vue-qrcode-reader": "^2.3.16",
     "vue-router": "^3.5.1",
-    "vue-select": "^3.11.2"
+    "vue-select": "^3.11.2",
+    "vue-toastify": "^1.8.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
