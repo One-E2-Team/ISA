@@ -17,14 +17,13 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 public interface IExaminationService {
 	
 	List<ExaminationDTO> getFreeExaminationsByHealthWorkerIdAndPharmacyId(Long healthWorkerId, Long pharmacyId);
-
 	List<ExaminationDTO> getExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId,Date timeStart, Date timeEnd, ExaminationStatus status);
 	List<ExaminationDTO> getExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId,Date timeStart, Date timeEnd, ExaminationStatus status,Long pharmacyId);
 
 
 	List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist();
 	
-	boolean scheduleAtDermatologist(Long patientId, Long examinationId);
+	boolean scheduleExamination(Long patientId, Long examinationId);
 	
 	void cancelAppointment(Long examinationId);
 	
@@ -57,5 +56,7 @@ public interface IExaminationService {
 	List<NewRateDTO> getHealthWorkersForRate(Long patientId);
 	
 	List<Examination> getPatientsFinishedEx(Long patient_id);
-
+	
+	List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(Long pharmacyId, Date start, Date end,Long healthworkerId);
+	Boolean finishExamination(Long examinationId);
 }
