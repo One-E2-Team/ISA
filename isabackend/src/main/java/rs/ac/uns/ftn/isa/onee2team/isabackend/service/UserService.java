@@ -20,6 +20,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
@@ -47,14 +48,18 @@ public class UserService implements IUserService, UserDetailsService {
 
 	private IAuthorityService authService;
 	private IRatedHealthWorkerRepository ratedHealthWorkerRepository;
+	
+	private IPromotionService promotionService;
 
 	@Autowired
 	public UserService(IUserRepository userRepository, IAuthorityService authService,
-			IRatedHealthWorkerRepository ratedHealthWorkerRepository, IWorkingCalendarRepository workingCalendarRepository) {
+			IRatedHealthWorkerRepository ratedHealthWorkerRepository, 
+			IWorkingCalendarRepository workingCalendarRepository, IPromotionService promotionService) {
 		this.userRepository = userRepository;
 		this.authService = authService;
 		this.ratedHealthWorkerRepository = ratedHealthWorkerRepository;
 		this.workingCalendarRepository = workingCalendarRepository;
+		this.promotionService = promotionService;
 	}
 
 	public List<User> getAll() {
@@ -284,5 +289,16 @@ public class UserService implements IUserService, UserDetailsService {
 		userRepository.save(pharmacist);
 		workingCalendarRepository.save(wc);
 		return true;
+	}
+	
+	public double getDiscountForPatient(Long patientId) {
+		Patient p = (Patient) userRepository.findById(patientId).get();
+		List<CategoryType> ct = promotionService.getPatientType(p.getPoints());
+		CategoryType type = ct.get(0);
+		for (CategoryType categoryType : ct)
+			if(type.ordinal() < categoryType.ordinal()) 
+				type = categoryType;
+		double discount = promotionService.getDiscount(type);
+		return discount;
 	}
 }

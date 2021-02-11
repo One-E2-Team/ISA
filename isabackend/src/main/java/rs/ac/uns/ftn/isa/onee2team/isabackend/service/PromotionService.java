@@ -18,6 +18,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.ILoyaltyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPromotionRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
 public class PromotionService implements IPromotionService {
@@ -26,15 +27,15 @@ public class PromotionService implements IPromotionService {
 	private IPharmacyRepository pharmacyRepository;
 	private IEmailNotificationService emailNotificationService;
 	private ILoyaltyRepository loyaltyRepository;
-	private IUserService userService;
+	private IUserRepository userRepository;
 	
 	@Autowired
-	public PromotionService(IPromotionRepository promotionRepository, IPharmacyRepository pharmacyRepository, IEmailNotificationService emailNotificationService, ILoyaltyRepository loyaltyRepository, IUserService userService) {
+	public PromotionService(IPromotionRepository promotionRepository, IPharmacyRepository pharmacyRepository, IEmailNotificationService emailNotificationService, ILoyaltyRepository loyaltyRepository, IUserRepository userRepository) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.promotionRepository = promotionRepository;
 		this.emailNotificationService = emailNotificationService;
 		this.loyaltyRepository = loyaltyRepository;
-		this.userService = userService;
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class PromotionService implements IPromotionService {
 	@Override
 	public PharmacyDTO subscribe(Long pharmacyId, Long patientId) {
 		Pharmacy pharm = pharmacyRepository.findById(pharmacyId).get();
-		Patient patient = (Patient) userService.findById(patientId);
+		Patient patient = (Patient) userRepository.findById(patientId).orElse(null);
 		for (Patient p : pharm.getSubscribedPatients()) 
 			if(p.getId().equals(patient.getId()))
 				return new PharmacyDTO(pharmacyId, pharm.getName(), pharm.getAddress(), pharm.getDescription());

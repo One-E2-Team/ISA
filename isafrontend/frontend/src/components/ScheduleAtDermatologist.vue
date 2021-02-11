@@ -70,15 +70,17 @@ export default {
                 axios.post('http://' + comm.server + '/api/examinations/scheduleAtDermatologist?examinationId=' + this.selectedExamination.id )
                 .then(response => 
                 {
-                    if(response.data){ 
-                        alert("Appointment scheduled successfully!");
+                    if(response.status == 200){
+                        alert(response.data)
                         axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
                         .then(response => this.freeExaminations = response.data);
                     }
-                    else alert("You have 3 penalties! This action is forbidden");
-                });
+                    else{
+                        alert("This appointment is already scheduled!");
+                    }
 
                 this.selectedExamination = null;
+                });
 
             }
         },

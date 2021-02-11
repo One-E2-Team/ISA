@@ -70,6 +70,7 @@ public class PharmacyService implements IPharmacyService {
 	private IERecipeRepository eRecipeRepository;
 	private IWarehouseRepository wearehouseRepository;
 	private IEmailNotificationService emailNotificationService;
+	private IUserService userService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
@@ -79,7 +80,7 @@ public class PharmacyService implements IPharmacyService {
 			IMedicineReservationRepository reservationRepository, 
 			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
 			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
-			IEmailNotificationService emailNotificationService) {
+			IEmailNotificationService emailNotificationService, IUserService userService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -94,6 +95,7 @@ public class PharmacyService implements IPharmacyService {
 		this.eRecipeRepository = eRecipeRepository;
 		this.warehouseRepository = warehouseRepository;
 		this.emailNotificationService = emailNotificationService;
+		this.userService = userService;
 	}
 
 	@Override
@@ -305,23 +307,12 @@ public class PharmacyService implements IPharmacyService {
 		else return true;
 	}
 	
-	private double getDiscountForPatient(Long patientId) {
-		Patient p = (Patient) userRepository.findById(patientId).get();
-		List<CategoryType> ct = promotionService.getPatientType(p.getPoints());
-		CategoryType type = ct.get(0);
-		for (CategoryType categoryType : ct)
-			if(type.ordinal() < categoryType.ordinal()) 
-				type = categoryType;
-		double discount = promotionService.getDiscount(type);
-		return discount;
-	}
-	
 	@Override
 	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(ERecipeDTO erdto) {
 		if(checkERecipeValidity(erdto.getCode()) == false) return null;
 		List<PharmacyWithPriceAndGradeDTO> ret = new ArrayList<PharmacyWithPriceAndGradeDTO>();
 		List<Long> pharmacyIds = new ArrayList<Long>();
-		double discount = getDiscountForPatient(erdto.getPatientId());
+		double discount = userService.getDiscountForPatient(erdto.getPatientId());
 		pharmacyIds.addAll(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(erdto.getMedicine().get(0).getId(), erdto.getMedicine().get(0).getQuantity()));
 		for (ERecipeMedicine ermed : erdto.getMedicine())
 			pharmacyIds = pharmacyIds.stream().distinct().filter(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(ermed.getId(), ermed.getQuantity())::contains).collect(Collectors.toList());
