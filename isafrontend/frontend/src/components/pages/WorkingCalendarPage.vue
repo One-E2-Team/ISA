@@ -2,10 +2,23 @@
     <div>
         <PatientAppearedModal v-bind:examination="selectedExamination"/>
         <div>
-        <input type="date" v-model="params.startDate" />
-        <input type="date" v-model="params.endDate" />
-
-        <button @click="checkCalendar">Send request</button>
+        <date-picker v-model="range" is-range :min-date="new Date()">
+                <template v-slot="{ inputValue, inputEvents }">
+                    <div class="flex justify-center items-center">
+                    <input
+                        :value="inputValue.start"
+                        v-on="inputEvents.start"
+                        class="border px-2 py-1 w-32 rounded focus:outline-none focus:border-indigo-300"/>
+                    ->
+                    <input
+                        :value="inputValue.end"
+                        v-on="inputEvents.end"
+                        class="border px-2 py-1 w-32 rounded focus:outline-none focus:border-indigo-300"
+                    />
+                    <button class="btn btn-primary" @click="search()">Search</button>
+                    </div>
+                </template>
+        </date-picker>
         </div>
         <div>
             <table class="table table-hover table-bordered">
@@ -46,21 +59,23 @@ export default {
     },
     data(){
         return {
-            params : {
-                startDate: "",
-                endDate : "",
-                pharmacyId: ""
-            },
             examinations: [],
             selectedExamination: "",
+            range: {
+                start: new Date(),
+                end: new Date(),
+            },
         }
     },
+    created(){
+        this.search()
+    },
     methods: {
-        checkCalendar: function(){
-            let startTime = new Date(this.params.startDate);
+        search: function(){
+            let startTime = new Date(this.range.start);
             startTime.setHours(0);
             startTime.setMinutes(0);
-            let endTime = new Date(this.params.endDate);
+            let endTime = new Date(this.range.end);
             endTime.setHours(23);
             endTime.setMinutes(59);
         
@@ -78,7 +93,7 @@ export default {
         },
         openExamination: function(examination){
             this.selectedExamination = examination.id;         
-        }
+        },
     },
     filters:{
         dateFormat: function(value,pattern){
