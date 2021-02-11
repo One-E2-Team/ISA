@@ -1,13 +1,13 @@
 <template>
     <div>
-        <br/>Filter:
-        <select v-model="selectedStatus" class="custom-select mr-sm-2" v-on:change="filterByStatus()">
+        <br/><b>Filter: </b>
+        <select v-model="selectedStatus" class="custom-select mr-sm-2" v-on:change="filterByStatus()" aria-placeholder="Filter..">
             <option value='ALL'>ALL</option>
             <option value='CREATED'>CREATED</option>
             <option value='PROCESSED'>PROCESSED</option>
             <option value='REFUSED'>REFUSED</option>
-        </select>
-        <table class = "table table-hover">
+        </select><br/><br/>
+        <table class = "table table-hover table-success" style="width: 50%">
             <thead>
                 <tr>
                     <th> QR code </th>
@@ -24,6 +24,29 @@
                     <td>{{r.status}}</td>
                 </tr>
             </tbody>
+        </table><br/>
+        <h2>Medicines bought with ERecipes:</h2><br/>
+        <table class="table table-hover table-primary" style="width: 50%">
+            <thead>
+                <tr>
+                    <th> Name </th>
+                    <th> Code </th>
+                    <th> Type </th>
+                    <th> Form </th>
+                    <th> Side effects </th>
+                    <th> Contexture </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="m in allMedicines" v-bind:key="m.id" >
+                    <td>{{m.name}}</td>
+                    <td>{{m.code}}</td>
+                    <td>{{m.medicineType}}</td>
+                    <td>{{m.medicineForm}}</td>
+                    <td>{{m.sideEffects}}</td>
+                    <td>{{m.contexture}}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
@@ -35,13 +58,14 @@ import * as comm from '../../configuration/communication.js'
 import moment from 'moment'
 
 export default {
-    name: "AllPharmacies",
+    name: "PatientsRecipes",
 
     data() {
         return {
             allRecipes: [],
             filteredRecipes : [],
-            selectedStatus : ''
+            selectedStatus : '',
+            allMedicines : []
         }
     },
 
@@ -51,6 +75,10 @@ export default {
             this.allRecipes = response.data;
             this.filteredRecipes = response.data;
             });
+        axios.get('http://' + comm.server + '/api/users/medicinesFromERecipes')
+        .then(response =>{
+            this.allMedicines = response.data;
+        });
     },
 
     methods: {

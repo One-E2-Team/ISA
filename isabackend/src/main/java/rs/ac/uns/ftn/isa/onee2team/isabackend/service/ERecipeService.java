@@ -7,17 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientsERecipeDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipe;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IERecipeRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 
 @Service
 public class ERecipeService implements IERecipeService {
 	
 	private IERecipeRepository eRecipeRepository;
+	private IMedicineRepository medicineRepository;
 	
 	@Autowired
-	public ERecipeService(IERecipeRepository eRecipeRepository) {
+	public ERecipeService(IERecipeRepository eRecipeRepository,
+			IMedicineRepository medicineRepository) {
 		this.eRecipeRepository = eRecipeRepository;
+		this.medicineRepository = medicineRepository;
 	}
 
 	@Override
@@ -37,6 +42,11 @@ public class ERecipeService implements IERecipeService {
 		}
 		
 		return ret;
+	}
+
+	@Override
+	public List<Medicine> getMedicinesFromErecipesByPatient(Long patientId) {
+		return medicineRepository.getMedicinesFromErecipesByPatient(patientId);
 	}
 
 }
