@@ -158,11 +158,11 @@ export default {
                 .then(response => {
                     if(response.status == 200){
                         alert(response.data);
-                    }else{
-                        alert("This appointment is already scheduled by other user!");
                     }
-                    this.showModal = false;
+                }).catch(reason => {
+                    alert("Other user already scheduled that appointment!");
                 });
+                this.showModal = false;
             }
         },
 

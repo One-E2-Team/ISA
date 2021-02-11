@@ -75,13 +75,10 @@ export default {
                         axios.get('http://' + comm.server + '/api/examinations/freeExaminationsAtDermatoloist')
                         .then(response => this.freeExaminations = response.data);
                     }
-                    else{
-                        alert("This appointment is already scheduled!");
-                    }
-
-                this.selectedExamination = null;
+                }).catch(reason => {
+                    alert("Other user already scheduled that appointment!");
                 });
-
+                this.selectedExamination = null;
             }
         },
         sortByField : function(field){
