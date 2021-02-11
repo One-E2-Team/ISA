@@ -35,12 +35,13 @@ public class FeedbackService implements IFeedbackService {
 	private IRatedEntitiesService ratedEntitiesService;
 	private IMedicineRepository medicineRepository;
 	private IUserRepository userRepository;
+	private IERecipeService eRecipeService;
 
 	@Autowired
 	public FeedbackService(IComplaintRepository complaintRepository, IEmailNotificationService emailNotificationService, 
 			IExaminationService examinationService, IMedicineReservationService medicineReservationService,
 			IPharmacyService pharmacyService, IRatedEntitiesService ratedEntitiesService, IMedicineRepository medicineRepository,
-			IUserRepository userRepository) {
+			IUserRepository userRepository, IERecipeService eRecipeService) {
 		super();
 		this.complaintRepository = complaintRepository;
 		this.emailNotificationService = emailNotificationService;
@@ -50,6 +51,7 @@ public class FeedbackService implements IFeedbackService {
 		this.ratedEntitiesService = ratedEntitiesService;
 		this.medicineRepository = medicineRepository;
 		this.userRepository = userRepository;
+		this.eRecipeService = eRecipeService;
 	}
 
 	@Override

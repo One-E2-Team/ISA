@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
@@ -134,6 +135,17 @@ public class MedicineReservationService implements IMedicineReservationService {
 			
 			if(!ret_list.contains(dto))
 				ret_list.add(dto);
+		}
+		
+		List<Medicine> medicines = medicineRepository.getMedicinesFromErecipesByPatient(patientId);
+		for(Medicine m : medicines) {
+			dto = new NewRateDTO();
+			dto.setRateEntityId(m.getId());
+			dto.setRateEntityName(m.getName());
+			dto.setRateEntityType("MEDICINE");
+			dto.setRate(-1);
+			
+			if(!ret_list.contains(dto)) { ret_list.add(dto); }
 		}
 		
 		return ret_list;

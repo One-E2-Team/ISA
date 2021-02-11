@@ -18,4 +18,8 @@ public interface IPharmacyRepository extends JpaRepository<Pharmacy, Long> {
 	
 	@Query(value = "select IFNULL(avg(rate),0) from rated_pharmacies where pharmacy_id = ?1", nativeQuery = true)
 	double getAvgRateForPharmacy(Long pharmacy_id);
+	
+	@Query(value = "select * from pharmacies where id in \r\n" + 
+			"(select distinct pharmacy_id from e_recipes where patient_id = ?1 and status in (0,1))", nativeQuery = true)
+	List<Pharmacy> getPharmaciesFromERecipes(Long patientId);
 }

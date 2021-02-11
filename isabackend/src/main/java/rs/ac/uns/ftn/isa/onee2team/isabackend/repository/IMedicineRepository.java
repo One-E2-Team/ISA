@@ -23,5 +23,13 @@ public interface IMedicineRepository extends JpaRepository<Medicine, Long> {
 
 	@Query("select w.medicine.id from Warehouse w where w.pharmacy.id = ?1")
 	public List<Long> findMedicineIdsByPharmacyid(Long id);
+	
+	
+	@Query(value = "select * from medicines where id in (\r\n" + 
+			"select distinct medicine_id from medicines_with_quantity m  where m.id in (\r\n" + 
+			"select medicines_with_quantity_id from e_recipes_medicines_with_quantity e \r\n" + 
+			"where e.erecipe_id in ( select id from e_recipes where patient_id = 3 and status in (0,1))))", 
+			nativeQuery = true)
+	List<Medicine> getMedicinesFromErecipesByPatient(Long patientId);
 
 }

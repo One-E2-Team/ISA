@@ -208,6 +208,13 @@ public class PharmacyService implements IPharmacyService {
 			if (!ret.contains(dto))
 				ret.add(dto);
 		}
+		
+		List<Pharmacy> pharmacies = pharmacyRepository.getPharmaciesFromERecipes(patient_id);
+		for (Pharmacy p : pharmacies) {
+			dto = new NewRateDTO(p.getId(), p.getName(), "PHARMACY", -1);
+			if (!ret.contains(dto))
+				ret.add(dto);
+		}
 
 		return ret;
 	}

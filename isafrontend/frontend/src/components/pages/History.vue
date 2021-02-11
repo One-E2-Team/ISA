@@ -1,14 +1,8 @@
 <template>
     <div><br/>
-        <div class = "container">
-            <div class = "row justify-content-center">
-                <div class = "col-md-auto">
-                    <h2>History of my visits</h2>
-                </div>
-            </div><br/>
-            <div class = "row justify-content-center">
-                <div class = "col-6-auto">
-                    <table class="table table-hover table-bordered">
+            <h4>History of my visits</h4><br/>
+            
+                    <table class="table table-hover table-bordered" style="width:80%">
                         <thead>
                             <tr> 
                                 <th> <button class="btn" v-on:click="sort('startTime')"><b> Date </b></button></th>
@@ -28,10 +22,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
-            </div>
-            
-        </div>
+                
     </div>
 </template>
 

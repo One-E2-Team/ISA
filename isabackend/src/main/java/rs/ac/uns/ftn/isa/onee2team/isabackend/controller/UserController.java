@@ -32,6 +32,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyAdminProfileDTO
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
@@ -220,6 +221,13 @@ public class UserController {
 		return eRecipeService.getPatientsERecipes(user.getId());
 	}
 	
+	@GetMapping(value = "/medicinesFromERecipes")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<Medicine> getMyMedicinesFromERecipes(Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		return eRecipeService.getMedicinesFromErecipesByPatient(user.getId());
+	}
+
 	@PostMapping(value = "/hire-pharmacist")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public Boolean hirePharmacist(@RequestBody HireHealthWorkerDTO hireWorker, Authentication auth) {
