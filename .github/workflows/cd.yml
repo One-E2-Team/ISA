@@ -26,9 +26,8 @@ jobs:
           heroku container:login
           cd isabackend
           mvn --batch-mode --update-snapshots verify
-          docker build . -t registry.heroku.com/isa-eu-backend/web
-          docker push registry.heroku.com/isa-eu-backend/web
-          heroku container:release web --app isa-eu-backend
+          heroku plugins:install heroku-cli-deploy
+          heroku war:deploy target/isabackend-0.0.1-SNAPSHOT.war --app isa-eu-backend
           cd ..
       - name: Build Frontend and push to Heroku
         env:
