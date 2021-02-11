@@ -51,14 +51,17 @@ public class PricelistService implements IPricelistService {
 
 	@Override
 	public Boolean changePriceList(PricelistDTO pricelist) {
-		Pricelist newPricelist = new Pricelist();
-		newPricelist.setMedicine(medicineRepository.findById(pricelist.getMedicineId()).orElse(null));
-		newPricelist.setPharmacy(pharmacyRepository.findById(pricelist.getPharmacyId()).orElse(null));
-		newPricelist.setEndDate(pricelist.getEndDate());
-		newPricelist.setPrice(pricelist.getPrice());
-		newPricelist.setStartDate(pricelist.getStartDate());
-		pricelistRepository.save(newPricelist);
-		return true;
+		if(isValidNewPricelist(pricelist)) {
+			Pricelist newPricelist = new Pricelist();
+			newPricelist.setMedicine(medicineRepository.findById(pricelist.getMedicineId()).orElse(null));
+			newPricelist.setPharmacy(pharmacyRepository.findById(pricelist.getPharmacyId()).orElse(null));
+			newPricelist.setEndDate(pricelist.getEndDate());
+			newPricelist.setPrice(pricelist.getPrice());
+			newPricelist.setStartDate(pricelist.getStartDate());
+			pricelistRepository.save(newPricelist);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -68,6 +71,22 @@ public class PricelistService implements IPricelistService {
 				return pl;
 		}
 		return null;
+	}
+	
+	private Boolean isValidNewPricelist(PricelistDTO pricelist) {
+		for(Pricelist p : pricelistRepository.getAllPricelistsForPharmacyAndMedicine(pricelist.getPharmacyId(), pricelist.getMedicineId())) {
+			if(pricelist.getStartDate().after(p.getStartDate()) && pricelist.getEndDate().before(p.getEndDate()))
+				return false;
+			if(p.getStartDate().after(pricelist.getStartDate()) && p.getEndDate().before(pricelist.getEndDate()))
+				return false;
+			if(p.getStartDate().getTime() == pricelist.getStartDate().getTime()|| p.getEndDate().getTime() == pricelist.getEndDate().getTime())
+				return false;
+			if(p.getStartDate().after(pricelist.getStartDate()) && p.getStartDate().before(pricelist.getEndDate()))
+				return false;
+			if(pricelist.getStartDate().after(p.getStartDate()) && pricelist.getStartDate().before(p.getEndDate()))
+				return false;
+		}
+		return true;
 	}
 
 }

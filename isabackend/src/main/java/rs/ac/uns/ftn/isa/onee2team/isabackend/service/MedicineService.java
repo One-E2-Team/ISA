@@ -111,7 +111,7 @@ public class MedicineService implements IMedicineService {
 			return null;
 		List<RequestForMissingMedicinesDTO> ret = new ArrayList<RequestForMissingMedicinesDTO>();
 		for (RequestForMissingMedicines req : requestForMissingMedicinesRepository.getAllByPharmacy(admin.getPharmacy().getId())) {
-			RequestForMissingMedicinesDTO dto = new RequestForMissingMedicinesDTO(req.getId(), req.getDate(), req.getMedicine().getId());
+			RequestForMissingMedicinesDTO dto = new RequestForMissingMedicinesDTO(req.getId(), req.getDate(), req.getMedicine().getId(), req.getMedicine().getName());
 			ret.add(dto);
 		}
 		return ret;

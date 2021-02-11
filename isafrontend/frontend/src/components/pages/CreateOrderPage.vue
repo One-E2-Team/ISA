@@ -1,6 +1,5 @@
 <template>
     <div v-if="isAuthorized()">
-        <h1> Welcome dusmani </h1>
         <label>Choose medicine: </label> 
         <select name="medicines" id="medicines" @change="addToOrder($event)">
             <option value="-1">Nothing</option>

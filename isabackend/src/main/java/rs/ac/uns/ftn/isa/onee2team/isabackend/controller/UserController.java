@@ -24,8 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HireHealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientProfileDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientsERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyAdminProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
@@ -35,6 +37,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IERecipeService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
 
@@ -47,13 +50,16 @@ public class UserController {
 	private PasswordEncoder passwordEncoder;
 
 	private IPromotionService promotionService;
+	
+	private IERecipeService eRecipeService;
 
 	@Autowired
 	public UserController(IUserService userService, PasswordEncoder passwordEncoder,
-			IPromotionService promotionService) {
+			IPromotionService promotionService, IERecipeService eRecipeService) {
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
 		this.promotionService = promotionService;
+		this.eRecipeService = eRecipeService;
 	}
 
 	@GetMapping(value = "/all")
@@ -112,7 +118,7 @@ public class UserController {
 
 			PatientProfileDTO patientDTO = new PatientProfileDTO(p.getId(), p.getEmail(), p.getFirstName(),
 					p.getLastName(), p.getAddress(), p.getCity(), p.getState(), p.getPhoneNumber(), p.getPoints(),
-					category, discount);
+					category, discount, p.getPenalties());
 			return patientDTO;
 		} else if (user.getUserType() == UserType.PHARMACY_ADMIN) {
 			PharmacyAdmin pa = (PharmacyAdmin) auth.getPrincipal();
@@ -180,8 +186,16 @@ public class UserController {
 	public void changePassword(@RequestBody StringInformationDTO sidto, Authentication auth) {
 		userService.changePassword(((User) auth.getPrincipal()).getId(), passwordEncoder.encode(sidto.getInfo()));
 	}
+	
+	@GetMapping(value ="/myAllergies")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<Long> getPatientAllergiesIds(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return userService.getPatientAllergiesIds(user.getId());
+	}
 
-	@GetMapping("free-pharmacists")
+	@GetMapping("/free-pharmacists")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public List<CredentialsAndIdDTO> getAllFreePharmacists() {
 		return userService.getAllFreePharmacists();
@@ -197,5 +211,21 @@ public class UserController {
 	@GetMapping(value ="/patient-allergies-ids/{id}")
 	public List<Long> getPatientAllergiesIds(@PathVariable("id") Long patientId){
 		return userService.getPatientAllergiesIds(patientId);
+	}
+	
+	@GetMapping(value = "/myerecipes")
+	@PreAuthorize("hasRole('PATIENT')")
+	public List<PatientsERecipeDTO> getMyERecipes(Authentication auth) {
+		User user = (User) auth.getPrincipal();
+		return eRecipeService.getPatientsERecipes(user.getId());
+	}
+	
+	@PostMapping(value = "/hire-pharmacist")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public Boolean hirePharmacist(@RequestBody HireHealthWorkerDTO hireWorker, Authentication auth) {
+		if(hireWorker.getWorkerId() == null || hireWorker.getStartDate().compareTo(hireWorker.getEndDate()) >= 0)
+			return false;
+		User user = (User) auth.getPrincipal();
+		return userService.hirePharmacist(hireWorker, user.getId());
 	}
 }

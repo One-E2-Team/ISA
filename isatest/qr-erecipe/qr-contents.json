@@ -1,0 +1,129 @@
+0-tested------------------------------------------------
+{
+    "patientId": 3,
+    "code": "abc123",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 1,
+            "name": "Letrox",
+            "quantity": 2
+        },
+        {
+            "id": 2,
+            "name": "Flobian",
+            "quantity": 1
+        }
+    ]
+}
+1------------------------------------------------
+{
+    "patientId": 3,
+    "code": "abc124",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 3,
+            "name": "Paracetamol",
+            "quantity": 1
+        },
+        {
+            "id": 6,
+            "name": "MOMENSA",
+            "quantity": 1
+        }
+    ]
+}
+2------------------------------------------------
+{
+    "patientId": 3,
+    "code": "abc125",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 4,
+            "name": "Paracetamol",
+            "quantity": 10
+        }
+    ]
+}
+3------------------------------------------------
+{
+    "patientId": 3,
+    "code": "abc126",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 4,
+            "name": "MAXIDEX",
+            "quantity": 3
+        }
+    ]
+}
+4------------------------------------------------
+{
+    "patientId": 1,
+    "code": "abc127",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 3,
+            "name": "Paracetamol",
+            "quantity": 3
+        }
+    ]
+}
+5------------------------------------------------
+{
+    "patientId": 1,
+    "code": "abc128",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 1,
+            "name": "Letrox",
+            "quantity": 2
+        },
+        {
+            "id": 2,
+            "name": "Flobian",
+            "quantity": 1
+        },
+        {
+            "id": 5,
+            "name": "MAXIDEX",
+            "quantity": 1
+        }
+    ]
+}
+6------------------------------------------------
+{
+    "patientId": 1,
+    "code": "abc129",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 4,
+            "name": "Febricet",
+            "quantity": 1
+        },
+        {
+            "id": 4,
+            "name": "Febricet",
+            "quantity": 1
+        }
+    ]
+}
+7------------------------------------------------
+{
+    "patientId": 1,
+    "code": "abc130",
+    "date": 1612985220000,
+    "medicine": [
+        {
+            "id": 1,
+            "name": "Letrox",
+            "quantity": 1
+        }
+    ]
+}
