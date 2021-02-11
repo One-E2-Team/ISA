@@ -187,10 +187,9 @@ export default {
             axios.post('http://' + comm.server + '/api/examinations/finish/'+this.id)
                 .then(response=> {
                     if(response.data == true)
-                        alert("Success");
-                    else{
-                        alert("cant finish examination");
-                    }
+                        this.$vToastify.success();
+                    else
+                        this.$vToastify.error("Can't finish examination");
                 })
         },
         scheduleNewExamination: function(){

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.auth.ResourceConflictException;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
@@ -101,10 +102,8 @@ public class ExaminationController {
 	
 	@PutMapping(value="/information")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public HttpStatus updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
-		if( examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInformation()))
-			return HttpStatus.OK;
-		return HttpStatus.METHOD_NOT_ALLOWED;
+	public Boolean updateInformation(@RequestBody ExaminationInformationDTO examinationInformation) {
+		return examinationService.updateInformation(examinationInformation.getExaminationId(),examinationInformation.getInformation());
 	}
 
 	@PostMapping(value = "/pharmaciesWithFreeAppointments")
@@ -166,7 +165,6 @@ public class ExaminationController {
 	@PostMapping(value="/finish/{id}")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public Boolean finishExamination(@PathVariable("id") Long examinationId){	
-		System.out.println("********************"+examinationId);
 		return examinationService.finishExamination(examinationId);
 	}
 }

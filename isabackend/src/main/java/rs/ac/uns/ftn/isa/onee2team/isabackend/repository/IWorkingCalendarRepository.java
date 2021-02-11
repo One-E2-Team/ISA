@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.repository;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,7 @@ public interface IWorkingCalendarRepository extends JpaRepository<WorkingCalenda
 	@Query(value = "select count(*) from vacation_requests v where v.health_wokrer_id = ?1 and v.accepted = true "
 			+ "and v.start_date < ?2 and v.end_date > ?2", nativeQuery = true)
 	Integer getNumOfVacationsForHealthWorkerIdAndDate(Long healthWorkerId, Date date);
+	
+	@Query(value = "select * from working_calendars w where w.health_wokrer_id = ?1", nativeQuery = true)
+	List<WorkingCalendar> getAllCalendarsForHealthWorker(Long workerId);
 }
