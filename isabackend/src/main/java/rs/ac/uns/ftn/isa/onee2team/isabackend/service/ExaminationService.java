@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -93,17 +95,37 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public boolean scheduleAtDermatologist(Long patientId, Long examinationId) {
+	public boolean scheduleExamination(Long patientId, Long examinationId) {
 		if(userRepository.getPatientsPenalties(patientId) >= 3)
 			return false;
 		Examination examination =  examinationRepository.findById(examinationId).orElse(null);
+		if(TimeIntervalOverlaps(examination,examinationRepository.getPatientFutureExaminations(patientId)))
+			return false;
 		examination.setPatient((Patient)(userRepository.findById(patientId).orElse(null)));
 		examination.setStatus(ExaminationStatus.SCHEDULED);
 		examinationRepository.save(examination);
 		User user = userRepository.findById(patientId).orElse(null);
 		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
-				"You have successfully scheduled an appointment at dermatologist.");
+				"You have successfully scheduled an appointment.");
 		return true;
+	}
+
+
+	private boolean TimeIntervalOverlaps(Examination examination, List<Examination> futureExaminations) {
+		for(Examination e : futureExaminations) {
+			if(examinationInRange(examination, e) || timeInExaminationTimeInterval(e,examination.getStartTime())
+					|| timeInExaminationTimeInterval(e,examination.getEndTime()))
+				return true;
+		}
+		return false;
+	}
+
+	private boolean timeInExaminationTimeInterval(Examination e, Date time) {
+		return e.getStartTime().before(time) && e.getEndTime().after(time);
+	}
+
+	private boolean examinationInRange(Examination examination, Examination e) {
+		return e.getStartTime().after(examination.getStartTime()) && e.getEndTime().before(examination.getEndTime());
 	}
 
 	@Override
@@ -312,5 +334,39 @@ public class ExaminationService implements IExaminationService {
 	@Override
 	public List<Examination> getPatientsFinishedEx(Long patient_id){
 		return examinationRepository.getPatientsFinishedAppointments(patient_id);
+	}
+
+	@Override
+	public List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(Long pharmacyId, Date start, Date end, Long healthworkerId) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(start);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 1);
+		start = calendar.getTime();
+		
+		calendar.setTime(end);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		end = calendar.getTime();
+		
+		
+		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
+		for (Examination examination : examinationRepository
+				.searchAllFreeExaminations(pharmacyId,start,end,healthworkerId)) {
+			ret.add(new ExaminationDTO(examination.getId(), healthworkerId, pharmacyId, examination.getDate(),
+					examination.getStartTime(), examination.getEndTime()));
+		}
+		return ret;
+	}
+
+	@Override
+	public Boolean finishExamination(Long examinationId) {
+		Examination e = examinationRepository.findById(examinationId).orElse(null);
+		if (e == null || !e.getStatus().equals(ExaminationStatus.SCHEDULED)) return false;
+		e.setStatus(ExaminationStatus.FINISHED);
+		examinationRepository.save(e);
+		return true;
 	}
 }

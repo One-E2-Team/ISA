@@ -73,7 +73,6 @@ export default {
                     this.endHourTicks = response.data.endHour;
                     this.endHour = this.ticksToHHMM(this.endHourTicks);
                     this.gotDate = true;
-                    alert("OK");
                 }
             });
         },
@@ -128,8 +127,6 @@ export default {
             .then(response => {
                 if (response.status == 200) {
                     alert(response.data);
-                    if(response.data.includes("Success"))
-                        this.$router.push('/profile');
                 }
             });
         }

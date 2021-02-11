@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+
 import Welcome from './components/Welcome'
 import Medicines from './components/Medicines'
 import Pharmacy from './components/Pharmacy'
@@ -30,11 +31,13 @@ import MedicineReservationPage from './components/pages/MedicineReservationPage'
 import ReservedMedicines from './components/pages/ReservedMedicines'
 import OrdersPage from './components/pages/OrdersPage'
 import PatientRatingPage from './components/pages/PatientRatingPage'
+import HealthWorkerSchedule from './components/pages/HealthWorkerSchedule'
 import RequestsForMedicines from './components/pages/RequestsForMedicinesPage'
 import StatisticsPage from './components/pages/StatisticsPage'
 import eRecipe from './components/pages/eRecipe'
 import PatientsRecipes from './components/pages/PatientsRecipes'
 import PricelistPage from './components/pages/PricelistPage'
+import HireWorker from './components/pages/HireWorker'
 
 
 Vue.use(VueRouter)
@@ -195,6 +198,12 @@ const router = new VueRouter({
       component: PatientRatingPage
     },
     {
+      path: 'health-worker/schedule/:patientId',
+      name: 'HSchedule',
+      component: HealthWorkerSchedule,
+      props: true
+    },
+    {
       name: 'requestsForMedicines',
       path: '/requestsForMedicines',
       component: RequestsForMedicines
@@ -219,6 +228,11 @@ const router = new VueRouter({
       path: '/pricelist',
       component: PricelistPage,
       props: true
+    },
+    {
+      name: 'hire',
+      path: '/hire',
+      component: HireWorker
     }
   ]
 })

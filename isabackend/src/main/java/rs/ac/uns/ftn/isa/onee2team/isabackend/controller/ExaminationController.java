@@ -3,6 +3,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 import java.util.Date;
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +26,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduleNewExanimationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
@@ -54,7 +57,7 @@ public class ExaminationController {
 	public boolean scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
-		return examinationService.scheduleAtDermatologist(user.getId(), examinationId);
+		return examinationService.scheduleExamination(user.getId(), examinationId);
 	}
 	
 	@PostMapping(value = "/cancelAppointment")
@@ -145,4 +148,22 @@ public class ExaminationController {
 		return examinationService.getPharmacyByExamination(id);
 	}
 	
+	@PostMapping(value= "/pharmacy/{pid}/available")
+	public List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(@PathVariable("pid")Long pharmacyId,@RequestBody TimeIntervalDTO timeInterval,Authentication auth){
+		User user = (User) auth.getPrincipal();
+		return examinationService.searchAllFreeExaminationsInSpecificDays(pharmacyId, timeInterval.getStart(), timeInterval.getEnd(), user.getId());
+	}
+	
+	@PostMapping(value="/health-worker/schedule")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean scheduleExamination(@RequestBody ScheduleNewExanimationDTO schedule){	
+		return examinationService.scheduleExamination(schedule.getPatientId(),schedule.getExaminationId());
+	}
+	
+	@PostMapping(value="/finish/{id}")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public Boolean finishExamination(@PathVariable("id") Long examinationId){	
+		System.out.println("********************"+examinationId);
+		return examinationService.finishExamination(examinationId);
+	}
 }

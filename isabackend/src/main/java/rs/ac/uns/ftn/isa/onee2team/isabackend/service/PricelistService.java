@@ -79,7 +79,7 @@ public class PricelistService implements IPricelistService {
 				return false;
 			if(p.getStartDate().after(pricelist.getStartDate()) && p.getEndDate().before(pricelist.getEndDate()))
 				return false;
-			if(p.getStartDate().equals(pricelist.getStartDate()) || p.getEndDate().equals(pricelist.getEndDate()))
+			if(p.getStartDate().getTime() == pricelist.getStartDate().getTime()|| p.getEndDate().getTime() == pricelist.getEndDate().getTime())
 				return false;
 			if(p.getStartDate().after(pricelist.getStartDate()) && p.getStartDate().before(pricelist.getEndDate()))
 				return false;
