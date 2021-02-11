@@ -305,6 +305,13 @@ public class UserService implements IUserService, UserDetailsService {
 	}
 
 	@Override
+	public User saveDealerMWQ(Dealer d) {
+		Dealer dealer = (Dealer) userRepository.findById(d.getId()).get();
+		dealer.setMedicinesWithQuantity(d.getMedicinesWithQuantity());
+		return userRepository.save(dealer);
+	}
+
+	@Override
 	public Boolean hireDermatologist(HireHealthWorkerDTO hireWorker, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		if(admin == null)
@@ -375,5 +382,20 @@ public class UserService implements IUserService, UserDetailsService {
 		if(workStartHour > wcStartHour && workStartHour < wcEndHour)
 			return false;
 		return true;
+	}
+
+	@Override
+	public List<PharmacyAdmin> getUnemployedPhAdmins() {
+		return userRepository.getAllUnemployedPharmacyAdmins();
+	}
+
+	@Override
+	public PharmacyAdmin employPhAdmin(PharmacyAdmin pa) {
+		PharmacyAdmin user = (PharmacyAdmin) userRepository.findById(pa.getId()).get();
+		if(user.getPharmacy() == null) {
+			user.setPharmacy(pa.getPharmacy());
+			return userRepository.save(user);
+		}
+		return null;
 	}
 }

@@ -16,11 +16,14 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.ComplaintType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedHealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.RatedPharmacy;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipe;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IComplaintRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IERecipeRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
@@ -35,13 +38,13 @@ public class FeedbackService implements IFeedbackService {
 	private IRatedEntitiesService ratedEntitiesService;
 	private IMedicineRepository medicineRepository;
 	private IUserRepository userRepository;
-	private IERecipeService eRecipeService;
+	private IERecipeRepository eRecipeRepository;
 
 	@Autowired
 	public FeedbackService(IComplaintRepository complaintRepository, IEmailNotificationService emailNotificationService, 
 			IExaminationService examinationService, IMedicineReservationService medicineReservationService,
 			IPharmacyService pharmacyService, IRatedEntitiesService ratedEntitiesService, IMedicineRepository medicineRepository,
-			IUserRepository userRepository, IERecipeService eRecipeService) {
+			IUserRepository userRepository, IERecipeRepository eRecipeRepository) {
 		super();
 		this.complaintRepository = complaintRepository;
 		this.emailNotificationService = emailNotificationService;
@@ -51,7 +54,7 @@ public class FeedbackService implements IFeedbackService {
 		this.ratedEntitiesService = ratedEntitiesService;
 		this.medicineRepository = medicineRepository;
 		this.userRepository = userRepository;
-		this.eRecipeService = eRecipeService;
+		this.eRecipeRepository = eRecipeRepository;
 	}
 
 	@Override
@@ -91,6 +94,10 @@ public class FeedbackService implements IFeedbackService {
 			temp = new NewComplaintDTO(mr.getPharmacy().getId(), mr.getPharmacy().getName(), "PHARMACY", "");
 			if(!ret.contains(temp)) ret.add(temp);
 		}
+		for(ERecipe er : eRecipeRepository.findAllPharmaciesByPatient(patient)) {
+			temp = new NewComplaintDTO(er.getPharmacy().getId(), er.getPharmacy().getName(), "PHARMACY", "");
+			if(!ret.contains(temp)) ret.add(temp);
+		}
 		return ret;
 	}
 	
@@ -114,6 +121,13 @@ public class FeedbackService implements IFeedbackService {
 			c.setType(ComplaintType.PHARMACIST);
 			break;
 		}
+		boolean validated = false;
+		for (NewComplaintDTO temp : findPossibleComplaints(patient))
+			if(complaintOn.equals(temp.getComplaintEntityId()) && ncdto.getComplaintEntityType().equals(temp.getComplaintEntityType())) {
+				validated = true;
+				break;
+			}
+		if(!validated) return null;
 		return complaintRepository.save(c);
 	}
 
