@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -112,15 +113,10 @@ public class ExaminationService implements IExaminationService {
 
 	private boolean TimeIntervalOverlaps(Examination examination, List<Examination> futureExaminations) {
 		for(Examination e : futureExaminations) {
-			System.out.println("----------------------------------------------");
-			System.out.println("Examination "+examination.getId()+" se preklapa sa:");
 			if(examinationInRange(examination, e) || timeInExaminationTimeInterval(e,examination.getStartTime())
 					|| timeInExaminationTimeInterval(e,examination.getEndTime()))
-				
-				System.out.println(e.getId());
 				return true;
 		}
-		System.out.println("nema preklapanja");
 		return false;
 	}
 
@@ -340,16 +336,17 @@ public class ExaminationService implements IExaminationService {
 	public List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(Long pharmacyId, Date start, Date end, Long healthworkerId) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(start);
-		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
 		calendar.set(Calendar.MINUTE, 0);
 		calendar.set(Calendar.SECOND, 1);
 		start = calendar.getTime();
 		
 		calendar.setTime(end);
-		calendar.set(Calendar.HOUR, 23);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
 		calendar.set(Calendar.MINUTE, 59);
 		calendar.set(Calendar.SECOND, 59);
 		end = calendar.getTime();
+		
 		
 		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
 		for (Examination examination : examinationRepository
@@ -358,5 +355,14 @@ public class ExaminationService implements IExaminationService {
 					examination.getStartTime(), examination.getEndTime()));
 		}
 		return ret;
+	}
+
+	@Override
+	public Boolean finishExamination(Long examinationId) {
+		Examination e = examinationRepository.findById(examinationId).orElse(null);
+		if (e == null || !e.getStatus().equals(ExaminationStatus.SCHEDULED)) return false;
+		e.setStatus(ExaminationStatus.FINISHED);
+		examinationRepository.save(e);
+		return true;
 	}
 }

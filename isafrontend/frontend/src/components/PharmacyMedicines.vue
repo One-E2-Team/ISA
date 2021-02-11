@@ -87,6 +87,10 @@
                             
                         </tbody>
                     </table>
+                    <div>
+                       <button class="btn btn-primary" @click="finishExamination()">Finish</button>
+                       <button class="btn btn-outline-primary" @click="scheduleNewExamination()">Schedule examination</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,7 +181,22 @@ export default {
         },
         emptyRecept: function(){
             this.recept = [];
+        },
+        finishExamination: function(){
+            console.log("saljem "+this.id);
+            axios.post('http://' + comm.server + '/api/examinations/finish/'+this.id)
+                .then(response=> {
+                    if(response.data == true)
+                        alert("Success");
+                    else{
+                        alert("cant finish examination");
+                    }
+                })
+        },
+        scheduleNewExamination: function(){
+            this.$router.push({name: 'HSchedule', params: {patientId : this.patientId, pharmacyId : this.pharmacyId}})
         }
+
     }
 }
 </script>

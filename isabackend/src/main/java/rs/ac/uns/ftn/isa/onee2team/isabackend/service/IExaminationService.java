@@ -58,4 +58,5 @@ public interface IExaminationService {
 	List<Examination> getPatientsFinishedEx(Long patient_id);
 	
 	List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(Long pharmacyId, Date start, Date end,Long healthworkerId);
+	Boolean finishExamination(Long examinationId);
 }
