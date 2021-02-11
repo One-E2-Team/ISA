@@ -84,6 +84,7 @@
         <AddPromotion v-if="isPharmacyAdmin()" v-bind:id="this.id"/>
         <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-outline-success">Create order</button>
         <button name="viewPricelist" v-if="isPharmacyAdmin()" @click="openPricelistPage()" class="btn btn-outline-success">View pricelist</button>
+        <button v-if="isPharmacyAdmin()" @click="showFreeWorkers()" class="btn btn-outline-success">Hire worker</button>
     </div>
 </template>
 
@@ -219,6 +220,9 @@ export default {
                 name: 'pricelist',
                 params: { pid: this.id }
             })
+        },
+        showFreeWorkers : function(){
+            this.$router.push("/hire");
         }
     },
     mounted() {

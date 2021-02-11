@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HireHealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewElevatedUserRequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientsERecipeDTO;
@@ -194,7 +195,7 @@ public class UserController {
 		return userService.getPatientAllergiesIds(user.getId());
 	}
 
-	@GetMapping("free-pharmacists")
+	@GetMapping("/free-pharmacists")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public List<CredentialsAndIdDTO> getAllFreePharmacists() {
 		return userService.getAllFreePharmacists();
@@ -217,5 +218,14 @@ public class UserController {
 	public List<PatientsERecipeDTO> getMyERecipes(Authentication auth) {
 		User user = (User) auth.getPrincipal();
 		return eRecipeService.getPatientsERecipes(user.getId());
+	}
+	
+	@PostMapping(value = "/hire-pharmacist")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
+	public Boolean hirePharmacist(@RequestBody HireHealthWorkerDTO hireWorker, Authentication auth) {
+		if(hireWorker.getWorkerId() == null || hireWorker.getStartDate().compareTo(hireWorker.getEndDate()) >= 0)
+			return false;
+		User user = (User) auth.getPrincipal();
+		return userService.hirePharmacist(hireWorker, user.getId());
 	}
 }
