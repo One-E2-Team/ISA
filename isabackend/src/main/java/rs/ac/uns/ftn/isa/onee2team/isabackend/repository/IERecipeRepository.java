@@ -15,10 +15,4 @@ public interface IERecipeRepository extends JpaRepository<ERecipe, Long> {
 	@Query("select e from ERecipe e where e.patient.id = ?1")
 	List<ERecipe> getPatientsERecipes(Long patientId);
 	
-	@Query(value = "select * from medicines m where m.id in (\r\n" + 
-			"select distinct medicine_id from medicines_with_quantity m  where m.id in (\r\n" + 
-			"select medicines_with_quantity_id from e_recipes_medicines_with_quantity e "
-			+ "where e.erecipe_id in ( select id from e_recipes where patient_id = ?1 )))", 
-			nativeQuery = true)
-	List<Medicine> getMedicinesFromErecipesByPatient(Long patientId);
 }

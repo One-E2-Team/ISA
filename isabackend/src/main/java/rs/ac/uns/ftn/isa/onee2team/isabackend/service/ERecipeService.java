@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PatientsERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.ERecipe;
