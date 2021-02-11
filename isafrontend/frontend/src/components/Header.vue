@@ -28,6 +28,9 @@
                 <li v-if='role == "DEALER"' class="nav-item">
                 <a class="nav-link" href="#/dealer/ordersOffers">Orders and Offers</a>
                 </li>
+                <li v-if='role == "DEALER"' class="nav-item">
+                <a class="nav-link" href="#/dealer/updateMWQ">Warehouse</a>
+                </li>
                 <li class="nav-item d-none">
                 <a class="nav-link" href="#/">Medicine</a>
                 </li>

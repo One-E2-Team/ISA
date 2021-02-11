@@ -35,7 +35,7 @@ public class MedicineController {
 	}
 
 	@GetMapping(value = "/all")
-	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PATIENT')")
+	@PreAuthorize("hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PATIENT')" + "||" + "hasRole('DEALER')")
 	public List<Medicine> getAll() {
 		return medicineService.getAll();
 	}

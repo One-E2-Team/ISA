@@ -34,6 +34,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
@@ -235,5 +236,13 @@ public class UserController {
 			return false;
 		User user = (User) auth.getPrincipal();
 		return userService.hirePharmacist(hireWorker, user.getId());
+	}
+	
+	@PostMapping(value = "/updateDealerMWQ")
+	@PreAuthorize("hasRole('DEALER')")
+	public User updateDealerMWQ(@RequestBody Dealer d, Authentication auth) {
+		if(((User) auth.getPrincipal()).getId().equals(d.getId()))
+			return userService.saveDealerMWQ(d);
+		return null;
 	}
 }

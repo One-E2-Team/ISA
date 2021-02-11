@@ -38,6 +38,7 @@ import eRecipe from './components/pages/eRecipe'
 import PatientsRecipes from './components/pages/PatientsRecipes'
 import PricelistPage from './components/pages/PricelistPage'
 import HireWorker from './components/pages/HireWorker'
+import DealerUpdateMedicinesQuantity from './components/pages/DealerUpdateMedicineQuantity'
 
 
 Vue.use(VueRouter)
@@ -233,6 +234,11 @@ const router = new VueRouter({
       name: 'hire',
       path: '/hire',
       component: HireWorker
+    },
+    {
+      name: 'updateMWQDealer',
+      path: '/dealer/updateMWQ',
+      component: DealerUpdateMedicinesQuantity
     }
   ]
 })

@@ -285,4 +285,11 @@ public class UserService implements IUserService, UserDetailsService {
 		workingCalendarRepository.save(wc);
 		return true;
 	}
+
+	@Override
+	public User saveDealerMWQ(Dealer d) {
+		Dealer dealer = (Dealer) userRepository.findById(d.getId()).get();
+		dealer.setMedicinesWithQuantity(d.getMedicinesWithQuantity());
+		return userRepository.save(dealer);
+	}
 }
