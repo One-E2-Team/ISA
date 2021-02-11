@@ -254,4 +254,16 @@ public class UserController {
 		User user = (User) auth.getPrincipal();
 		return userService.hireDermatologist(hireWorker, user.getId());
 	}
+	
+	@GetMapping(value = "/unemployedPhAdmins")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public List<PharmacyAdmin> getUnemployedPhAdmins() {
+		return userService.getUnemployedPhAdmins();
+	}
+	
+	@PostMapping(value = "/employPhAdmins")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public PharmacyAdmin employPhAdmin(@RequestBody PharmacyAdmin pa) {
+		return userService.employPhAdmin(pa);
+	}
 }

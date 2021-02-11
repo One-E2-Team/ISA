@@ -367,4 +367,19 @@ public class UserService implements IUserService, UserDetailsService {
 			return false;
 		return true;
 	}
+
+	@Override
+	public List<PharmacyAdmin> getUnemployedPhAdmins() {
+		return userRepository.getAllUnemployedPharmacyAdmins();
+	}
+
+	@Override
+	public PharmacyAdmin employPhAdmin(PharmacyAdmin pa) {
+		PharmacyAdmin user = (PharmacyAdmin) userRepository.findById(pa.getId()).get();
+		if(user.getPharmacy() == null) {
+			user.setPharmacy(pa.getPharmacy());
+			return userRepository.save(user);
+		}
+		return null;
+	}
 }
