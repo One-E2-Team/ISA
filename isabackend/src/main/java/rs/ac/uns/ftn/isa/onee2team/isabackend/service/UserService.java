@@ -1,7 +1,10 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +21,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HireHealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Authority;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
@@ -291,5 +293,78 @@ public class UserService implements IUserService, UserDetailsService {
 		Dealer dealer = (Dealer) userRepository.findById(d.getId()).get();
 		dealer.setMedicinesWithQuantity(d.getMedicinesWithQuantity());
 		return userRepository.save(dealer);
+	}
+
+	@Override
+	public Boolean hireDermatologist(HireHealthWorkerDTO hireWorker, Long loggedUserId) {
+		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
+		if(admin == null)
+			return false;
+		List<Long> dermatologistsPharmacies = userRepository.getPharmacyIdsForDermatologist(hireWorker.getWorkerId());
+		if(dermatologistsPharmacies.contains(admin.getPharmacy().getId()))
+			return false;
+		Dermatologist dermatologist = userRepository.getDermatologistById(hireWorker.getWorkerId());
+		if(dermatologist == null)
+			return false;
+		for(WorkingCalendar wc : workingCalendarRepository.getAllCalendarsForHealthWorker(hireWorker.getWorkerId())) {
+			if(wc.getStartDate().after(hireWorker.getStartDate()) && wc.getEndDate().before(hireWorker.getEndDate())) {
+				if(!isValidTime(wc.getStartHour(), wc.getEndHour(), hireWorker.getStartTime(), hireWorker.getEndTime()))
+					return false;
+			}
+			if(hireWorker.getStartDate().after(wc.getStartDate()) && hireWorker.getEndDate().before(wc.getEndDate())) {
+				if(!isValidTime(wc.getStartHour(), wc.getEndHour(), hireWorker.getStartTime(), hireWorker.getEndTime()))
+					return false;
+			}
+			if(hireWorker.getStartDate().getTime() == wc.getStartDate().getTime() || hireWorker.getEndDate().getTime() == wc.getEndDate().getTime()) {
+				if(!isValidTime(wc.getStartHour(), wc.getEndHour(), hireWorker.getStartTime(), hireWorker.getEndTime()))
+					return false;
+			}
+			if(hireWorker.getStartDate().after(wc.getStartDate()) && hireWorker.getStartDate().before(wc.getEndDate())) {
+				if(!isValidTime(wc.getStartHour(), wc.getEndHour(), hireWorker.getStartTime(), hireWorker.getEndTime()))
+					return false;
+			}
+			if(wc.getStartDate().after(hireWorker.getStartDate()) && wc.getStartDate().before(hireWorker.getEndDate())) {
+				if(!isValidTime(wc.getStartHour(), wc.getEndHour(), hireWorker.getStartTime(), hireWorker.getEndTime()))
+					return false;
+			}
+		}
+		dermatologist.getPharmacies().add(admin.getPharmacy());
+		userRepository.save(dermatologist);
+		WorkingCalendar workCal = new WorkingCalendar();
+		workCal.setEndDate(hireWorker.getEndDate());
+		workCal.setEndHour(hireWorker.getEndTime());
+		workCal.setHealthWorker(dermatologist);
+		workCal.setPharmacy(admin.getPharmacy());
+		workCal.setStartDate(hireWorker.getStartDate());
+		workCal.setStartHour(hireWorker.getStartTime());
+		workingCalendarRepository.save(workCal);
+		return true;
+	}
+	
+	private Boolean isValidTime(Date startTimeWc, Date endTimeWc, Date startTimeWork, Date endTimeWork) {
+		Calendar calWc = Calendar.getInstance();
+		Calendar calWork = Calendar.getInstance();
+		TimeZone tz = TimeZone.getTimeZone("GMT");
+		calWc.setTime(startTimeWc);
+		calWork.setTime(startTimeWork);
+		calWc.setTimeZone(tz);
+		calWork.setTimeZone(tz);
+		int wcStartHour = calWc.get(Calendar.HOUR_OF_DAY);
+		int workStartHour = calWork.get(Calendar.HOUR_OF_DAY);
+		calWc.setTime(endTimeWc);
+		calWork.setTime(endTimeWork);
+		int wcEndHour = calWc.get(Calendar.HOUR_OF_DAY);
+		int workEndHour = calWork.get(Calendar.HOUR_OF_DAY);
+		if(wcStartHour == workStartHour)
+			return false;
+		if(wcStartHour > workStartHour && wcEndHour < workEndHour)
+			return false;
+		if(workStartHour > wcStartHour && workEndHour < wcEndHour)
+			return false;
+		if(wcStartHour > workStartHour && wcStartHour < workEndHour)
+			return false;
+		if(workStartHour > wcStartHour && workStartHour < wcEndHour)
+			return false;
+		return true;
 	}
 }

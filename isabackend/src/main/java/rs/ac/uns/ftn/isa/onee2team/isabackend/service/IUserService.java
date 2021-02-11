@@ -21,10 +21,15 @@ public interface IUserService {
 	List<SearchedPatientDTO> searchPatient(String firstName, String lastName);
 
 	User createUser(UserRequestDTO userRequest, String role, UserType usertype);
+
 	User createPatient(UserRequestDTO userRequest);
+
 	User createDermatologist(UserRequestDTO userRequest);
+
 	User createPharmacyAdmin(UserRequestDTO userRequest);
+
 	User createDealer(UserRequestDTO userRequest);
+
 	User createSystemAdmin(UserRequestDTO userRequest);
 
 	List<HealthWorkerDTO> getAllPharmacistsByFirstAndLastName(String firstName, String lastName,
@@ -38,18 +43,20 @@ public interface IUserService {
 	User saveUser(User user);
 
 	User findById(Long id);
-	
+
 	void changePassword(Long id, String password);
-	
+
 	User saveUserAndFlush(User user);
-	
+
 	List<CredentialsAndIdDTO> getAllFreePharmacists();
-	
+
 	List<CredentialsAndIdDTO> getDermatologistsWhoAreNotInPharmacy(Long loggedUserId);
 
 	List<Long> getPatientAllergiesIds(Long patientId);
-	
+
 	Boolean hirePharmacist(HireHealthWorkerDTO hireWorker, Long loggedUserId);
 
 	User saveDealerMWQ(Dealer d);
+	
+	Boolean hireDermatologist(HireHealthWorkerDTO hireWorker, Long loggedUserId);
 }
