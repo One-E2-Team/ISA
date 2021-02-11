@@ -1,21 +1,31 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
+import javax.validation.constraints.NotBlank;
+
 public class UserRequestDTO {
 
+	@NotBlank(message = "Email cannot be empty.")
 	private String email;
 
+	@NotBlank(message = "Password cannot be empty.")
 	private String password;
 
+	@NotBlank(message = "First name cannot be empty.")
 	private String firstname;
 
+	@NotBlank(message = "Last name cannot be empty.")
 	private String lastname;
 	
+	@NotBlank(message = "Address cannot be empty.")
 	private String address;
 	
+	@NotBlank(message = "City cannot be empty.")
 	private String city;
 	
+	@NotBlank(message = "State cannot be empty.")
 	private String state;
 	
+	@NotBlank(message = "Phone cannot be empty.")
 	private String phone;
 
 	public String getEmail() {
