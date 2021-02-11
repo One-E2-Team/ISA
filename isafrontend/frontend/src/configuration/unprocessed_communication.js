@@ -1,4 +1,4 @@
-export let server = 'localhost:8083';
+export let server = // #put "'" + SERVER_URL + "';"
 export function getJWTToken(){
     return JSON.parse(sessionStorage.getItem("JWT"))
 }
