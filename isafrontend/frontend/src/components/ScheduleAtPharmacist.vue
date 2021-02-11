@@ -156,14 +156,13 @@ export default {
                  let dto = {"pharmacy_id" : this.selectedPharmacist.id, "date" : date}
                 axios.put('http://' + comm.server + '/api/examinations/scheduleAtPharmacist', dto)
                 .then(response => {
-                    if(response.data){
-                        alert("Appointment scheduled successfully!");
+                    if(response.status == 200){
+                        alert(response.data);
                     }
-                    else{
-                        alert("This action is forbidden! You either have 3 penalties or you already canceled this appointment!");
-                    }
-                    this.showModal = false;
+                }).catch(reason => {
+                    alert("Other user already scheduled that appointment!");
                 });
+                this.showModal = false;
             }
         },
 

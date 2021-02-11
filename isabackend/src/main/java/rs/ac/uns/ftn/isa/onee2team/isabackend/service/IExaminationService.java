@@ -21,9 +21,9 @@ public interface IExaminationService {
 	List<ExaminationDTO> getExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId,Date timeStart, Date timeEnd, ExaminationStatus status,Long pharmacyId);
 
 
-	List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist();
+	List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist(Long patientId);
 	
-	boolean scheduleExamination(Long patientId, Long examinationId);
+	String scheduleExamination(Long patientId, Long examinationId);
 	
 	void cancelAppointment(Long examinationId);
 	
@@ -41,7 +41,7 @@ public interface IExaminationService {
 	
 	List<PharmacistWithFreeAppointmentDTO> getFreePharmacistInPharmacy(Long id, Date date);
 	
-	boolean scheduleAtPharmacist(Long user_id, Long id, Date date);
+	String scheduleAtPharmacist(Long user_id, Long id, Date date);
 	
 	String createNewExaminations(NewExaminationsDTO newExaminations, Long userId);
 	

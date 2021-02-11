@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,7 +33,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IUserService;
 
 @RestController
 @RequestMapping(value = "api/feedback")
-public class FeedbackController {
+public class FeedbackController extends ValidationController{
 
 	private IFeedbackService feedbackService;
 	private IUserService userService;
@@ -94,7 +98,9 @@ public class FeedbackController {
 	
 	@PostMapping(value = "/rate")
 	@PreAuthorize("hasRole('PATIENT')")
-	public void rate(@RequestBody NewRateDTO dto, Authentication auth) {
+	public ResponseEntity<String> rate(@Valid @RequestBody NewRateDTO dto, Authentication auth) {
 		feedbackService.rate(dto, (Patient) userService.findById(((User) auth.getPrincipal()).getId()));
+	
+		return  new ResponseEntity<>("Rate successfully sent!", HttpStatus.OK);
 	}
 }

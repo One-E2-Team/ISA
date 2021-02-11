@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ExaminationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewExaminationDTO;
@@ -28,20 +29,24 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 
 @Service
+@Transactional(readOnly = false)
 public class ExaminationService implements IExaminationService {
 
 	private IExaminationRepository examinationRepository;
 	private IUserRepository userRepository;
 	private IPharmacyRepository pharmacyRepository;
 	private IEmailNotificationService emailService;
+	private IUserService userService;
 
 
 	@Autowired
-	public ExaminationService(IExaminationRepository examinationRepository, IUserRepository userRepository, IPharmacyRepository pharmacyRepository,IEmailNotificationService emailService) {
+	public ExaminationService(IExaminationRepository examinationRepository, IUserRepository userRepository,
+			IPharmacyRepository pharmacyRepository,IEmailNotificationService emailService,  IUserService userService) {
 		this.examinationRepository = examinationRepository;
 		this.userRepository = userRepository;
 		this.pharmacyRepository = pharmacyRepository;
 		this.emailService = emailService;
+		this.userService = userService;
 	}
 
 	@Override
@@ -79,7 +84,7 @@ public class ExaminationService implements IExaminationService {
 		return ret;
 	}
 
-	public List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist() {
+	public List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist(Long patientId) {
 		List<Examination> examinations = examinationRepository.getFreeExaminationsAtDermatologist();
 		List<ScheduledExaminationDTO> ret_list = new ArrayList<ScheduledExaminationDTO>();
 		for(Examination ex : examinations) {
@@ -87,7 +92,7 @@ public class ExaminationService implements IExaminationService {
 			ret_list.add(new ScheduledExaminationDTO(
 						ex.getId(), ex.getStartTime().toString(), ex.getHealthWokrer().getId(), 
 						ex.getHealthWokrer().getFirstName(), ex.getHealthWokrer().getLastName(), 
-						ex.getHealthWokrer().getUserType().toString(),rate,ex.getPrice()
+						ex.getHealthWokrer().getUserType().toString(),rate, ex.getPrice() * (1.0 - userService.getDiscountForPatient(patientId))
 					));
 		}
 		
@@ -95,19 +100,24 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public boolean scheduleExamination(Long patientId, Long examinationId) {
-		if(userRepository.getPatientsPenalties(patientId) >= 3)
-			return false;
-		Examination examination =  examinationRepository.findById(examinationId).orElse(null);
-		if(TimeIntervalOverlaps(examination,examinationRepository.getPatientFutureExaminations(patientId)))
-			return false;
-		examination.setPatient((Patient)(userRepository.findById(patientId).orElse(null)));
-		examination.setStatus(ExaminationStatus.SCHEDULED);
-		examinationRepository.save(examination);
-		User user = userRepository.findById(patientId).orElse(null);
-		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
-				"You have successfully scheduled an appointment.");
-		return true;
+	@Transactional
+	public String scheduleExamination(Long patientId, Long examinationId) {
+			if(userRepository.getPatientsPenalties(patientId) >= 3)
+				return "You have 3 penalties!";
+			Examination examination =  examinationRepository.findById(examinationId).orElse(null);
+			if(examination.getStatus().equals(ExaminationStatus.SCHEDULED)) {
+				return "This appointment has already been scheduled by other user!";
+			}
+			if(TimeIntervalOverlaps(examination,examinationRepository.getPatientFutureExaminations(patientId)))
+				return "You have already scheduled an appointment at this time!";
+			
+			examination.setPatient((Patient)(userRepository.findById(patientId).orElse(null)));
+			examination.setStatus(ExaminationStatus.SCHEDULED);
+			examinationRepository.save(examination);
+			User user = userRepository.findById(patientId).orElse(null);
+			emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
+					"You have successfully scheduled an appointment.");
+		return "Appointment successfully scheduled!";
 	}
 
 
@@ -235,14 +245,18 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
-	public boolean scheduleAtPharmacist(Long user_id, Long id, Date date) {
+	@Transactional
+	public String scheduleAtPharmacist(Long user_id, Long id, Date date) {
 		if(userRepository.getPatientsPenalties(user_id) >= 3)
-			return false;
+			return "You have 3 penalties! This action is forbidden!";
 		
 		Examination ex = examinationRepository.getExaminationByPharmacistAndDate(id, date);
 		if(ex.getPatient() != null) {
 			if(ex.getPatient().getId() == user_id)
-				return false; }
+				return "You already canceled this appointment!"; }
+		
+		if(ex.getStatus() == ExaminationStatus.SCHEDULED)
+			return "This appointment is already scheduled!";
 		
 		ex.setPatient((Patient)(userRepository.findById(user_id).orElse(null)));
 		ex.setStatus(ExaminationStatus.SCHEDULED);
@@ -250,7 +264,7 @@ public class ExaminationService implements IExaminationService {
 		User user = userRepository.findById(user_id).orElse(null);
 		emailService.sendNotificationAsync(user.getEmail(), "Scheduled appointment", 
 				"You have successfully scheduled an appointment at pharmacist.");
-		return true;
+		return "You have successfully scheduled an appointment at pharmacist";
 	}
 
 	@Override
