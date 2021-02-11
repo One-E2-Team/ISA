@@ -35,6 +35,7 @@ import StatisticsPage from './components/pages/StatisticsPage'
 import eRecipe from './components/pages/eRecipe'
 import PatientsRecipes from './components/pages/PatientsRecipes'
 import PricelistPage from './components/pages/PricelistPage'
+import HireWorker from './components/pages/HireWorker'
 
 
 Vue.use(VueRouter)
@@ -219,6 +220,11 @@ const router = new VueRouter({
       path: '/pricelist',
       component: PricelistPage,
       props: true
+    },
+    {
+      name: 'hire',
+      path: '/hire',
+      component: HireWorker
     }
   ]
 })
