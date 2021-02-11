@@ -52,7 +52,7 @@ public class AuthenticationController extends ValidationController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@PostMapping("/login")
+	@PostMapping("/login") 
 	public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) {
 

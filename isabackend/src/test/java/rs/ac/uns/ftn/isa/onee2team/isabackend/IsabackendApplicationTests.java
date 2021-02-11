@@ -8,6 +8,7 @@ class IsabackendApplicationTests {
 
 	@Test
 	void contextLoads() {
+		System.out.println("Pokrenut test!");
 	}
 
 }

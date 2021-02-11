@@ -53,6 +53,8 @@ public interface IUserService {
 	List<Long> getPatientAllergiesIds(Long patientId);
 
 	Boolean hirePharmacist(HireHealthWorkerDTO hireWorker, Long loggedUserId);
+	
+	double getDiscountForPatient(Long patientId);
 
 	Boolean hireDermatologist(HireHealthWorkerDTO hireWorker, Long loggedUserId);
 }
