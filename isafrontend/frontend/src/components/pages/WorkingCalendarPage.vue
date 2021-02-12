@@ -15,6 +15,8 @@
                         v-on="inputEvents.end"
                         class="border px-2 py-1 w-32 rounded focus:outline-none focus:border-indigo-300"
                     />
+                    <input type="checkbox" @click="changeSearch()" value="Scheduled"> Scheduled
+
                     <button class="btn btn-primary" @click="search()">Search</button>
                     </div>
                 </template>
@@ -35,10 +37,9 @@
                         <td> {{e.date | dateFormat('DD.MM.YYYY ')}} </td>
                         <td>  {{e.pharmacyName }} </td>
                         <td> {{e.startTime | dateFormat('HH:mm')}} - {{e.endTime | dateFormat('HH:mm')}} </td>
-                        <td> <button type="button" class="btn btn-primary" @click="openExamination(e)" data-bs-toggle="modal" data-bs-target="#PatientAppeared">
+                        <td> <button type="button" class="btn" :class="isScheduled(e) ? 'btn-secondary':' btn-success' " @click="openExamination(e)" data-bs-toggle="modal" data-bs-target="#PatientAppeared" :disabled="isScheduled(e)">
                             Start therapy
-                        </button></td>
-
+                        </button></td>                      
                     </tr>
                 </tbody>
             </table>
@@ -65,12 +66,21 @@ export default {
                 start: new Date(),
                 end: new Date(),
             },
+            all: true
         }
     },
     created(){
+        this.all = true;
         this.search()
     },
     methods: {
+        changeSearch: function() {
+            this.all = !this.all;
+            console.log(this.all);
+        },
+        isScheduled: function(examination){
+            return examination.status != "SCHEDULED";
+        },
         search: function(){
             let startTime = new Date(this.range.start);
             startTime.setHours(0);
@@ -81,7 +91,9 @@ export default {
         
             let start = startTime.getTime()
             let end = endTime.getTime()
-            axios.post('http://'+ comm.server +'/api/examinations/all/scheduled',
+            let url = this.all? 'http://'+ comm.server +'/api/examinations/all' : 'http://'+ comm.server +'/api/examinations/all/scheduled';
+            console.log(url);
+            axios.post(url,
                 {
                     start: start,
                     end: end,

@@ -68,7 +68,7 @@ public class ExaminationService implements IExaminationService {
 		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
 		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
 		for (Examination examination : examinationRepository.getExaminationsByHealthWorkerIdInTimeInterval(worker,timeStart,timeEnd,status)) {
-			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime()));
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
 		}
 		return ret;
 	}
@@ -80,7 +80,7 @@ public class ExaminationService implements IExaminationService {
 		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
 		Pharmacy pharmacy = (Pharmacy) pharmacyRepository.findById(pharmacyId).orElse(null);
 		for (Examination examination : examinationRepository.getExaminationsByHealthWorkerIdInTimeInterval(worker,timeStart,timeEnd,status,pharmacy)) {
-			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime()));
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
 		}
 		return ret;
 	}
@@ -400,5 +400,16 @@ public class ExaminationService implements IExaminationService {
 			res.add(patient);			
 		}
 		return res;
+	}
+
+	@Override
+	public List<ExaminationDTO> getAllExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId, Date start, Date end) {
+		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
+		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
+		for (Examination examination : examinationRepository.getAllExaminationsByHealthWorkerIdInTimeInterval(worker,start,end)) {
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),
+											examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
+		}
+		return ret;
 	}
 }

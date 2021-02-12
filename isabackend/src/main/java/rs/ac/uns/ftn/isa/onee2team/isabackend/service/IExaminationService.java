@@ -63,4 +63,5 @@ public interface IExaminationService {
 	Boolean finishExamination(Long examinationId);
 	
 	List<UserProfileDTO> getExaminedPatientsByHealthWorkerId(Long healthworkerId);
+	List<ExaminationDTO> getAllExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId, Date start, Date end);
 }
