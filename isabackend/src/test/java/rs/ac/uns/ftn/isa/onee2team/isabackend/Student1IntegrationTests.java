@@ -16,7 +16,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
 @ContextConfiguration(classes = IsabackendApplication.class)
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class IntegrationTest {
+public class Student1IntegrationTests {
 
 	@Autowired
 	IPromotionService promotionService;
