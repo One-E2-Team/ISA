@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +15,8 @@ public interface IMedicineReservationRepository extends JpaRepository<MedicineRe
 	
 	@Query("select m from MedicineReservation m where m.patient.id = ?1 and m.status = 0")
 	List<MedicineReservation> getPatientsReservations(Long patient_id);
-	
+
+	@Query(value = "select * from medicine_reservations m where m.pharmacy_id = ?1 and m.status = 2 "
+			+ " and m.expire_date > ?2 and m.expire_date < ?3", nativeQuery = true)
+	List<MedicineReservation> getDoneByPharmacyInTimeInterval(Long pharmacyId, Date startDate, Date endDate);
 }

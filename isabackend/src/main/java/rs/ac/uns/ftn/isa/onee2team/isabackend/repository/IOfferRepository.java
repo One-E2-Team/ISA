@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,8 @@ public interface IOfferRepository extends JpaRepository<Offer, Long> {
 	
 	@Query(value = "select * from offers o where o.order_id = ?1", nativeQuery = true)
 	List<Offer> getAllOffersByOrder(Long orderId);
+	
+	@Query(value = "select * from offers o where o.status = 1 and o.date >= ?2 and o.date <= ?3 "
+			+ "and o.order_id in (select oor.id from orders oor where oor.pharmacy_id = ?1)", nativeQuery = true)
+	List<Offer> getAllAcceptedByPharmacyInTimeInterval(Long pharmacyId, Date start, Date end);
 }
