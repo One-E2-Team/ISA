@@ -24,5 +24,5 @@ public interface IMedicineReservationService {
 	
 	List<MedicineReservation> getAllMedicineReservations();
 	
-	Boolean takeReservationMedicine(Long reservationId);
+	Boolean takeReservationMedicine(Long reservationId,Long healthworkerId);
 }

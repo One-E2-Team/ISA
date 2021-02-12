@@ -114,6 +114,10 @@
                     <li><a class="dropdown-item" href="#/health-worker/patients">My patients</a></li>
                 </ul>
                 </li>
+                <li class="nav-item" v-if='role == "PHARMACIST"'>
+                    <TakeReservationModal/>
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#TakeReservationModal">Reservation</a>
+                </li>
             </ul>
             <div class="d-flex">
                 <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
@@ -128,9 +132,13 @@
 
 <script>
 import * as comm from '../configuration/communication'
+import TakeReservationModal from './modals/TakeReservedMedicineModal'
 export default {
     name: "Header",
     props: ['role'],
+    components:{
+        TakeReservationModal
+    },
 
     data() {
         return {

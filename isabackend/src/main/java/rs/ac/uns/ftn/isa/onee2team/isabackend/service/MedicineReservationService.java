@@ -21,17 +21,12 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineReservationRep
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWorkingCalendarRepository;
 
 @Service
 public class MedicineReservationService implements IMedicineReservationService {
 
 	private IMedicineReservationRepository medicineReservationRepository;
-
-	@Override
-	public List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId) {
-		return medicineReservationRepository.getDoneReservationsByPatient(patientId);
-	}
-	
 	private IWarehouseRepository warehouseRepository;
 	private IMedicineRepository medicineRepository;
 	private IPharmacyRepository pharmacyRepository;
@@ -49,6 +44,11 @@ public class MedicineReservationService implements IMedicineReservationService {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.emailNotificationService = emailNotificationService;
+	}
+	
+	@Override
+	public List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId) {
+		return medicineReservationRepository.getDoneReservationsByPatient(patientId);
 	}
 	
 	@Override
@@ -157,7 +157,6 @@ public class MedicineReservationService implements IMedicineReservationService {
 		MedicineReservation mr = medicineReservationRepository.findById(dto.getId()).orElse(null);
 		mr.setStatus(MedicineReservationStatus.DONE);
 		medicineReservationRepository.save(mr);
-		
 		Warehouse w = warehouseRepository.getWarehouseByPharmacyAndMedicine(dto.getPharmacyId(), dto.getMedicineId());
 		w.setAmount(w.getAmount() - 1);
 		w.setReservedAmount(w.getReservedAmount() -1);
@@ -174,22 +173,28 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
-	public Boolean takeReservationMedicine(Long reservationId) {
+	public Boolean takeReservationMedicine(Long reservationId,Long healthworkerId) {
 		MedicineReservation reservation = medicineReservationRepository.findById(reservationId).orElse(null);
-		
-		if(reservation == null) return false;
+		if(pharmacyRepository.getIfHealthWorkerWorksInPharmacy(healthworkerId, reservation.getPharmacy().getId())==0) {
+			return false;
+		}
+		if(reservation == null || !reservation.getStatus().equals(MedicineReservationStatus.CREATED)) {
+			return false;
+		}
 		
 		Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(reservation.getExpireDate());
 	    calendar.add(Calendar.DATE, -1);
 	    Date dayBefore = calendar.getTime();
 		
-		if(new Date().after(dayBefore)) return false;
+		if(new Date().after(dayBefore)) {
+			return false;
+		}
 		
 		ReservedMedicineDTO resMedDTO = new ReservedMedicineDTO();
 		resMedDTO.setId(reservation.getId());
 		resMedDTO.setPharmacyId(reservation.getPharmacy().getId());
-		resMedDTO.setPharmacyId(reservation.getMedicine().getId());
+		resMedDTO.setMedicineId(reservation.getMedicine().getId());
 		
 		takeMedicine(reservation.getPatient().getId(), resMedDTO );
 		return true;
