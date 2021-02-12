@@ -1,10 +1,24 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class NewRateDTO {
 
+	@NotNull(message = "Entity Id cannot be null.")
+	@Min(1)
 	private Long rateEntityId;
+	
+	@NotBlank(message = "Entity name cannot be empty.")
 	private String rateEntityName;
+	
+	@NotBlank(message = "Entity type cannot be empty.")
 	private String rateEntityType;
+	
+	@NotNull(message = "Rate cannot be null.")
+	@Min(1)
+	@Max(5)
 	private Integer rate;
 
 	public NewRateDTO() {}

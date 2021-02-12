@@ -34,6 +34,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.StringInformationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
@@ -237,6 +238,14 @@ public class UserController {
 		return userService.hirePharmacist(hireWorker, user.getId());
 	}
 	
+	@PostMapping(value = "/updateDealerMWQ")
+	@PreAuthorize("hasRole('DEALER')")
+	public User updateDealerMWQ(@RequestBody Dealer d, Authentication auth) {
+		if(((User) auth.getPrincipal()).getId().equals(d.getId()))
+			return userService.saveDealerMWQ(d);
+		return null;
+	}
+	
 	@PostMapping(value = "/hire-dermatologist")
 	@PreAuthorize("hasRole('PHARMACY_ADMIN')")
 	public Boolean hireDermatologist(@RequestBody HireHealthWorkerDTO hireWorker, Authentication auth) {
@@ -244,5 +253,17 @@ public class UserController {
 			return false;
 		User user = (User) auth.getPrincipal();
 		return userService.hireDermatologist(hireWorker, user.getId());
+	}
+	
+	@GetMapping(value = "/unemployedPhAdmins")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public List<PharmacyAdmin> getUnemployedPhAdmins() {
+		return userService.getUnemployedPhAdmins();
+	}
+	
+	@PostMapping(value = "/employPhAdmins")
+	@PreAuthorize("hasRole('SYSTEM_ADMIN')")
+	public PharmacyAdmin employPhAdmin(@RequestBody PharmacyAdmin pa) {
+		return userService.employPhAdmin(pa);
 	}
 }

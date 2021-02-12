@@ -70,6 +70,7 @@ public class PharmacyService implements IPharmacyService {
 	private IERecipeRepository eRecipeRepository;
 	private IEmailNotificationService emailNotificationService;
 	private IOfferRepository offerRepository;
+	private IUserService userService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
@@ -80,6 +81,11 @@ public class PharmacyService implements IPharmacyService {
 			IMedicineWithQuantityRepository mwqRepository, IERecipeRepository eRecipeRepository,
 			IWarehouseRepository wearehouseRepository, IEmailNotificationService emailNotificationService,
 			IOfferRepository offerRepository) {
+			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository, 
+			IMedicineReservationRepository reservationRepository, 
+			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
+			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
+			IEmailNotificationService emailNotificationService, IUserService userService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -95,6 +101,7 @@ public class PharmacyService implements IPharmacyService {
 		this.warehouseRepository = warehouseRepository;
 		this.emailNotificationService = emailNotificationService;
 		this.offerRepository = offerRepository;
+		this.userService = userService;
 	}
 
 	@Override
@@ -189,7 +196,7 @@ public class PharmacyService implements IPharmacyService {
 										w.getPharmacy().getAddress(),
 										pls.get(0).getPrice() * (1.0 - discount / 100.0)));
 					} else
-						System.out.println("Pricelist doesnt exist for item");
+						System.out.println("Pricelist doesn't exist for item");
 				}
 			}
 		}
@@ -369,16 +376,15 @@ public class PharmacyService implements IPharmacyService {
 		double discount = promotionService.getDiscount(type);
 		return discount;
 	}
-
+	
 	@Override
 	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(ERecipeDTO erdto) {
 		if (checkERecipeValidity(erdto.getCode()) == false)
 			return null;
 		List<PharmacyWithPriceAndGradeDTO> ret = new ArrayList<PharmacyWithPriceAndGradeDTO>();
 		List<Long> pharmacyIds = new ArrayList<Long>();
-		double discount = getDiscountForPatient(erdto.getPatientId());
-		pharmacyIds.addAll(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(
-				erdto.getMedicine().get(0).getId(), erdto.getMedicine().get(0).getQuantity()));
+		double discount = userService.getDiscountForPatient(erdto.getPatientId());
+		pharmacyIds.addAll(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(erdto.getMedicine().get(0).getId(), erdto.getMedicine().get(0).getQuantity()));
 		for (ERecipeMedicine ermed : erdto.getMedicine())
 			pharmacyIds = pharmacyIds.stream().distinct().filter(warehouseRepository
 					.getAllPharmacyIdsWhereMedicineAmountIsAvailable(ermed.getId(), ermed.getQuantity())::contains)
@@ -416,7 +422,7 @@ public class PharmacyService implements IPharmacyService {
 		}
 		e = eRecipeRepository.save(e);
 		emailNotificationService.sendNotificationAsync(e.getPatient().getEmail(), "ERecipe reservation",
-				"Your eRecipe reservation was successfull!");
+				"Your eRecipe reservation was successfully!");
 		return e;
 	}
 

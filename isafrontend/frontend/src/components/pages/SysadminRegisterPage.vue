@@ -83,7 +83,7 @@ export default {
             if(this.passwordAgainCheck==this.registerUserData.password && this.passwordAgain!=""){
                 axios.post('http://' + comm.server + '/api/users/registerElevatedUser', this.registerUserData)
                 .then(response => {
-                    if (response.status==201) {
+                    if (response.status==201 || response.status==200) {
                         console.log("ifin")
                     } else {
                         console.log("elsein")
