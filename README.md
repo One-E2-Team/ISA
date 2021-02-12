@@ -36,7 +36,6 @@ Potrebne environment varijable:
 - ISA_MAIL_USERNAME=Isaonee2team@gmail.com
 - ISA_SPRING_HOST=localhost
 - ISA_SPRING_PORT=8083
-- nestodrugo
 
 ## Baza
 najlakša opcija jeste 
