@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.LoyaltyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPromotionDTO;
@@ -63,6 +64,7 @@ public class PromotionService implements IPromotionService {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public Loyalty save(LoyaltyDTO ldto) {
 		Loyalty l = loyaltyRepository.findAllByType(ldto.getType()).get(0);
 		l.setType(ldto.getType());
