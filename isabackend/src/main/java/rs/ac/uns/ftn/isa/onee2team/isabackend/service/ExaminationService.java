@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -388,5 +389,16 @@ public class ExaminationService implements IExaminationService {
 		e.setStatus(ExaminationStatus.FINISHED);
 		examinationRepository.save(e);
 		return true;
+	}
+
+	@Override
+	public List<UserProfileDTO> getExaminedPatientsByHealthWorkerId(Long healthworkerId) {
+		List<UserProfileDTO> res = new ArrayList<UserProfileDTO>();
+		for(Long id :examinationRepository.getExaminedPatientsByHealthWorkerId(healthworkerId)){
+			User u = userRepository.getOne(id);
+			UserProfileDTO patient = new UserProfileDTO(id,u.getEmail(),u.getFirstName(),u.getLastName(),u.getAddress(),u.getCity(),u.getState(),u.getPhoneNumber());
+			res.add(patient);			
+		}
+		return res;
 	}
 }

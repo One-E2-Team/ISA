@@ -38,6 +38,8 @@ import eRecipe from './components/pages/eRecipe'
 import PatientsRecipes from './components/pages/PatientsRecipes'
 import PricelistPage from './components/pages/PricelistPage'
 import HireWorker from './components/pages/HireWorker'
+import HealthWorkerPatients from './components/pages/HealthWorkerPatients'
+import PatientHistory from './components/pages/PatientHistory'
 import DealerUpdateMedicinesQuantity from './components/pages/DealerUpdateMedicineQuantity'
 import SysAdminEmployPharmacyAdmin from './components/pages/SysAdminEmployPharmacyAdmin'
 import MyMap from './components/Map'
@@ -236,6 +238,17 @@ const router = new VueRouter({
       name: 'hire',
       path: '/hire',
       component: HireWorker
+    },
+    {
+      name: 'HealthWorkerPatients',
+      path: '/health-worker/patients',
+      component: HealthWorkerPatients
+    },
+    {
+      name: 'PatientHistory',
+      path: '/health-worker/patient/history',
+      component: PatientHistory,
+      props: true
     },
     {
       name: 'updateMWQDealer',

@@ -26,15 +26,15 @@ public class MedicineReservation {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "medicineId")
 	private Medicine medicine;
 	
-	@ManyToOne(optional = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = true, cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "pharmacyId")
 	private Pharmacy pharmacy;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "patientId")
 	private Patient patient;
 
