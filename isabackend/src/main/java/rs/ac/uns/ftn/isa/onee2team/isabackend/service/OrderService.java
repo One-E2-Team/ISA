@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewMedicineWithQuantityDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewOfferDTO;
@@ -28,6 +29,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
 
 @Service
+@Transactional(readOnly = false)
 public class OrderService implements IOrderService {
 
 	private IOrderRepository orderRepository;
@@ -154,6 +156,7 @@ public class OrderService implements IOrderService {
 	}
 
 	@Override
+	@Transactional
 	public String acceptOffer(Long offerId, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		Offer accepting = offerRepository.findById(offerId).orElse(null);
