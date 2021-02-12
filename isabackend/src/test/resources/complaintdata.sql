@@ -1,0 +1,3 @@
+insert into all_users values ('PATIENT', 3, 'adresa', 'grad', 'mail3@gmail.com', true, 'ime 3', 'prezime 3', '$2y$10$0nxSL00whyxO4fwB17/qBODDSWDD5BYsJsO7tT.4XN83HqtigUpjm', 'telefon', 'drzava', 0, 0, 0, null, null);
+insert into all_users values ('HEALTH_WORKER', 8, 'adresa', 'grad', 'mail8@gmail.com', true, 'ime 8', 'prezime 8', '$2y$10$0nxSL00whyxO4fwB17/qBODDSWDD5BYsJsO7tT.4XN83HqtigUpjm', 'telefon', 'drzava', 2, null, null, null, null);
+INSERT INTO complaints values (1, null, 'Rados je nevaspitan!', 8, false, 1, 0, 3);

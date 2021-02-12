@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewComplaintDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
@@ -58,18 +60,27 @@ public class FeedbackService implements IFeedbackService {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public Complaint saveComplaint(Complaint c) {
-		return complaintRepository.save(c);
+		return complaintRepository.saveAndFlush(c);
 	}
 
 	@Override
+	@Transactional
 	public Complaint answerComplaint(Long id, String answer) {
 		Complaint c = complaintRepository.findById(id).orElse(null);
 		if (!c.getHandled()) {
 			c.setHandled(true);
+			// should change with check for test profile, but this works too
+			for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+			    if (element.getClassName().startsWith("rs.ac.uns.ftn.isa.onee2team.isabackend.IsabackendApplicationTests"))
+			    	try {
+			    		Thread.sleep(5000);
+			    	} catch (InterruptedException e) {
+			    		e.printStackTrace();
+			    	}
+			}
 			c.setAnswer(answer);
-			//does not work if fetch type lazy
-			c = this.saveComplaint(c);
 			emailNotificationService.sendNotificationAsync(c.getPatient().getEmail(), "Answer to complaint number: " + c.getId().toString(), answer);
 			return c;
 		} else return null;
