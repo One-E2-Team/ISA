@@ -37,7 +37,16 @@ export default {
                 this.searchPatients();
             } else if (this.page === 'dermatologists'){
                 this.searchDermatologists();
-            }
+            } else if (this.page === 'health-worker-patients')
+                this.searchHealthWorkerPatients();
+        },
+
+        searchHealthWorkerPatients : function(){
+            axios.get('http://' + comm.server + '/api/examinations/examined-patients').then(response => {
+                    if (response.status==200) {
+                        this.$emit('searched-patients', response.data);
+                    } 
+                });
         },
 
         searchPatients: function() {

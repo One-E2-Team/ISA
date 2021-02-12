@@ -1,9 +1,9 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -171,6 +171,28 @@ public class MedicineReservationService implements IMedicineReservationService {
 	@Override
 	public List<MedicineReservation> getAllMedicineReservations() {
 		return medicineReservationRepository.findAll();
+	}
+
+	@Override
+	public Boolean takeReservationMedicine(Long reservationId) {
+		MedicineReservation reservation = medicineReservationRepository.findById(reservationId).orElse(null);
+		
+		if(reservation == null) return false;
+		
+		Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(reservation.getExpireDate());
+	    calendar.add(Calendar.DATE, -1);
+	    Date dayBefore = calendar.getTime();
+		
+		if(new Date().after(dayBefore)) return false;
+		
+		ReservedMedicineDTO resMedDTO = new ReservedMedicineDTO();
+		resMedDTO.setId(reservation.getId());
+		resMedDTO.setPharmacyId(reservation.getPharmacy().getId());
+		resMedDTO.setPharmacyId(reservation.getMedicine().getId());
+		
+		takeMedicine(reservation.getPatient().getId(), resMedDTO );
+		return true;
 	}
 
 }

@@ -97,6 +97,17 @@
                 <li class="nav-item d-none">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                 </li>
+
+
+                <li class="nav-item dropdown" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
+                <a class="nav-link dropdown-toggle" href="#" id="patients" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Patients
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="patients">
+                    <li><a class="dropdown-item" href="#/patients">All patients</a></li>                   
+                    <li><a class="dropdown-item" href="#/health-worker/patients">My patients</a></li>
+                </ul>
+                </li>
             </ul>
             <div class="d-flex">
                 <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
