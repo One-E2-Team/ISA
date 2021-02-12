@@ -118,6 +118,9 @@
                     <TakeReservationModal/>
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#TakeReservationModal">Reservation</a>
                 </li>
+                <li class="nav-item" v-if='role == "DERMATOLOGIST" || role == "PHARMACIST"'>
+                    <a class="nav-link" href="#/vacation/request" >Vacation request</a>
+                </li>
             </ul>
             <div class="d-flex">
                 <button v-if='role === "Anon"' type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal" >Sign In</button> 
