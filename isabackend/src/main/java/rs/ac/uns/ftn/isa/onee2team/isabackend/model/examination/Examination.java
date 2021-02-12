@@ -1,8 +1,8 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination;
 
 import java.util.Date;
+
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
