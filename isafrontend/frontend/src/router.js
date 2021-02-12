@@ -40,6 +40,8 @@ import PricelistPage from './components/pages/PricelistPage'
 import HireWorker from './components/pages/HireWorker'
 import HealthWorkerPatients from './components/pages/HealthWorkerPatients'
 import PatientHistory from './components/pages/PatientHistory'
+import DealerUpdateMedicinesQuantity from './components/pages/DealerUpdateMedicineQuantity'
+import SysAdminEmployPharmacyAdmin from './components/pages/SysAdminEmployPharmacyAdmin'
 
 
 Vue.use(VueRouter)
@@ -246,7 +248,17 @@ const router = new VueRouter({
       path: '/health-worker/patient/history',
       component: PatientHistory,
       props: true
-    }
+    },
+    {
+      name: 'updateMWQDealer',
+      path: '/dealer/updateMWQ',
+      component: DealerUpdateMedicinesQuantity
+    },
+    {
+      path: '/sysadmin/employPA',
+      name: 'employPharmacyAdmin',
+      component: SysAdminEmployPharmacyAdmin
+    },
   ]
 })
 

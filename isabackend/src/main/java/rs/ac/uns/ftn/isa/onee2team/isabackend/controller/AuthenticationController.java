@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +35,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AuthenticationController {
+public class AuthenticationController extends ValidationController {
 
 	@Autowired
 	private TokenUtils tokenUtils;
@@ -51,7 +52,7 @@ public class AuthenticationController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@PostMapping("/login")
+	@PostMapping("/login") 
 	public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest,
 			HttpServletResponse response) {
 
@@ -79,7 +80,7 @@ public class AuthenticationController {
 
 	// Endpoint za registraciju novog korisnika
 	@PostMapping("/register")
-	public ResponseEntity<User> addUser(@RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
+	public ResponseEntity<User> addUser(@Valid @RequestBody UserRequestDTO userRequest, UriComponentsBuilder ucBuilder) {
 
 		User existUser = this.userService.findByEmail(userRequest.getEmail());
 		if (existUser != null) {

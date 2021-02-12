@@ -15,4 +15,9 @@ public interface IMedicineWithQuantityRepository extends JpaRepository<MedicineW
 			+ "(select o.order_id from offers o where o.status = 1 and o.date >= ?2 and o.date <= ?3 "
 			+ "and o.order_id in (select oor.id from orders oor where oor.pharmacy_id = ?1)))", nativeQuery = true)
 	List<MedicineWithQuantity> medicinesBoughtByPharmacyInTimeInterval(Long pharmacyId, Date start, Date end);
+	
+	@Query(value = "select * from medicines_with_quantity mwq where mwq.id in "
+			+ "(select ermwq.medicines_with_quantity_id from e_recipes_medicines_with_quantity ermwq where ermwq.erecipe_id in "
+			+ "(select e.id from e_recipes e where e.status = 1 and e.pharmacy_id = ?1 and e.date > ?2 and e.date < ?3))", nativeQuery = true)
+	List<MedicineWithQuantity> medicinesOnERecipeInPharmacyInTimeInterval(Long pharamcyId, Date start, Date end);
 }

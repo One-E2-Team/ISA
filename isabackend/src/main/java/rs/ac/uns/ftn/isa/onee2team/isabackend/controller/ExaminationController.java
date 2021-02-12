@@ -54,12 +54,14 @@ public class ExaminationController {
 	@GetMapping(value = "/freeExaminationsAtDermatoloist")
 	@PreAuthorize("hasRole('PATIENT')")
 	public List<ScheduledExaminationDTO> getFreeExaminationsAtDermatologist() {
-		return examinationService.getFreeExaminationsAtDermatologist();
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return examinationService.getFreeExaminationsAtDermatologist(user.getId());
 	}
 	
 	@PostMapping(value = "/scheduleAtDermatologist")
 	@PreAuthorize("hasRole('PATIENT')")
-	public boolean scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
+	public String scheduleAtDermatologist(@RequestParam("examinationId") Long examinationId) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		return examinationService.scheduleExamination(user.getId(), examinationId);
@@ -121,7 +123,7 @@ public class ExaminationController {
 	
 	@PutMapping(value = "/scheduleAtPharmacist")
 	@PreAuthorize("hasRole('PATIENT')")
-	public boolean scheduleAtPharmacist(@RequestBody RequestDTO dto) {
+	public String scheduleAtPharmacist(@RequestBody RequestDTO dto) {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		return examinationService.scheduleAtPharmacist(user.getId(), dto.getPharmacy_id(), dto.getDate());
@@ -159,7 +161,7 @@ public class ExaminationController {
 	
 	@PostMapping(value="/health-worker/schedule")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
-	public Boolean scheduleExamination(@RequestBody ScheduleNewExanimationDTO schedule){	
+	public String scheduleExamination(@RequestBody ScheduleNewExanimationDTO schedule){	
 		return examinationService.scheduleExamination(schedule.getPatientId(),schedule.getExaminationId());
 	}
 	

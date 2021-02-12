@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -63,6 +64,9 @@ public class Examination {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medicines")
 	private List<Medicine> medicines;
+	
+	@Version
+	private Long version;
 
 	public Long getId() {
 		return id;
@@ -152,5 +156,12 @@ public class Examination {
 		this.medicines = medicines;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
 }

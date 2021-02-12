@@ -113,7 +113,7 @@ public class PharmacyController {
 	}
 	
 	@GetMapping(value = "/medicines/all/authorized")
-	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')")
+	@PreAuthorize("hasRole('PATIENT')" + "||" + "hasRole('PHARMACY_ADMIN')" + "||" + "hasRole('SYSTEM_ADMIN')" + "||" + "hasRole('PHARMACIST')" + "||" + "hasRole('DERMATOLOGIST')" + "||" + "hasRole('DEALER')")
 	public List<PresentMedicineDTO> getMedicinesWithPriceAuthenticated(Authentication auth){
 		return getMedicinesWithPrice(auth);
 	}

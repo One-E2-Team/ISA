@@ -6,30 +6,20 @@
             <div>
                 <button @click="showExamStats()" class="btn-outline-success">Examination statistics</button>
                 <button @click="showMedStats()" class="btn-outline-success">Medication statistics</button>
+                <button @click="showIncomeStats()" class="btn-outline-success">Pharmacy income statistics</button>
             </div>
-            <div v-if="this.examStats">
-                <table class="table table-striped">
-                <tr class="table-light">
-                    <th class="table-light">Date</th>
-                    <th class="table-light">Number of finished examinations</th>
-                </tr>
-                <tr v-for="exam in this.exams" v-bind:key="exam.id" class="table-light">
-                    <td class="table-light">{{exam.date | dateFormat('DD.MM.YYYY')}}</td>
-                    <td class="table-light">{{exam.number}}</td>
-                </tr>
-                </table>
-            </div>
-            <div v-if="this.medStats">
-                <table class="table table-striped">
-                <tr class="table-light">
-                    <th class="table-light">Medicine name</th>
-                    <th class="table-light">Income</th>
-                </tr>
-                <tr v-for="med in this.medications" v-bind:key="med.id" class="table-light">
-                    <td class="table-light">{{med.medicine.name}}</td>
-                    <td class="table-light">{{med.quantity}}</td>
-                </tr>
-                </table>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <canvas id="exam-stats" width="50" height="50"></canvas>
+                    </div>
+                    <div class="col">
+                        <canvas id="med-stats" width="50" height="50"></canvas>
+                    </div>
+                    <div class="col">
+                        <canvas id="income-stats" width="50" height="50"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -41,6 +31,7 @@ import axios from 'axios';
 import * as comm from '../../configuration/communication.js'
 import {DatePicker} from 'v-calendar';
 import moment from 'moment'
+import Chart from 'chart.js';
 
 export default {
     name: "StatisticsPage",
@@ -51,7 +42,11 @@ export default {
             examStats: false,
             exams: null,
             medStats: false,
-            medications: null
+            medications: null,
+            statsData: [],
+            statsLabels: [],
+            income: 0.0,
+            incomeStats: false
         }
     },
     components: {
@@ -80,6 +75,13 @@ export default {
                     this.exams = response.data;
                     this.medStats = false;
                     this.medications = null;
+                    this.statsData = [];
+                    this.statsLabels = [];
+                    this.income = 0.0;
+                    this.incomeStats = false;
+                    this.formExamChart();
+                    this.formMedChart();
+                    this.formIncomeChart();
                 }
             })
         },
@@ -102,6 +104,38 @@ export default {
                     this.exams = null;
                     this.medStats = true;
                     this.medications = response.data;
+                    this.statsData = [];
+                    this.statsLabels = [];
+                    this.income = 0.0;
+                    this.incomeStats = false;
+                    this.formMedChart();
+                }
+            })
+        },
+        showIncomeStats : function(){
+            if(this.isInvalidInput()){
+                alert("Invalid input!");
+                return;
+            }
+            let sDate = this.ticksToYYYYMMDD(this.startDate.getTime()) + " " + "00:00:00";
+            let eDate = this.ticksToYYYYMMDD(this.endDate.getTime()) + " " + "00:00:00";
+            let request = {
+                start: this.dateWithoutZone(sDate),
+                end: this.dateWithoutZone(eDate),
+                pharmacyId: ""
+            }
+            axios.post('http://' + comm.server + '/api/pharmacies/income', request)
+            .then(response => {
+                if(response.status == 200){
+                    this.examStats = false;
+                    this.exams = null;
+                    this.medStats = false;
+                    this.medications = null;
+                    this.statsData = [];
+                    this.statsLabels = [];
+                    this.income = response.data;
+                    this.incomeStats = true;
+                    this.formIncomeChart();
                 }
             })
         },
@@ -115,6 +149,134 @@ export default {
         },
         isInvalidInput : function(){
             return this.startDate >= this.endDate;
+        },
+        formExamChart: function () {
+            for(let e of this.exams){
+                this.statsLabels.push(this.ticksToYYYYMMDD(e.date));
+                this.statsData.push(e.number);
+            }
+            var ctx = document.getElementById('exam-stats');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: this.statsLabels,
+                    datasets: [{
+                        label: 'number of examinations',
+                        data: this.statsData,
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Statistics for finished examinations'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0
+                            },
+                            scaleLabel: {
+                                display: true,
+                            }
+                        }]
+                    }
+                }
+            });
+        },
+        formMedChart: function () {
+            for(let med of this.medications){
+                this.statsLabels.push(med.medicine.name);
+                this.statsData.push(med.quantity);
+            }
+            var ctx = document.getElementById('med-stats');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: this.statsLabels,
+                    datasets: [{
+                        label: 'medications income',
+                        data: this.statsData,
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Statistics for medicine income'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0
+                            },
+                            scaleLabel: {
+                                display: true,
+                            }
+                        }]
+                    }
+                }
+            });
+        },
+        formIncomeChart: function () {
+            var ctx = document.getElementById('income-stats');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['income'],
+                    datasets: [{
+                        label: 'pharmacy income',
+                        data: [this.income],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Pharmacy income'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0
+                            },
+                            scaleLabel: {
+                                display: true,
+                            }
+                        }]
+                    }
+                }
+            });
         }
     },
     filters:{
