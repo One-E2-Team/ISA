@@ -131,6 +131,8 @@ public class PharmacyService implements IPharmacyService {
 		p.setSubscribedPatients(new HashSet<Patient>());
 		p.setAddress(phdto.getAddress());
 		p.setDescription(phdto.getDescription());
+		p.setLongitude(phdto.getLongitude());
+		p.setLatitude(phdto.getLatitude());
 		return save(p);
 	}
 
@@ -147,6 +149,8 @@ public class PharmacyService implements IPharmacyService {
 		dto.setDermatologists(getCredentialsFromHealthWorkers(id, false));
 		dto.setMedicines(medicineRepository.findMedicineByPharmacyid(id));
 		dto.setRate(ratedPharmacyRepository.getAverageRateByPharmacyId(id));
+		dto.setLongitude(pharmacy.getLongitude());
+		dto.setLatitude(pharmacy.getLatitude());
 		return dto;
 	}
 
@@ -419,6 +423,8 @@ public class PharmacyService implements IPharmacyService {
 		pharmacy.setAddress(editPharmacy.getAddress());
 		pharmacy.setDescription(editPharmacy.getDescription());
 		pharmacy.setName(editPharmacy.getName());
+		pharmacy.setLongitude(editPharmacy.getLongitude());
+		pharmacy.setLatitude(editPharmacy.getLatitude());
 		pharmacyRepository.save(pharmacy);
 		return true;
 	}

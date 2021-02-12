@@ -16,6 +16,7 @@ import { useGeographic } from 'ol/proj';
 import TileLayer from 'ol/layer/Tile';
 export default {
     name: "OLMap",
+    props: ['latitude', 'longitude'],
     data() {
         return {
             place: [20, 45],
@@ -70,23 +71,22 @@ export default {
     },
     mounted() {
         useGeographic();
-        this.initResultsMap(true, [45, 20], undefined);
+        this.initResultsMap(true, [this.latitude, this.longitude], undefined);
         this.addAllApartmentPointsResultMap([
-            [0, 0],
-            [45, 20]
+            [this.latitude, this.longitude]
         ], false);
     },
 }
 </script>
 
-<style>
-        .map {
-            width: 60%;
-            height: 500px;
-        }
+<style scoped>
+    .map {
+        width: 60%;
+        height: 500px;
+    }
         
-        td {
-            padding: 0 0.5em;
-            text-align: right;
-        }
+    td {
+        padding: 0 0.5em;
+        text-align: right;
+    }
 </style>
