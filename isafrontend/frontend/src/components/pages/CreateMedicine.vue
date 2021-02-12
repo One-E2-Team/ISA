@@ -15,7 +15,7 @@
                 <input type="text" v-model="medicineData.medicineForm" class="form-control" id="sysMedForm" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-                <label for="sysexampleInputCodeMed" class="form-label">Code (numbers)*</label>
+                <label for="sysexampleInputCodeMed" class="form-label">Code (numbers, not zero)*</label>
                 <input type="text" v-model="medicineData.code" class="form-control" id="sysexampleInputCodeMed">
             </div>
             <div class="mb-3">
