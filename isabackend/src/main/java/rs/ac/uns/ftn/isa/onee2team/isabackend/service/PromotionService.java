@@ -58,8 +58,14 @@ public class PromotionService implements IPromotionService {
 	}
 
 	@Override
+	public List<Promotion> getAllPromotions(){
+		return promotionRepository.findAll();
+	}
+
+	@Override
 	public Loyalty save(LoyaltyDTO ldto) {
 		Loyalty l = loyaltyRepository.findAllByType(ldto.getType()).get(0);
+		l.setType(ldto.getType());
 		l.setDiscount(ldto.getDiscount());
 		l.setExaminationPoints(ldto.getExaminationPoints());
 		l.setMinPoints(ldto.getMinPoints());

@@ -19,4 +19,5 @@ public interface IPromotionService {
 	PharmacyDTO subscribe(Long pharmacyId, Long patientId);
 	PharmacyDTO unsubscribe(Long pharmacyId, Long patientId);
 	List<PharmacyDTO> getAllSubscriptions(Long patientId);
+	List<Promotion> getAllPromotions();
 }

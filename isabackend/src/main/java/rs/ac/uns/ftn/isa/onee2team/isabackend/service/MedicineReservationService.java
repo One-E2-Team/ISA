@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
@@ -89,6 +90,7 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional()
 	public boolean reserve(RequestReservationDTO dto, Long patient_id) {
 		
 		if(userRepository.getPatientsPenalties(patient_id) >= 3) 
