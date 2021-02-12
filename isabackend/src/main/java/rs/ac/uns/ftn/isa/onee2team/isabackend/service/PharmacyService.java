@@ -80,12 +80,7 @@ public class PharmacyService implements IPharmacyService {
 			IMedicineReservationRepository reservationRepository, IExaminationRepository examRepository,
 			IMedicineWithQuantityRepository mwqRepository, IERecipeRepository eRecipeRepository,
 			IWarehouseRepository wearehouseRepository, IEmailNotificationService emailNotificationService,
-			IOfferRepository offerRepository) {
-			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository, 
-			IMedicineReservationRepository reservationRepository, 
-			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
-			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
-			IEmailNotificationService emailNotificationService, IUserService userService) {
+			IOfferRepository offerRepository, IUserService userService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -364,17 +359,6 @@ public class PharmacyService implements IPharmacyService {
 			return false;
 		else
 			return true;
-	}
-
-	private double getDiscountForPatient(Long patientId) {
-		Patient p = (Patient) userRepository.findById(patientId).get();
-		List<CategoryType> ct = promotionService.getPatientType(p.getPoints());
-		CategoryType type = ct.get(0);
-		for (CategoryType categoryType : ct)
-			if (type.ordinal() < categoryType.ordinal())
-				type = categoryType;
-		double discount = promotionService.getDiscount(type);
-		return discount;
 	}
 	
 	@Override
