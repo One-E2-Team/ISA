@@ -1,8 +1,8 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination;
 
 import java.util.Date;
+
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,7 +31,7 @@ public class Examination {
 	@Column(name = "id", unique = true, nullable = false)
 	private Long id;
 
-	@ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(optional = false, cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "healthWokrerId")
 	private HealthWorker healthWokrer;
 

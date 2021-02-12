@@ -1,9 +1,9 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,17 +22,12 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineReservationRep
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWarehouseRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IWorkingCalendarRepository;
 
 @Service
 public class MedicineReservationService implements IMedicineReservationService {
 
 	private IMedicineReservationRepository medicineReservationRepository;
-
-	@Override
-	public List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId) {
-		return medicineReservationRepository.getDoneReservationsByPatient(patientId);
-	}
-	
 	private IWarehouseRepository warehouseRepository;
 	private IMedicineRepository medicineRepository;
 	private IPharmacyRepository pharmacyRepository;
@@ -50,6 +45,11 @@ public class MedicineReservationService implements IMedicineReservationService {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.emailNotificationService = emailNotificationService;
+	}
+	
+	@Override
+	public List<MedicineReservation> findAllDoneReservationsByPatient(Long patientId) {
+		return medicineReservationRepository.getDoneReservationsByPatient(patientId);
 	}
 	
 	@Override
@@ -72,11 +72,14 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional
 	public boolean cancelReservation(Long user_id, Long reservation_id) {
 		MedicineReservation r = medicineReservationRepository.findById(reservation_id).orElse(null);
 
 		if(r.getPatient().getId() != user_id)
 			return false;
+		
+		if(r.getStatus() == MedicineReservationStatus.CANCELED) {return false;}
 		
 		r.setStatus(MedicineReservationStatus.CANCELED);
 		medicineReservationRepository.save(r);
@@ -154,12 +157,15 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional
 	public void takeMedicine(Long patientId, ReservedMedicineDTO dto) {
 		
 		MedicineReservation mr = medicineReservationRepository.findById(dto.getId()).orElse(null);
+		
+		if(mr.getStatus().equals(MedicineReservationStatus.DONE)) { return; }
+		
 		mr.setStatus(MedicineReservationStatus.DONE);
 		medicineReservationRepository.save(mr);
-		
 		Warehouse w = warehouseRepository.getWarehouseByPharmacyAndMedicine(dto.getPharmacyId(), dto.getMedicineId());
 		w.setAmount(w.getAmount() - 1);
 		w.setReservedAmount(w.getReservedAmount() -1);
@@ -173,6 +179,34 @@ public class MedicineReservationService implements IMedicineReservationService {
 	@Override
 	public List<MedicineReservation> getAllMedicineReservations() {
 		return medicineReservationRepository.findAll();
+	}
+
+	@Override
+	public Boolean takeReservationMedicine(Long reservationId,Long healthworkerId) {
+		MedicineReservation reservation = medicineReservationRepository.findById(reservationId).orElse(null);
+		if(pharmacyRepository.getIfHealthWorkerWorksInPharmacy(healthworkerId, reservation.getPharmacy().getId())==0) {
+			return false;
+		}
+		if(reservation == null || !reservation.getStatus().equals(MedicineReservationStatus.CREATED)) {
+			return false;
+		}
+		
+		Calendar calendar = Calendar.getInstance();
+	    calendar.setTime(reservation.getExpireDate());
+	    calendar.add(Calendar.DATE, -1);
+	    Date dayBefore = calendar.getTime();
+		
+		if(new Date().after(dayBefore)) {
+			return false;
+		}
+		
+		ReservedMedicineDTO resMedDTO = new ReservedMedicineDTO();
+		resMedDTO.setId(reservation.getId());
+		resMedDTO.setPharmacyId(reservation.getPharmacy().getId());
+		resMedDTO.setMedicineId(reservation.getMedicine().getId());
+		
+		takeMedicine(reservation.getPatient().getId(), resMedDTO );
+		return true;
 	}
 
 }

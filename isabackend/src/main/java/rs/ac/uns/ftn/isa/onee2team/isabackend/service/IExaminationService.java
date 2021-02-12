@@ -9,6 +9,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -59,4 +61,7 @@ public interface IExaminationService {
 	
 	List<ExaminationDTO> searchAllFreeExaminationsInSpecificDays(Long pharmacyId, Date start, Date end,Long healthworkerId);
 	Boolean finishExamination(Long examinationId);
+	
+	List<UserProfileDTO> getExaminedPatientsByHealthWorkerId(Long healthworkerId);
+	List<ExaminationDTO> getAllExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId, Date start, Date end);
 }

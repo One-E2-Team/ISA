@@ -17,6 +17,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacistWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppointmentDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
@@ -67,7 +68,7 @@ public class ExaminationService implements IExaminationService {
 		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
 		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
 		for (Examination examination : examinationRepository.getExaminationsByHealthWorkerIdInTimeInterval(worker,timeStart,timeEnd,status)) {
-			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime()));
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
 		}
 		return ret;
 	}
@@ -79,7 +80,7 @@ public class ExaminationService implements IExaminationService {
 		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
 		Pharmacy pharmacy = (Pharmacy) pharmacyRepository.findById(pharmacyId).orElse(null);
 		for (Examination examination : examinationRepository.getExaminationsByHealthWorkerIdInTimeInterval(worker,timeStart,timeEnd,status,pharmacy)) {
-			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime()));
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
 		}
 		return ret;
 	}
@@ -388,5 +389,27 @@ public class ExaminationService implements IExaminationService {
 		e.setStatus(ExaminationStatus.FINISHED);
 		examinationRepository.save(e);
 		return true;
+	}
+
+	@Override
+	public List<UserProfileDTO> getExaminedPatientsByHealthWorkerId(Long healthworkerId) {
+		List<UserProfileDTO> res = new ArrayList<UserProfileDTO>();
+		for(Long id :examinationRepository.getExaminedPatientsByHealthWorkerId(healthworkerId)){
+			User u = userRepository.getOne(id);
+			UserProfileDTO patient = new UserProfileDTO(id,u.getEmail(),u.getFirstName(),u.getLastName(),u.getAddress(),u.getCity(),u.getState(),u.getPhoneNumber());
+			res.add(patient);			
+		}
+		return res;
+	}
+
+	@Override
+	public List<ExaminationDTO> getAllExaminationsByHealthWorkerIdInTimeInterval(Long healthWorkerId, Date start, Date end) {
+		List<ExaminationDTO> ret = new ArrayList<ExaminationDTO>();
+		HealthWorker worker = (HealthWorker) userRepository.findById(healthWorkerId).orElse(null);
+		for (Examination examination : examinationRepository.getAllExaminationsByHealthWorkerIdInTimeInterval(worker,start,end)) {
+			ret.add(new ExaminationDTO(examination.getId(),healthWorkerId,examination.getPharmacy().getId(),examination.getPharmacy().getName(),
+											examination.getDate(),examination.getStartTime(),examination.getEndTime(),examination.getStatus()));
+		}
+		return ret;
 	}
 }

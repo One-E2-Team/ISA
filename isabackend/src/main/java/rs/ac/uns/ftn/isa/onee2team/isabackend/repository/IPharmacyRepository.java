@@ -22,4 +22,8 @@ public interface IPharmacyRepository extends JpaRepository<Pharmacy, Long> {
 	@Query(value = "select * from pharmacies where id in \r\n" + 
 			"(select distinct pharmacy_id from e_recipes where patient_id = ?1 and status in (0,1))", nativeQuery = true)
 	List<Pharmacy> getPharmaciesFromERecipes(Long patientId);
+	
+	
+	@Query(value = "select distinct count(*) from working_calendars w where w.health_wokrer_id = ?1 and w.pharmacy_id=?2", nativeQuery = true)
+	Integer getIfHealthWorkerWorksInPharmacy(Long healthWorkerId, Long pharmacyId);
 }
