@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.calendar.VacationRequest;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.VacationRequestDTO;
@@ -18,6 +19,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IVacationRequestRepository;
 
 @Service
+@Transactional(readOnly = false)
 public class VacationRequestService implements IVacationRequestService {
 
 	private IVacationRequestRepository vacationRequestRepository;
@@ -75,10 +77,11 @@ public class VacationRequestService implements IVacationRequestService {
 	}
 
 	@Override
+	@Transactional
 	public Boolean declineVacationRequest(VacationRequestWithHealthWorkerDTO request) {
 		VacationRequest req = vacationRequestRepository.findById(request.getRequestId()).orElse(null);
 		User healthWorker = userRepository.findById(request.getHealthWorkerId()).orElse(null);
-		if (req == null || healthWorker == null)
+		if (req == null || healthWorker == null || req.getAccepted() != null)
 			return false;
 		req.setAccepted(false);
 		vacationRequestRepository.save(req);
@@ -89,6 +92,7 @@ public class VacationRequestService implements IVacationRequestService {
 	}
 
 	@Override
+	@Transactional
 	public Boolean acceptVacationRequest(VacationRequestWithHealthWorkerDTO request, Long loggedUserId) {
 		VacationRequest req = vacationRequestRepository.findById(request.getRequestId()).orElse(null);
 		User healthWorker = userRepository.findById(request.getHealthWorkerId()).orElse(null);
@@ -103,7 +107,7 @@ public class VacationRequestService implements IVacationRequestService {
 			numOfScheduledExaminations = examinationRepository
 					.getNumScheduledExaminationsByDermatologistsIdInTimeInterval(healthWorker.getId(),
 							request.getStart(), request.getEnd());
-		if (numOfScheduledExaminations > 0)
+		if (numOfScheduledExaminations > 0 || req.getAccepted() != null)
 			return false;
 		req.setAccepted(true);
 		vacationRequestRepository.save(req);
