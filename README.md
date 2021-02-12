@@ -21,6 +21,9 @@ moguce je i buildovati frontend sa ```npm run build```, u tom slucaju, staticki,
 ako je potrebno promijeniti port servera, to se moze uratiti u ```package.json``` fajlu u build/serve skripti
 
 ## Backend
+
+koristi se java ```jdk 15```
+
 root projekta se nalazi u ```/isabackend```
 
 Potrebne environment varijable:
