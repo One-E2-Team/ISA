@@ -13,8 +13,8 @@
                 <td class="table-light">{{request.healthWorkerFirstName}}</td>
                 <td class="table-light">{{request.healthWorkerLastName}}</td>
                 <td class="table-light">{{request.type}}</td>
-                <td class="table-light">{{request.start}}</td>
-                <td class="table-light">{{request.end}}</td>
+                <td class="table-light">{{request.start | dateFormat('DD.MM.YYYY')}}</td>
+                <td class="table-light">{{request.end | dateFormat('DD.MM.YYYY')}}</td>
                 <td class="table-light"><button @click="accept(request.requestId)">Accept</button></td>
                 <td class="table-light"><button @click="decline(request.requestId)">Decline</button></td>
                 <td class="table-light"><input type="text" v-model="request.message"></td>
@@ -29,6 +29,7 @@
 
 import * as comm from '../../configuration/communication.js';
 import axios from 'axios';
+import moment from 'moment'
 
 export default {
     name: "ReviewVacationRequestsPage",
@@ -52,9 +53,13 @@ export default {
                     if (response.status == 200 && response.data == true) {
                         this.deleteRequestByIndex();
                     } else if (response.status == 200 && response.data == false){
-                        alert("You can't accept because that health worker has scheduled examinations!");
+                        alert("You can't accept because that health worker has scheduled examinations or this request was already processed!");
                     }
-                });
+                })
+                .catch(reason => {
+                  console.log(reason);
+                  alert("Somebady already processed this request!");
+              });
             }
         },
         decline : function(requestId){
@@ -68,8 +73,14 @@ export default {
                 .then(response => {
                     if (response.status == 200 && response.data == true) {
                         this.deleteRequestByIndex();
+                    } else if (response.status == 200 && response.data == false){
+                        alert("You can't accept because that health worker has scheduled examinations or this request was already processed!");
                     }
-                });
+                })
+                .catch(reason => {
+                  console.log(reason);
+                  alert("Somebady already processed this request!");
+              });
             }
         },
         getSelectedRequest : function(requestId){
@@ -110,6 +121,12 @@ export default {
             });
         } else{
             alert("Unauthorized");
+        }
+    },
+    filters:{
+        dateFormat: function(value,pattern){
+            var time = moment(value);
+            return time.format(pattern)
         }
     }
 }
