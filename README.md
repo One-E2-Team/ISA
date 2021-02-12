@@ -15,7 +15,7 @@ posljednja verzija CD-a se nalazi na ```cd-preparations``` branchu
 
 [QR kodovi](/isatest/qr-erecipe)
 
-[insert.sql](/isatest/sql-insert-script/inserts.sql)
+[insert.sql](/isatest/sql-insert-script/skripta.sql)
 
 [PR Validation](.github/workflows/prval.yml)
 
