@@ -24,10 +24,15 @@ import org.springframework.test.context.jdbc.Sql;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeMedicine;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.LoyaltyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewComplaintDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.Complaint;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.ComplaintType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IComplaintRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IERecipeRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.ILoyaltyRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IUserRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IFeedbackService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
@@ -49,6 +54,8 @@ class IsabackendApplicationTests {
 	private IPromotionService promotionService;
 	@Autowired
 	private ILoyaltyRepository loyaltyRepository;
+	@Autowired
+	private IUserRepository userRepository;
 	
 	
 	//Student4 - integracioni
@@ -199,7 +206,18 @@ class IsabackendApplicationTests {
 			});
 			executor.shutdown();
 		}
-		
-		
-
+		/*
+		@Test
+		@Sql(scripts = {"/createComplaintdata.sql"})
+		void createComplaintIntegrationTest() {
+			NewComplaintDTO ncdto = new NewComplaintDTO(1L, "Rosko", "PHARMACY", "LMAO");
+			Patient p = (Patient) userRepository.findById(3L).get();
+			Complaint c = feedbackService.createComplaint(p, ncdto, 1L);
+			boolean check = c.getHandled().equals(false) &&
+					c.getComment().equals(ncdto.getComplaint()) &&
+					c.getComplaintEntityId().equals(1L) &&
+					c.getPatient().equals(p) &&
+					c.getType().equals(ComplaintType.PHARMACY);
+			assertEquals(true, check);
+		}*/
 }
