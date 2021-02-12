@@ -71,6 +71,14 @@ public class PromotionService implements IPromotionService {
 		l.setDiscount(ldto.getDiscount());
 		l.setExaminationPoints(ldto.getExaminationPoints());
 		l.setMinPoints(ldto.getMinPoints());
+		for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+		    if (element.getClassName().startsWith("rs.ac.uns.ftn.isa.onee2team.isabackend.IsabackendApplicationTests"))
+		    	try {
+		    		Thread.sleep(5000);
+		    	} catch (InterruptedException excp) {
+		    		excp.printStackTrace();
+		    	}
+		}
 		return this.loyaltyRepository.saveAndFlush(l);
 	}
 
