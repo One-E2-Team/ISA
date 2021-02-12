@@ -100,9 +100,6 @@ public class MedicineReservationService implements IMedicineReservationService {
 		if(userRepository.getPatientsPenalties(patient_id) >= 3) 
 			return false;
 		
-		System.out.println(dto.getPharmacy_id());
-		System.out.println(dto.getMedicine_id());
-		
 		Warehouse w = warehouseRepository.getWarehouseByPharmacyAndMedicine(dto.getPharmacy_id(), dto.getMedicine_id());
 		
 		if(w.getAmount() == w.getReservedAmount())
