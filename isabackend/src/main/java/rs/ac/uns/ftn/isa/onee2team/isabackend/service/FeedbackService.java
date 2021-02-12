@@ -81,6 +81,7 @@ public class FeedbackService implements IFeedbackService {
 			    	}
 			}
 			c.setAnswer(answer);
+			c = this.saveComplaint(c);
 			emailNotificationService.sendNotificationAsync(c.getPatient().getEmail(), "Answer to complaint number: " + c.getId().toString(), answer);
 			return c;
 		} else return null;
