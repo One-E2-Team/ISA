@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.CredentialsAndIdDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.DermatologistWithFreeExaminationsDTO;
@@ -390,6 +392,7 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public ERecipe buyByERecipe(Long pharmacyId, ERecipeDTO erdto, Long patientId) {
 		if (checkERecipeValidity(erdto.getCode()) == false)
 			return null;
@@ -405,6 +408,17 @@ public class PharmacyService implements IPharmacyService {
 			mwq.setQuantity(ermed.getQuantity());
 			mwq.setMedicine(medicineRepository.findById(ermed.getId()).get());
 			Warehouse w = warehouseRepository.getByMedicineAndPharmacy(ermed.getId(), pharmacyId);
+			if(w.getReservedAmount() + ermed.getQuantity() > w.getAmount())
+				return null;
+			// should change with check for test profile, but this works too
+			for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
+			    if (element.getClassName().startsWith("rs.ac.uns.ftn.isa.onee2team.isabackend.IsabackendApplicationTests"))
+			    	try {
+			    		Thread.sleep(5000);
+			    	} catch (InterruptedException excp) {
+			    		excp.printStackTrace();
+			    	}
+			}
 			w.setReservedAmount(w.getReservedAmount() + ermed.getQuantity());
 			warehouseRepository.save(w);
 			e.getMedicinesWithQuantity().add(mwq);

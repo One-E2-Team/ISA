@@ -11,8 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.Version;
+import javax.persistence.Version;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
