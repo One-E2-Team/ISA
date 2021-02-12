@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IMedicineReservationService;
 
@@ -60,5 +63,13 @@ public class ReservationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		medicineReservationService.takeMedicine(user.getId(), dto);
+	}
+	
+	@PostMapping(value = "/takeMedicine")
+	@PreAuthorize("hasRole('ROLE_PHARMACIST')")
+	public Boolean pahramcistTakeMedicine(@RequestParam("reservationId") Long reservationId){
+		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+		User user = (User) auth.getPrincipal();
+		return medicineReservationService.takeReservationMedicine(reservationId,user.getId());
 	}
 }

@@ -30,7 +30,10 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithFreeAppoint
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduleNewExanimationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ScheduledExaminationDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.TimeIntervalDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserProfileDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.Examination;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
@@ -86,6 +89,12 @@ public class ExaminationController {
 			return examinationService.getExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd(), ExaminationStatus.SCHEDULED);
 		
 		return examinationService.getExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd(), ExaminationStatus.SCHEDULED,Long.parseLong(timeInterval.getPharmacyId()));
+	}
+	
+	@PostMapping(value="/all")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<ExaminationDTO> getAllExaminationForHealthWorker(@RequestBody TimeIntervalDTO timeInterval, Authentication auth){
+		return examinationService.getAllExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd());
 	}
 	
 	@GetMapping(value="/patient")
@@ -167,4 +176,18 @@ public class ExaminationController {
 	public Boolean finishExamination(@PathVariable("id") Long examinationId){	
 		return examinationService.finishExamination(examinationId);
 	}
+	
+	@GetMapping(value="/examined-patients")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<UserProfileDTO> getExaminedPatients(Authentication auth){
+		User user = (User) auth.getPrincipal();
+		return examinationService.getExaminedPatientsByHealthWorkerId(user.getId());
+	}
+	
+	@GetMapping(value="/finished/patient/{id}")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<Examination> getPatientFinishedExamination(@PathVariable("id") Long patientId){
+		return examinationService.getPatientsFinishedEx(patientId);
+	}
+	
 }

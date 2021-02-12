@@ -186,8 +186,10 @@ export default {
             console.log("saljem "+this.id);
             axios.post('http://' + comm.server + '/api/examinations/finish/'+this.id)
                 .then(response=> {
-                    if(response.data == true)
+                    if(response.data == true){
                         this.$vToastify.success();
+                        this.$router.push({name: 'workingCalendar'})
+                    }
                     else
                         this.$vToastify.error("Can't finish examination");
                 })
