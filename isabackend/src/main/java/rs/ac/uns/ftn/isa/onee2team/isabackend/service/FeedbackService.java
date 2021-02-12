@@ -71,6 +71,7 @@ public class FeedbackService implements IFeedbackService {
 		Complaint c = complaintRepository.findById(id).orElse(null);
 		if (!c.getHandled()) {
 			c.setHandled(true);
+			// should change with check for test profile, but this works too
 			for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
 			    if (element.getClassName().startsWith("rs.ac.uns.ftn.isa.onee2team.isabackend.IsabackendApplicationTests"))
 			    	try {
@@ -80,7 +81,6 @@ public class FeedbackService implements IFeedbackService {
 			    	}
 			}
 			c.setAnswer(answer);
-			c = this.saveComplaint(c);
 			emailNotificationService.sendNotificationAsync(c.getPatient().getEmail(), "Answer to complaint number: " + c.getId().toString(), answer);
 			return c;
 		} else return null;
