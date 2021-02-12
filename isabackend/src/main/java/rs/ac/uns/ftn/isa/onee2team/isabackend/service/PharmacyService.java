@@ -133,6 +133,7 @@ public class PharmacyService implements IPharmacyService {
 		p.setDescription(phdto.getDescription());
 		p.setLongitude(phdto.getLongitude());
 		p.setLatitude(phdto.getLatitude());
+		p.setLockCounter(0L);
 		return save(p);
 	}
 

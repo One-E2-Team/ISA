@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 
@@ -42,6 +43,12 @@ public class Pharmacy {
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "subscriptions")
 	private Set<Patient> subscribedPatients;
+	
+	@Version
+	private Long version;
+	
+	@Column(name = "lockCounter", nullable = false)
+	private Long lockCounter;
 
 	public Long getId() {
 		return id;
@@ -97,5 +104,21 @@ public class Pharmacy {
 
 	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public Long getLockCounter() {
+		return lockCounter;
+	}
+
+	public void setLockCounter(Long lockCounter) {
+		this.lockCounter = lockCounter;
 	}
 }

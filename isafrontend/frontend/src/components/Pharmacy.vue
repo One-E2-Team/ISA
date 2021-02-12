@@ -1,28 +1,28 @@
 <template>
     <div v-if="this.pharmacy">
-        <div>
+        <div class="container">
             <label>Pharmacy name</label>
-            <input type="text" v-model="pharmacy.name" :disabled="isPatient()">
+            <input type="text" v-model="pharmacy.name" :disabled="isPatient()" class="form-control">
         </div>
-        <div>
+        <div class="container">
             <label>Address</label>
-            <input type="text" v-model="pharmacy.address" :disabled="isPatient()">
+            <input type="textbox" v-model="pharmacy.address" :disabled="isPatient()" class="form-control">
         </div>
-        <div v-if="isPharmacyAdmin()">
+        <div v-if="isPharmacyAdmin()" class="container">
             <label>Description</label>
-            <input type="text" v-model="pharmacy.description">
+            <input type="textbox" v-model="pharmacy.description" class="form-control">
         </div>
-        <div v-if="isPharmacyAdmin()">
+        <div v-if="isPharmacyAdmin()" class="container">
             <label>Latitude</label>
             <input type="number" v-model="pharmacy.latitude">
             <label>Longitude</label>
             <input type="number" v-model="pharmacy.longitude">
         </div>
-        <div>
+        <div class="container">
             <label>Rate</label>
             <input type="number" v-model="pharmacy.rate" disabled>
         </div>
-        <div>
+        <div class="container">
             <button @click="editPharmacy()" class="btn btn-primary" v-if="isPharmacyAdmin()">Save changes</button>
         </div>
         <div v-if="this.pharmacy">
