@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.controller;
 
 import java.util.List;
 
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -60,5 +62,11 @@ public class ReservationController {
 		Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) auth.getPrincipal();
 		medicineReservationService.takeMedicine(user.getId(), dto);
+	}
+	
+	@PostMapping(value = "/takeMedicine")
+	@PreAuthorize("hasRole('ROLE_PHARMACIST')")
+	public Boolean pahramcistTakeMedicine(@PathParam("reservation-id") Long reservationId){
+		return medicineReservationService.takeReservationMedicine(reservationId);
 	}
 }
