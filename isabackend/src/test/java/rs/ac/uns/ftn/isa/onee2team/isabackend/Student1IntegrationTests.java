@@ -1,7 +1,7 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
 import java.util.List;
