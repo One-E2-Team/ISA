@@ -88,4 +88,7 @@ public interface IExaminationRepository extends JpaRepository<Examination, Long>
 	
 	@Query(value = "select * from examinations where patient_id = ?1 and date >= now()", nativeQuery = true)
 	List<Examination> getPatientFutureExaminations(Long patientId);
+	
+	@Query(value="select distinct patient_id from examinations where health_wokrer_id=?1  and status=1 ",nativeQuery = true)
+	public List<Long> getExaminedPatientsByHealthWorkerId(Long healthworkerId);
 }

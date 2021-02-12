@@ -23,4 +23,6 @@ public interface IMedicineReservationService {
 	void takeMedicine(Long patientId, ReservedMedicineDTO dto);
 	
 	List<MedicineReservation> getAllMedicineReservations();
+	
+	Boolean takeReservationMedicine(Long reservationId,Long healthworkerId);
 }
