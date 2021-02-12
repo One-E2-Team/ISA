@@ -268,6 +268,7 @@ public class ExaminationService implements IExaminationService {
 	}
 
 	@Override
+	@Transactional
 	public String createNewExaminations(NewExaminationsDTO newExaminations, Long userId) {
 		PharmacyAdmin loggedUser = (PharmacyAdmin)userRepository.findById(userId).orElse(null);
 		if(loggedUser == null)
@@ -282,6 +283,11 @@ public class ExaminationService implements IExaminationService {
 			return "This health worker already has created examinations for selected date!";
 		}
 
+		Pharmacy pharmacy = loggedUser.getPharmacy();
+		Long random = pharmacy.getLockCounter();
+		random++;
+		pharmacy.setLockCounter(random);
+		pharmacyRepository.save(pharmacy);
 		for (NewExaminationDTO newExam : newExaminations.getNewExaminations()) {
 			Examination e = new Examination();
 			e.setDate(newExaminations.getDate());
