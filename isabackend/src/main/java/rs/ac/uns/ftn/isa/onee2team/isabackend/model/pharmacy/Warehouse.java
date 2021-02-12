@@ -13,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.springframework.data.annotation.Version;
-
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
 @Entity
