@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.service;
 import java.util.List;
 import java.util.Set;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
@@ -24,5 +25,7 @@ public interface IMedicineReservationService {
 	
 	List<MedicineReservation> getAllMedicineReservations();
 	
-	Boolean takeReservationMedicine(Long reservationId,Long healthworkerId);
+	Boolean takeReservationMedicine(Long reservationId);
+
+	MedicineDTO getMedicineDTOfromReservation(Long reservationId,Long healthworker);
 }
