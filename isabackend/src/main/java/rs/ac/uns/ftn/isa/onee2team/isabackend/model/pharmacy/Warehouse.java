@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy;
 
 import javax.persistence.CascadeType;
+
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
 
@@ -35,6 +38,17 @@ public class Warehouse {
 
 	@Column(name = "reservedAmount", nullable = false)
 	private Integer reservedAmount;
+	
+	@Version
+	private Long version;
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
 
 	public Long getId() {
 		return id;

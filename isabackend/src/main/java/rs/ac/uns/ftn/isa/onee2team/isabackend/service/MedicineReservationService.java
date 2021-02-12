@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
@@ -71,11 +72,14 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional
 	public boolean cancelReservation(Long user_id, Long reservation_id) {
 		MedicineReservation r = medicineReservationRepository.findById(reservation_id).orElse(null);
 
 		if(r.getPatient().getId() != user_id)
 			return false;
+		
+		if(r.getStatus() == MedicineReservationStatus.CANCELED) {return false;}
 		
 		r.setStatus(MedicineReservationStatus.CANCELED);
 		medicineReservationRepository.save(r);
@@ -89,6 +93,7 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional()
 	public boolean reserve(RequestReservationDTO dto, Long patient_id) {
 		
 		if(userRepository.getPatientsPenalties(patient_id) >= 3) 
@@ -152,9 +157,13 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
+	@Transactional
 	public void takeMedicine(Long patientId, ReservedMedicineDTO dto) {
 		
 		MedicineReservation mr = medicineReservationRepository.findById(dto.getId()).orElse(null);
+		
+		if(mr.getStatus().equals(MedicineReservationStatus.DONE)) { return; }
+		
 		mr.setStatus(MedicineReservationStatus.DONE);
 		medicineReservationRepository.save(mr);
 		Warehouse w = warehouseRepository.getWarehouseByPharmacyAndMedicine(dto.getPharmacyId(), dto.getMedicineId());

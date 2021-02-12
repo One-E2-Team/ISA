@@ -44,6 +44,9 @@ export default {
             statsData: [],
             statsLabels: [],
             income: 0.0,
+            examChart: null,
+            medChart: null,
+            incomeChart: null
         }
     },
     components: {
@@ -142,7 +145,10 @@ export default {
                 this.statsData.push(e.number);
             }
             var ctx = document.getElementById('exam-stats');
-            var examChart = new Chart(ctx, {
+            if(this.examChart !== null) {
+                this.examChart.destroy(); 
+            }
+            this.examChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: this.statsLabels,
@@ -186,7 +192,10 @@ export default {
                 this.statsData.push(med.quantity);
             }
             var ctx = document.getElementById('med-stats');
-            var myChart = new Chart(ctx, {
+            if(this.medChart !== null) {
+                this.medChart.destroy(); 
+            }
+            this.medChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: this.statsLabels,
@@ -226,7 +235,10 @@ export default {
         },
         formIncomeChart: function () {
             var ctx = document.getElementById('income-stats');
-            var myChart = new Chart(ctx, {
+            if(this.incomeChart !== null) {
+                this.incomeChart.destroy(); 
+            }
+            this.incomeChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['income'],
