@@ -1,8 +1,8 @@
 #apoteke
-insert into pharmacies values (1, 'Bulevar oslobodjenja 1', 'Nebitan opis', 'Apoteka 1');
-insert into pharmacies values (2, 'Bulevar oslobodjenja 2', 'Nebitan opis', 'Apoteka 2');
-insert into pharmacies values (3, 'Bulevar oslobodjenja 3', 'Nebitan opis', 'Apoteka 3');
-insert into pharmacies values (4, 'Bulevar oslobodjenja 4', 'Nebitan opis', 'Apoteka 4');
+insert into pharmacies values (1, 'Bulevar oslobodjenja 1, Novi Sad, Srbija', 'Nebitan opis', 45.267136, 1, 19.833549, 'Apoteka 1', 1);
+insert into pharmacies values (2, 'Bulevar oslobodjenja 2, Novi Sad, Srbija', 'Nebitan opis', 45.267136, 1, 19.833549, 'Apoteka 2', 1);
+insert into pharmacies values (3, 'Bulevar oslobodjenja 3, Novi Sad, Srbija', 'Nebitan opis', 45.267136, 1, 19.833549, 'Apoteka 3', 1);
+insert into pharmacies values (4, 'Bulevar oslobodjenja 4, Novi Sad, Srbija', 'Nebitan opis', 45.267136, 1, 19.833549, 'Apoteka 4', 1);
 
 #lekovi
 insert into medicines values (1, 100, '100ug levotiroksin natrijum', 1, 'BERLIN-CHEMIE AG', 'tableta', 'hormon', 'Letrox', 3, true, 'rip boye');
@@ -18,6 +18,7 @@ insert into equivalent_medicines values (2, 2, 1);
 insert into equivalent_medicines values (3, 3, 4);
 insert into equivalent_medicines values (4, 4, 3);
 
+#password za sve user-e je "sifra"
 #pacijenti
 insert into all_users values ('PATIENT', 1, 'adresa', 'grad', 'mail1@gmail.com', true, 'ime 1', 'prezime 1', '$2y$10$0nxSL00whyxO4fwB17/qBODDSWDD5BYsJsO7tT.4XN83HqtigUpjm', 'telefon', 'drzava', 0, 0, 0, null, null);
 insert into all_users values ('PATIENT', 2, 'adresa', 'grad', 'mail2@gmail.com', true, 'ime 2', 'prezime 2', '$2y$10$0nxSL00whyxO4fwB17/qBODDSWDD5BYsJsO7tT.4XN83HqtigUpjm', 'telefon', 'drzava', 0, 0, 0, null, null);
@@ -65,19 +66,19 @@ insert into all_users_allergies values (3, 5);
 insert into all_users_allergies values (4, 1);
 
 #skladista
-insert into warehouses values (1, 10, 0, 1, 1);
-insert into warehouses values (2, 10, 1, 2, 1);
-insert into warehouses values (3, 20, 0, 3, 1);
-insert into warehouses values (4, 30, 0, 4, 1);
-insert into warehouses values (5, 10, 1, 2, 2);
-insert into warehouses values (6, 30, 0, 4, 2);
-insert into warehouses values (7, 25, 0, 5, 2);
-insert into warehouses values (8, 15, 1, 1, 3);
-insert into warehouses values (9, 10, 0, 3, 3);
-insert into warehouses values (10, 20, 0, 6, 3);
-insert into warehouses values (11, 25, 0, 5, 4);
-insert into warehouses values (12, 15, 0, 6, 4);
-insert into warehouses values (13, 10, 0, 1, 2);
+insert into warehouses values (1, 10, 0, 0, 1, 1);
+insert into warehouses values (2, 10, 1, 0, 2, 1);
+insert into warehouses values (3, 20, 0, 0, 3, 1);
+insert into warehouses values (4, 30, 0, 0, 4, 1);
+insert into warehouses values (5, 10, 1, 0, 2, 2);
+insert into warehouses values (6, 30, 0, 0, 4, 2);
+insert into warehouses values (7, 25, 0, 0, 5, 2);
+insert into warehouses values (8, 15, 1, 0, 1, 3);
+insert into warehouses values (9, 10, 0, 0, 3, 3);
+insert into warehouses values (10, 20, 0, 0, 6, 3);
+insert into warehouses values (11, 25, 0, 0, 5, 4);
+insert into warehouses values (12, 15, 0, 0, 6, 4);
+insert into warehouses values (13, 10, 0, 0, 1, 2);
 
 #istekli cenovnici
 insert into pricelists values (1, '2021-01-30 00:00:00', 400, '2021-01-10 00:00:00', 1, 1);
@@ -104,7 +105,7 @@ insert into working_calendars values (1, '2021-02-20 00:00:00', '2021-02-20 17:0
 insert into working_calendars values (2, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 12, 2);
 insert into working_calendars values (3, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 13, 3);
 insert into working_calendars values (4, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 14, 4);
-insert into working_calendars values (5, '2021-02-20 00:00:00', '2021-02-20 22:00:00', '2021-02-01 00:00:00', '2021-02-20 17:00:00', 15, 1);
+insert into working_calendars values (5, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 15, 1);
 #dermatolozi koji rade
 insert into working_calendars values (6, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 8, 1);
 insert into working_calendars values (7, '2021-02-20 00:00:00', '2021-02-20 17:00:00', '2021-02-01 00:00:00', '2021-02-20 09:00:00', 9, 4);
@@ -113,48 +114,54 @@ insert into working_calendars values (9, '2021-02-20 00:00:00', '2021-02-20 12:0
 
 
 #pregledi
-insert into examinations values (1, '2021-02-02 00:00:00', '2021-02-02 16:00:00', 'dijagnoza 1', 1000, '2021-02-02 15:30:00', 1, 11, 1, 1);
-insert into examinations values (2, '2021-02-02 00:00:00', '2021-02-02 16:30:00', 'dijagnoza 2', 1000, '2021-02-02 16:00:00', 1, 11, 2, 1);
-insert into examinations values (3, '2021-02-02 00:00:00', '2021-02-02 17:00:00', 'dijagnoza 3', 1000, '2021-02-02 16:30:00', 3, 11, 5, 1);
-insert into examinations values (4, '2021-02-02 00:00:00', '2021-02-02 10:00:00', 'dijagnoza 4', 1200, '2021-02-02 09:00:00', 1, 12, 5, 2);
-insert into examinations values (5, '2021-02-02 00:00:00', '2021-02-02 10:30:00', 'dijagnoza 5', 1200, '2021-02-02 10:00:00', 1, 12, 3, 2);
-insert into examinations values (6, '2021-02-02 00:00:00', '2021-02-02 11:00:00', 'dijagnoza 6', 1200, '2021-02-02 10:30:00', 1, 12, 3, 2);
-insert into examinations values (7, '2021-02-02 00:00:00', '2021-02-02 11:30:00', 'dijagnoza 7', 1200, '2021-02-02 11:00:00', 1, 12, 1, 2);
-insert into examinations values (8, '2021-02-02 00:00:00', '2021-02-02 12:00:00', 'dijagnoza 8', 1200, '2021-02-02 11:30:00', 1, 12, 2, 2);
-insert into examinations values (9, '2021-02-02 00:00:00', '2021-02-02 12:30:00', 'dijagnoza 9', 1200, '2021-02-02 12:00:00', 1, 12, 5, 2);
-insert into examinations values (10, '2021-02-02 00:00:00', '2021-02-02 13:00:00', 'dijagnoza 10', 1200, '2021-02-02 12:30:00', 1, 12, 3, 2);
-insert into examinations values (11, '2021-02-02 00:00:00', '2021-02-02 13:30:00', 'dijagnoza 11', 1200, '2021-02-02 13:00:00', 1, 12, 4, 2);
-insert into examinations values (12, '2021-02-02 00:00:00', '2021-02-02 14:00:00', 'dijagnoza 12', 1200, '2021-02-02 13:30:00', 1, 12, 1, 2);
-insert into examinations values (13, '2021-02-02 00:00:00', '2021-02-02 20:00:00', 'dijagnoza 13', 1000, '2021-02-02 19:30:00', 1, 15, 5, 1);
-insert into examinations values (14, '2021-02-02 00:00:00', '2021-02-02 21:00:00', 'dijagnoza 14', 1000, '2021-02-02 20:30:00', 3, 15, 2, 1);
-insert into examinations values (15, '2021-02-02 00:00:00', '2021-02-02 21:30:00', 'dijagnoza 15', 1000, '2021-02-02 21:00:00', 1, 15, 4, 1);
-insert into examinations values (16, '2021-02-02 00:00:00', '2021-02-02 16:00:00', 'dijagnoza 16', 1000, '2021-02-02 15:30:00', 1, 8, 2, 1);
-insert into examinations values (17, '2021-02-02 00:00:00', '2021-02-02 16:30:00', 'dijagnoza 17', 1000, '2021-02-02 16:00:00', 1, 8, 3, 1);
-insert into examinations values (18, '2021-02-02 00:00:00', '2021-02-02 17:00:00', 'dijagnoza 18', 1000, '2021-02-02 16:30:00', 1, 8, 4, 1);
-insert into examinations values (19, '2021-02-03 00:00:00', '2021-02-03 14:30:00', 'dijagnoza 19', 1000, '2021-02-03 14:00:00', 1, 10, 5, 1);
-insert into examinations values (20, '2021-02-03 00:00:00', '2021-02-03 15:00:00', 'dijagnoza 20', 1000, '2021-02-03 14:30:00', 1, 10, 1, 1);
-insert into examinations values (21, '2021-02-03 00:00:00', '2021-02-03 15:30:00', 'dijagnoza 21', 1000, '2021-02-03 15:00:00', 1, 10, 3, 1);
-insert into examinations values (22, '2021-02-03 00:00:00', '2021-02-03 07:30:00', 'dijagnoza 22', 1000, '2021-02-03 07:00:00', 1, 10, 1, 2);
-insert into examinations values (23, '2021-02-03 00:00:00', '2021-02-03 08:00:00', 'dijagnoza 23', 1000, '2021-02-03 07:30:00', 1, 10, 2, 2);
-insert into examinations values (24, '2021-02-03 00:00:00', '2021-02-03 08:30:00', 'dijagnoza 24', 1000, '2021-02-03 08:00:00', 3, 10, 4, 2);
-insert into examinations values (25, '2021-02-03 00:00:00', '2021-02-03 09:00:00', 'dijagnoza 25', 1000, '2021-02-03 08:30:00', 1, 10, 5, 2);
-insert into examinations values (26, '2021-02-05 00:00:00', '2021-02-05 07:30:00', 'dijagnoza 26', 1300, '2021-02-05 07:00:00', 0, 13, null, 3);
-insert into examinations values (27, '2021-02-05 00:00:00', '2021-02-05 08:00:00', 'dijagnoza 27', 1300, '2021-02-05 07:30:00', 0, 13, null, 3);
-insert into examinations values (28, '2021-02-05 00:00:00', '2021-02-05 08:30:00', 'dijagnoza 28', 1300, '2021-02-05 08:00:00', 0, 13, null, 3);
-insert into examinations values (29, '2021-02-05 00:00:00', '2021-02-05 09:00:00', 'dijagnoza 29', 1300, '2021-02-05 08:30:00', 0, 13, null, 3);
-insert into examinations values (30, '2021-02-05 00:00:00', '2021-02-05 09:30:00', 'dijagnoza 30', 1000, '2021-02-05 09:00:00', 0, 9, null, 4);
-insert into examinations values (31, '2021-02-05 00:00:00', '2021-02-05 10:00:00', 'dijagnoza 31', 1000, '2021-02-05 09:30:00', 0, 9, null, 4);
-insert into examinations values (32, '2021-02-05 00:00:00', '2021-02-05 10:30:00', 'dijagnoza 32', 1000, '2021-02-05 10:00:00', 0, 9, null, 4);
-insert into examinations values (33, '2021-02-05 00:00:00', '2021-02-05 11:00:00', 'dijagnoza 33', 1000, '2021-02-05 10:30:00', 0, 9, null, 4);
+insert into examinations values (1, '2021-02-02 00:00:00', '2021-02-02 16:00:00', 'dijagnoza 1', 1000, '2021-02-02 15:30:00', 1, 1, 11, 1, 1);
+insert into examinations values (2, '2021-02-02 00:00:00', '2021-02-02 16:30:00', 'dijagnoza 2', 1000, '2021-02-02 16:00:00', 1, 1, 11, 2, 1);
+insert into examinations values (3, '2021-02-02 00:00:00', '2021-02-02 17:00:00', 'dijagnoza 3', 1000, '2021-02-02 16:30:00', 3, 1, 11, 5, 1);
+insert into examinations values (4, '2021-02-02 00:00:00', '2021-02-02 10:00:00', 'dijagnoza 4', 1200, '2021-02-02 09:00:00', 1, 1, 12, 5, 2);
+insert into examinations values (5, '2021-02-02 00:00:00', '2021-02-02 10:30:00', 'dijagnoza 5', 1200, '2021-02-02 10:00:00', 1, 1, 12, 3, 2);
+insert into examinations values (6, '2021-02-02 00:00:00', '2021-02-02 11:00:00', 'dijagnoza 6', 1200, '2021-02-02 10:30:00', 1, 1, 12, 3, 2);
+insert into examinations values (7, '2021-02-02 00:00:00', '2021-02-02 11:30:00', 'dijagnoza 7', 1200, '2021-02-02 11:00:00', 1, 1, 12, 1, 2);
+insert into examinations values (8, '2021-02-02 00:00:00', '2021-02-02 12:00:00', 'dijagnoza 8', 1200, '2021-02-02 11:30:00', 1, 1, 12, 2, 2);
+insert into examinations values (9, '2021-02-02 00:00:00', '2021-02-02 12:30:00', 'dijagnoza 9', 1200, '2021-02-02 12:00:00', 1, 1, 12, 5, 2);
+insert into examinations values (10, '2021-02-02 00:00:00', '2021-02-02 13:00:00', 'dijagnoza 10', 1200, '2021-02-02 12:30:00', 1, 1, 12, 3, 2);
+insert into examinations values (11, '2021-02-02 00:00:00', '2021-02-02 13:30:00', 'dijagnoza 11', 1200, '2021-02-02 13:00:00', 1, 1, 12, 4, 2);
+insert into examinations values (12, '2021-02-02 00:00:00', '2021-02-02 14:00:00', 'dijagnoza 12', 1200, '2021-02-02 13:30:00', 1, 1, 12, 1, 2);
+insert into examinations values (13, '2021-02-02 00:00:00', '2021-02-02 20:00:00', 'dijagnoza 13', 1000, '2021-02-02 19:30:00', 1, 1, 15, 5, 1);
+insert into examinations values (14, '2021-02-02 00:00:00', '2021-02-02 21:00:00', 'dijagnoza 14', 1000, '2021-02-02 20:30:00', 3, 1, 15, 2, 1);
+insert into examinations values (15, '2021-02-02 00:00:00', '2021-02-02 21:30:00', 'dijagnoza 15', 1000, '2021-02-02 21:00:00', 1, 1, 15, 4, 1);
+insert into examinations values (16, '2021-02-02 00:00:00', '2021-02-02 16:00:00', 'dijagnoza 16', 1000, '2021-02-02 15:30:00', 1, 1, 8, 2, 1);
+insert into examinations values (17, '2021-02-02 00:00:00', '2021-02-02 16:30:00', 'dijagnoza 17', 1000, '2021-02-02 16:00:00', 1, 1, 8, 3, 1);
+insert into examinations values (18, '2021-02-02 00:00:00', '2021-02-02 17:00:00', 'dijagnoza 18', 1000, '2021-02-02 16:30:00', 1, 1, 8, 4, 1);
+insert into examinations values (19, '2021-02-03 00:00:00', '2021-02-03 14:30:00', 'dijagnoza 19', 1000, '2021-02-03 14:00:00', 1, 1, 10, 5, 1);
+insert into examinations values (20, '2021-02-03 00:00:00', '2021-02-03 15:00:00', 'dijagnoza 20', 1000, '2021-02-03 14:30:00', 1, 1, 10, 1, 1);
+insert into examinations values (21, '2021-02-03 00:00:00', '2021-02-03 15:30:00', 'dijagnoza 21', 1000, '2021-02-03 15:00:00', 1, 1, 10, 3, 1);
+insert into examinations values (22, '2021-02-03 00:00:00', '2021-02-03 07:30:00', 'dijagnoza 22', 1000, '2021-02-03 07:00:00', 1, 1, 10, 1, 2);
+insert into examinations values (23, '2021-02-03 00:00:00', '2021-02-03 08:00:00', 'dijagnoza 23', 1000, '2021-02-03 07:30:00', 1, 1, 10, 2, 2);
+insert into examinations values (24, '2021-02-03 00:00:00', '2021-02-03 08:30:00', 'dijagnoza 24', 1000, '2021-02-03 08:00:00', 3, 1, 10, 4, 2);
+insert into examinations values (25, '2021-02-03 00:00:00', '2021-02-03 09:00:00', 'dijagnoza 25', 1000, '2021-02-03 08:30:00', 1, 1, 10, 5, 2);
 
-#rezervisani lekovi
-insert into medicine_reservations values (1, '2021-02-24 00:00:00', 0, 2, 3, 2);
-insert into medicine_reservations values (2, '2021-02-25 00:00:00', 0, 1, 3, 3);
-insert into medicine_reservations values (3, '2021-02-26 00:00:00', 0, 2, 3, 1);
+insert into examinations values (26, '2021-02-17 00:00:00', '2021-02-17 10:30:00', '', 1000, '2021-02-17 10:00:00', 0, 1, 11, null, 1);
+insert into examinations values (27, '2021-02-17 00:00:00', '2021-02-17 11:00:00', '', 1000, '2021-02-17 10:30:00', 0, 1, 11, null, 1);
+insert into examinations values (28, '2021-02-17 00:00:00', '2021-02-17 11:30:00', '', 1000, '2021-02-17 11:00:00', 0, 1, 11, null, 1);
+insert into examinations values (29, '2021-02-17 00:00:00', '2021-02-17 12:00:00', '', 1000, '2021-02-17 11:30:00', 0, 1, 11, null, 1);
 
-#preuzete rezervacije
-insert into medicine_reservations values (4, '2021-02-10 00:00:00', 2, 2, 3, 1);
-insert into medicine_reservations values (5, '2021-02-12 00:00:00', 2, 3, 3, 1);
+insert into examinations values (30, '2021-02-17 00:00:00', '2021-02-17 09:30:00', '', 1200, '2021-02-17 09:00:00', 0, 1, 12, null, 2);
+insert into examinations values (31, '2021-02-17 00:00:00', '2021-02-17 10:00:00', '', 1200, '2021-02-17 09:30:00', 0, 1, 12, null, 2);
+insert into examinations values (32, '2021-02-17 00:00:00', '2021-02-17 10:30:00', '', 1200, '2021-02-17 10:00:00', 0, 1, 12, null, 2);
+
+insert into examinations values (33, '2021-02-17 00:00:00', '2021-02-17 10:30:00', '', 1000, '2021-02-17 10:00:00', 0, 1, 15, null, 1);
+insert into examinations values (34, '2021-02-17 00:00:00', '2021-02-17 11:00:00', '', 1000, '2021-02-17 10:30:00', 0, 1, 15, null, 1);
+insert into examinations values (35, '2021-02-17 00:00:00', '2021-02-17 11:30:00', '', 1000, '2021-02-17 11:00:00', 0, 1, 15, null, 1);
+
+insert into examinations values (36, '2021-02-17 00:00:00', '2021-02-17 09:30:00', '', 1000, '2021-02-17 09:00:00', 0, 1, 9, null, 4);
+insert into examinations values (37, '2021-02-17 00:00:00', '2021-02-17 10:00:00', '', 1000, '2021-02-17 09:30:00', 0, 1, 9, null, 4);
+insert into examinations values (38, '2021-02-17 00:00:00', '2021-02-17 10:30:00', '', 1000, '2021-02-17 10:00:00', 0, 1, 9, null, 4);
+insert into examinations values (39, '2021-02-17 00:00:00', '2021-02-17 11:00:00', '', 1000, '2021-02-17 10:30:00', 0, 1, 9, null, 4);
+
+insert into examinations values (40, '2021-02-17 00:00:00', '2021-02-17 10:30:00', '', 1000, '2021-02-17 10:00:00', 0, 1, 8, null, 1);
+insert into examinations values (41, '2021-02-17 00:00:00', '2021-02-17 11:00:00', '', 1000, '2021-02-17 10:30:00', 0, 1, 8, null, 1);
+insert into examinations values (42, '2021-02-17 00:00:00', '2021-02-17 11:30:00', '', 1000, '2021-02-17 11:00:00', 0, 1, 8, null, 1);
+insert into examinations values (43, '2021-02-17 00:00:00', '2021-02-17 12:00:00', '', 1000, '2021-02-17 11:30:00', 0, 1, 8, null, 1);
 
 #ocene apoteka
 insert into rated_pharmacies values (1, 5, 2, 1);
@@ -220,12 +227,12 @@ INSERT INTO user_authority (user_id, authority_id) VALUES (20, 4);
 INSERT INTO user_authority (user_id, authority_id) VALUES (21, 5);
 
 #zalbe
-INSERT INTO complaints values(1, null, "Rados je nevaspitan!", 8, false, 1, 3);
-INSERT INTO complaints values(2, null, "Igor ne zna Vue.js!", 16, false, 1, 3);
+INSERT INTO complaints values(1, null, "Rados je nevaspitan!", 8, false, 1, 0, 3);
+INSERT INTO complaints values(2, null, "Igor ne zna Vue.js!", 16, false, 1, 0, 3);
 #loyalty DEFAULT
-INSERT INTO loyalty values(1,0.0,0,0,0);
-INSERT INTO loyalty values(2,0.0,0,0,1);
-INSERT INTO loyalty values(3,0.0,0,0,2);
+INSERT INTO loyalty values(1,0.0,0,0,0,0);
+INSERT INTO loyalty values(2,0.0,0,0,1,0);
+INSERT INTO loyalty values(3,0.0,0,0,2,0);
 
 #offer/order
 insert into medicines_with_quantity values(1, 10, 1);
@@ -262,3 +269,43 @@ insert into offers values(1, '2021-02-06 00:00:00', 6969, 1, 7, 2);
 insert into offers values(2, '2021-02-07 00:00:00', 666, 2, 6, 2);
 insert into offers values(3, '2021-02-26 00:00:00', 69, 0, 7, 5);
 insert into offers values(4, '2021-02-27 00:00:00', 169, 0, 6, 5);
+
+
+# e-recepti
+insert into e_recipes values (1, 'AAAAAAAAA', '2021-02-5 00:00:00', 0, 3, 1);
+insert into e_recipes values (2, 'BBBBBBBBB', '2021-02-2 00:00:00', 0, 3, 2);
+insert into e_recipes values (3, 'CCCCCCCCC', '2021-02-7 00:00:00', 1, 3, 3);
+insert into e_recipes values (4, 'DDDDDDDDD', '2021-02-9 00:00:00', 1, 3, 2);
+insert into e_recipes values (5, 'EEEEEEEEE', '2021-02-6 00:00:00', 2, 3, 1); 
+
+insert into medicines_with_quantity values(14, 5, 1);
+insert into medicines_with_quantity values(15, 4, 2);
+insert into medicines_with_quantity values(16, 3, 2);
+insert into medicines_with_quantity values(17, 7, 1);
+insert into medicines_with_quantity values(18, 1, 2);
+
+# e_recipes_medicines_with_quantity
+insert into e_recipes_medicines_with_quantity values (1, 14);
+insert into e_recipes_medicines_with_quantity values (2, 15);
+insert into e_recipes_medicines_with_quantity values (3, 16);
+insert into e_recipes_medicines_with_quantity values (4, 17);
+insert into e_recipes_medicines_with_quantity values (5, 18);
+
+#rezervisani lekovi
+insert into medicine_reservations values (1, '2021-02-11 00:00:00', 0, 2, 3, 2);
+insert into medicine_reservations values (2, '2021-02-25 00:00:00', 0, 1, 3, 3);
+insert into medicine_reservations values (3, '2021-02-26 00:00:00', 0, 2, 3, 1);
+insert into medicine_reservations values (4, '2021-02-09 00:00:00', 0, 2, 3, 1);
+
+#preuzete rezervacije
+insert into medicine_reservations values (5, '2021-02-10 00:00:00', 2, 2, 3, 1);
+insert into medicine_reservations values (6, '2021-02-12 00:00:00', 2, 3, 3, 1);
+
+# zahtevi za odsustvo
+insert into vacation_requests values (1, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 0, 0, 8);
+insert into vacation_requests values (2, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 0, 0, 9);
+insert into vacation_requests values (3, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 0, 0, 11);
+insert into vacation_requests values (4, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 0, 0, 13);
+insert into vacation_requests values (5, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 1, 0, 12);
+insert into vacation_requests values (6, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 1, 0, 15);
+insert into vacation_requests values (7, null, '2021-02-19 00:00:00', '2021-02-17 00:00:00', 1, 0, 10);
