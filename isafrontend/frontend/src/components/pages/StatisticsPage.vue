@@ -6,6 +6,7 @@
             <div>
                 <button @click="showExamStats()" class="btn-outline-success">Examination statistics</button>
                 <button @click="showMedStats()" class="btn-outline-success">Medication statistics</button>
+                <button @click="showIncomeStats()" class="btn-outline-success">Pharmacy income statistics</button>
             </div>
             <div class="container">
                 <div class="row">
@@ -14,6 +15,9 @@
                     </div>
                     <div class="col">
                         <canvas id="med-stats" width="50" height="50"></canvas>
+                    </div>
+                    <div class="col">
+                        <canvas id="income-stats" width="50" height="50"></canvas>
                     </div>
                 </div>
             </div>
@@ -40,7 +44,9 @@ export default {
             medStats: false,
             medications: null,
             statsData: [],
-            statsLabels: []
+            statsLabels: [],
+            income: 0.0,
+            incomeStats: false
         }
     },
     components: {
@@ -71,7 +77,11 @@ export default {
                     this.medications = null;
                     this.statsData = [];
                     this.statsLabels = [];
+                    this.income = 0.0;
+                    this.incomeStats = false;
                     this.formExamChart();
+                    this.formMedChart();
+                    this.formIncomeChart();
                 }
             })
         },
@@ -96,7 +106,36 @@ export default {
                     this.medications = response.data;
                     this.statsData = [];
                     this.statsLabels = [];
+                    this.income = 0.0;
+                    this.incomeStats = false;
                     this.formMedChart();
+                }
+            })
+        },
+        showIncomeStats : function(){
+            if(this.isInvalidInput()){
+                alert("Invalid input!");
+                return;
+            }
+            let sDate = this.ticksToYYYYMMDD(this.startDate.getTime()) + " " + "00:00:00";
+            let eDate = this.ticksToYYYYMMDD(this.endDate.getTime()) + " " + "00:00:00";
+            let request = {
+                start: this.dateWithoutZone(sDate),
+                end: this.dateWithoutZone(eDate),
+                pharmacyId: ""
+            }
+            axios.post('http://' + comm.server + '/api/pharmacies/income', request)
+            .then(response => {
+                if(response.status == 200){
+                    this.examStats = false;
+                    this.exams = null;
+                    this.medStats = false;
+                    this.medications = null;
+                    this.statsData = [];
+                    this.statsLabels = [];
+                    this.income = response.data;
+                    this.incomeStats = true;
+                    this.formIncomeChart();
                 }
             })
         },
@@ -181,6 +220,46 @@ export default {
                     title: {
                         display: true,
                         text: 'Statistics for medicine income'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0
+                            },
+                            scaleLabel: {
+                                display: true,
+                            }
+                        }]
+                    }
+                }
+            });
+        },
+        formIncomeChart: function () {
+            var ctx = document.getElementById('income-stats');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['income'],
+                    datasets: [{
+                        label: 'pharmacy income',
+                        data: [this.income],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Pharmacy income'
                     },
                     legend: {
                         display: false
