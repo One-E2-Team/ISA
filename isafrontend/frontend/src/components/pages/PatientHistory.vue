@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <div>
+    <div class="container">
             <ExaminationInformationModal v-bind:information="selectedInfo" />
+        <div>
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr> 

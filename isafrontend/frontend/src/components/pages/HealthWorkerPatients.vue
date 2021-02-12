@@ -10,7 +10,7 @@
                 <th class="table-light" @click="sortUsers('address')">Address</th>
                 <th class="table-light" @click="sortUsers('state')">City</th>
                 <th class="table-light" @click="sortUsers('state')">State</th>
-                <th class="table-light"></th>
+                
             </tr>
             <tr v-for="user in users" v-bind:key="user.id" class="table-light">
                 <td class="table-light">{{user.firstName}}</td>
@@ -20,7 +20,7 @@
                 <td class="table-light">{{user.address}}</td>
                 <td class="table-light">{{user.city}}</td>
                 <td class="table-light">{{user.state}}</td>
-                <td class="table-light"><button class="btn btn-primary" @click="showExaminations(user.id)">Examinations</button></td>
+                <button type="button" class="btn btn-primary" @click="showExaminations(user.id)">Examinations</button>
             </tr>
         </table>
     </div>

@@ -91,6 +91,12 @@ public class ExaminationController {
 		return examinationService.getExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd(), ExaminationStatus.SCHEDULED,Long.parseLong(timeInterval.getPharmacyId()));
 	}
 	
+	@PostMapping(value="/all")
+	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
+	public List<ExaminationDTO> getAllExaminationForHealthWorker(@RequestBody TimeIntervalDTO timeInterval, Authentication auth){
+		return examinationService.getAllExaminationsByHealthWorkerIdInTimeInterval(((User) auth.getPrincipal()).getId(), timeInterval.getStart(), timeInterval.getEnd());
+	}
+	
 	@GetMapping(value="/patient")
 	@PreAuthorize("hasRole('ROLE_DERMATOLOGIST')" + "||" + "hasRole('ROLE_PHARMACIST')")
 	public Patient getPatientFromExamination(@RequestParam("examination-id") Long id ) {

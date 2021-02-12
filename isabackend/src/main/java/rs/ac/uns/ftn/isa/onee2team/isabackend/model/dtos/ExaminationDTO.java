@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos;
 
 import java.util.Date;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.examination.ExaminationStatus;
+
 public class ExaminationDTO {
 
 	private Long id;
@@ -11,7 +13,8 @@ public class ExaminationDTO {
 	private Date date;
 	private Date startTime;
 	private Date endTime;
-
+	private ExaminationStatus status;
+	
 	public ExaminationDTO() {
 	}
 
@@ -34,6 +37,19 @@ public class ExaminationDTO {
 		this.date = date;
 		this.startTime = startTime;
 		this.endTime = endTime;
+	}
+
+	public ExaminationDTO(Long id, Long healthWorkerId, Long pharmacyId, String pharmacyName, Date date, Date startTime,
+			Date endTime, ExaminationStatus status) {
+		super();
+		this.id = id;
+		this.healthWorkerId = healthWorkerId;
+		this.pharmacyId = pharmacyId;
+		this.pharmacyName = pharmacyName;
+		this.date = date;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.status = status;
 	}
 
 	public Long getId() {
@@ -90,5 +106,13 @@ public class ExaminationDTO {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public ExaminationStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ExaminationStatus status) {
+		this.status = status;
 	}
 }
