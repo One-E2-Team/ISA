@@ -175,7 +175,8 @@ public class MedicineService implements IMedicineService {
 	@Override
 	public boolean WarehouseContainsMedicine(Long pharamacyId, Long medicineId, Integer quantity) {
 		Warehouse warehouse =  warehouseRepository.getByMedicineAndPharmacy(pharamacyId, medicineId);
-		return warehouse.getAmount()>=quantity;
+		int availableAmount = warehouse.getAmount()-warehouse.getReservedAmount();
+		return availableAmount>=quantity;
 	}
 
 	

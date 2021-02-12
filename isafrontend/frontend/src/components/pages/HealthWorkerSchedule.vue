@@ -79,6 +79,7 @@ export default {
                 }).then(response => {
                     if(response.data == true){
                         this.finishExamination(examination);
+                        this.$router.push({name: 'workingCalendar'})
                     }
                 });
         },
