@@ -85,6 +85,9 @@
         <button name="createOrder" v-if="isPharmacyAdmin()" @click="openCreateOrderPage()" class="btn btn-outline-success">Create order</button>
         <button name="viewPricelist" v-if="isPharmacyAdmin()" @click="openPricelistPage()" class="btn btn-outline-success">View pricelist</button>
         <button v-if="isPharmacyAdmin()" @click="showFreeWorkers()" class="btn btn-outline-success">Hire worker</button>
+        <div>
+            <MyMap/>
+        </div>
     </div>
 </template>
 
@@ -92,13 +95,15 @@
 
 import axios from 'axios';
 import AddPromotion from './AddPromotion';
+import MyMap from './Map'
 import * as comm from '../configuration/communication.js'
 import moment from 'moment'
 
 export default {
     name: "Pharmacy",
     components: {
-        AddPromotion
+        AddPromotion,
+        MyMap
     },
     data() {
         return {

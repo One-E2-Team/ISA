@@ -39,14 +39,11 @@ export default {
         return {
             startDate : new Date(),
             endDate : new Date(),
-            examStats: false,
             exams: null,
-            medStats: false,
             medications: null,
             statsData: [],
             statsLabels: [],
             income: 0.0,
-            incomeStats: false
         }
     },
     components: {
@@ -71,17 +68,12 @@ export default {
             axios.post('http://' + comm.server + '/api/pharmacies/exam-stats', request)
             .then(response => {
                 if(response.status == 200){
-                    this.examStats = true;
                     this.exams = response.data;
-                    this.medStats = false;
                     this.medications = null;
                     this.statsData = [];
                     this.statsLabels = [];
                     this.income = 0.0;
-                    this.incomeStats = false;
                     this.formExamChart();
-                    this.formMedChart();
-                    this.formIncomeChart();
                 }
             })
         },
@@ -100,14 +92,11 @@ export default {
             axios.post('http://' + comm.server + '/api/pharmacies/medicine-stats', request)
             .then(response => {
                 if(response.status == 200){
-                    this.examStats = false;
                     this.exams = null;
-                    this.medStats = true;
                     this.medications = response.data;
                     this.statsData = [];
                     this.statsLabels = [];
                     this.income = 0.0;
-                    this.incomeStats = false;
                     this.formMedChart();
                 }
             })
@@ -127,14 +116,11 @@ export default {
             axios.post('http://' + comm.server + '/api/pharmacies/income', request)
             .then(response => {
                 if(response.status == 200){
-                    this.examStats = false;
                     this.exams = null;
-                    this.medStats = false;
                     this.medications = null;
                     this.statsData = [];
                     this.statsLabels = [];
                     this.income = response.data;
-                    this.incomeStats = true;
                     this.formIncomeChart();
                 }
             })
@@ -156,7 +142,7 @@ export default {
                 this.statsData.push(e.number);
             }
             var ctx = document.getElementById('exam-stats');
-            var myChart = new Chart(ctx, {
+            var examChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: this.statsLabels,
