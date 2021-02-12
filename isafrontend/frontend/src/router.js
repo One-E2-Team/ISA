@@ -38,6 +38,9 @@ import eRecipe from './components/pages/eRecipe'
 import PatientsRecipes from './components/pages/PatientsRecipes'
 import PricelistPage from './components/pages/PricelistPage'
 import HireWorker from './components/pages/HireWorker'
+import DealerUpdateMedicinesQuantity from './components/pages/DealerUpdateMedicineQuantity'
+import SysAdminEmployPharmacyAdmin from './components/pages/SysAdminEmployPharmacyAdmin'
+import MyMap from './components/Map'
 
 
 Vue.use(VueRouter)
@@ -233,6 +236,21 @@ const router = new VueRouter({
       name: 'hire',
       path: '/hire',
       component: HireWorker
+    },
+    {
+      name: 'updateMWQDealer',
+      path: '/dealer/updateMWQ',
+      component: DealerUpdateMedicinesQuantity
+    },
+    {
+      path: '/sysadmin/employPA',
+      name: 'employPharmacyAdmin',
+      component: SysAdminEmployPharmacyAdmin
+    },
+    {
+      path: '/map',
+      name: 'myMap',
+      component: MyMap
     }
   ]
 })

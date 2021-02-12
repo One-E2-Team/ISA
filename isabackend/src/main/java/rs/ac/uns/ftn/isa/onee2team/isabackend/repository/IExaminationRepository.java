@@ -14,7 +14,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 
 public interface IExaminationRepository extends JpaRepository<Examination, Long> {
 
-	@Query(value = "select * from examinations e where e.status in (0,2) and e.health_wokrer_id = ?1 and e.pharmacy_id = ?2", nativeQuery = true)
+	@Query(value = "select * from examinations e where e.status in (0,2) and e.health_wokrer_id = ?1 and e.pharmacy_id = ?2 and e.date > now()", nativeQuery = true)
 	List<Examination> getFreeExaminationsByHealthWorkerIdAndPharmacyId(Long healthWorkerId, Long pharmacyId);
 
 	@Query(value = "select e from Examination e where e.healthWokrer=?1 and e.startTime >= ?2 and e.endTime <= ?3 and e.status = ?4")

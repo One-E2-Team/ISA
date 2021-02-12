@@ -14,6 +14,14 @@
                 <label for="sysphdescr1" class="form-label">Description</label>
                 <input type="textbox" v-model="registerPharmaData.description" class="form-control" id="sysphdescr1" aria-describedby="emailHelp">
             </div>
+            <div class="mb-3">
+                <label for="sysphdescr1" class="form-label">Latitude</label>
+                <input type="number" min="0" v-model="registerPharmaData.latitude" class="form-control" id="sysphdescr1" aria-describedby="emailHelp">
+            </div>
+            <div class="mb-3">
+                <label for="sysphdescr1" class="form-label">Longitude</label>
+                <input type="number" min="0" v-model="registerPharmaData.longitude" class="form-control" id="sysphdescr1" aria-describedby="emailHelp">
+            </div>
             <div>
                 <button type="button" class="btn btn-primary" @click="registerPharma">Confirm</button>
                 <div id="pharmaRegistrationAlert" class="alert alert-danger d-none" role="alert">Registration was unsuccessful! </div>
@@ -33,6 +41,8 @@ export default {
                 name: "",
                 address: "",
                 description: "",
+                latitude: 0,
+                longitude: 0
             }         
         }
     },

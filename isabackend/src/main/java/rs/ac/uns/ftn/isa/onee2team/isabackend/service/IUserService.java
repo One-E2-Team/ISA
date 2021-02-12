@@ -7,7 +7,10 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.HireHealthWorkerDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.UserRequestDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.medicine.Medicine;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dealer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.UserType;
 
@@ -56,5 +59,11 @@ public interface IUserService {
 	
 	double getDiscountForPatient(Long patientId);
 
+	User saveDealerMWQ(Dealer d);
+	
 	Boolean hireDermatologist(HireHealthWorkerDTO hireWorker, Long loggedUserId);
+
+	List<PharmacyAdmin> getUnemployedPhAdmins();
+
+	PharmacyAdmin employPhAdmin(PharmacyAdmin pa);
 }

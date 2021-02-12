@@ -21,7 +21,6 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedStatsDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewPharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyForSearchDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithDoctorsMedicinesAndRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.PharmacyWithPrice;
@@ -37,8 +36,8 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.MedicineReservation
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pharmacy;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Pricelist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy.Warehouse;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.procurement.Offer;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
@@ -47,6 +46,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IExaminationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineReservationRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IMedicineWithQuantityRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IOfferRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPharmacyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IPricelistRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IRatedPharmacyRepository;
@@ -68,19 +68,19 @@ public class PharmacyService implements IPharmacyService {
 	private IExaminationRepository examRepository;
 	private IMedicineWithQuantityRepository mwqRepository;
 	private IERecipeRepository eRecipeRepository;
-	private IWarehouseRepository wearehouseRepository;
 	private IEmailNotificationService emailNotificationService;
+	private IOfferRepository offerRepository;
 	private IUserService userService;
 
 	@Autowired
 	public PharmacyService(IPharmacyRepository pharmacyRepository, IUserRepository userRepository,
 			IMedicineRepository medicineRepository, IRatedPharmacyRepository ratedPharmacyRepository,
 			IExaminationService examinationService, IPromotionService promotionService,
-			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository, 
-			IMedicineReservationRepository reservationRepository, 
-			IExaminationRepository examRepository, IMedicineWithQuantityRepository mwqRepository,
-			IERecipeRepository eRecipeRepository, IWarehouseRepository wearehouseRepository, 
-			IEmailNotificationService emailNotificationService, IUserService userService) {
+			IWarehouseRepository warehouseRepository, IPricelistRepository pricelistRepository,
+			IMedicineReservationRepository reservationRepository, IExaminationRepository examRepository,
+			IMedicineWithQuantityRepository mwqRepository, IERecipeRepository eRecipeRepository,
+			IWarehouseRepository wearehouseRepository, IEmailNotificationService emailNotificationService,
+			IOfferRepository offerRepository, IUserService userService) {
 		this.pharmacyRepository = pharmacyRepository;
 		this.userRepository = userRepository;
 		this.medicineRepository = medicineRepository;
@@ -95,6 +95,7 @@ public class PharmacyService implements IPharmacyService {
 		this.eRecipeRepository = eRecipeRepository;
 		this.warehouseRepository = warehouseRepository;
 		this.emailNotificationService = emailNotificationService;
+		this.offerRepository = offerRepository;
 		this.userService = userService;
 	}
 
@@ -115,7 +116,7 @@ public class PharmacyService implements IPharmacyService {
 
 	@Override
 	public List<PharmacyForSearchDTO> findAllIPharmaciesDto() {
-		List<PharmacyForSearchDTO> ret_list =  pharmacyRepository.findAllIPharmaciesDto();
+		List<PharmacyForSearchDTO> ret_list = pharmacyRepository.findAllIPharmaciesDto();
 		for (PharmacyForSearchDTO dto : ret_list) {
 			double rate = pharmacyRepository.getAvgRateForPharmacy(dto.getId());
 			dto.setRate(rate);
@@ -130,6 +131,8 @@ public class PharmacyService implements IPharmacyService {
 		p.setSubscribedPatients(new HashSet<Patient>());
 		p.setAddress(phdto.getAddress());
 		p.setDescription(phdto.getDescription());
+		p.setLongitude(phdto.getLongitude());
+		p.setLatitude(phdto.getLatitude());
 		return save(p);
 	}
 
@@ -146,6 +149,8 @@ public class PharmacyService implements IPharmacyService {
 		dto.setDermatologists(getCredentialsFromHealthWorkers(id, false));
 		dto.setMedicines(medicineRepository.findMedicineByPharmacyid(id));
 		dto.setRate(ratedPharmacyRepository.getAverageRateByPharmacyId(id));
+		dto.setLongitude(pharmacy.getLongitude());
+		dto.setLatitude(pharmacy.getLatitude());
 		return dto;
 	}
 
@@ -170,28 +175,33 @@ public class PharmacyService implements IPharmacyService {
 	@Override
 	public List<PresentMedicineDTO> getMedicinesWithPriceForUser(List<PresentMedicineDTO> pmdtos, Long userId) {
 		Double discount = 0.0;
-		if(userId!=0) {
+		if (userId != 0) {
 			Patient p = (Patient) userRepository.findById(userId).get();
 			List<CategoryType> ct = promotionService.getPatientType(p.getPoints());
 			CategoryType type = ct.get(0);
 			for (CategoryType categoryType : ct)
-				if(type.ordinal() < categoryType.ordinal()) 
+				if (type.ordinal() < categoryType.ordinal())
 					type = categoryType;
 			discount = promotionService.getDiscount(type);
 		}
 		for (PresentMedicineDTO pmdto : pmdtos) {
 			for (Warehouse w : warehouseRepository.findAllByMedicineId(pmdto.getId())) {
-				if(w.getAmount() - w.getReservedAmount() > 0) {
-					List<Pricelist> pls = pricelistRepository.getValidPricelistForMedicine(w.getPharmacy().getId(), pmdto.getId());
-					if(pls.size()!=0) {
-						pmdto.getPharmacies().add(new PharmacyWithPrice(w.getPharmacy().getId(), w.getPharmacy().getName(), w.getPharmacy().getAddress(), pls.get(0).getPrice() * (1.0 - discount/100.0)));
-					} else System.out.println("Pricelist doesnt exist for item");
+				if (w.getAmount() - w.getReservedAmount() > 0) {
+					List<Pricelist> pls = pricelistRepository.getValidPricelistForMedicine(w.getPharmacy().getId(),
+							pmdto.getId());
+					if (pls.size() != 0) {
+						pmdto.getPharmacies()
+								.add(new PharmacyWithPrice(w.getPharmacy().getId(), w.getPharmacy().getName(),
+										w.getPharmacy().getAddress(),
+										pls.get(0).getPrice() * (1.0 - discount / 100.0)));
+					} else
+						System.out.println("Pricelist doesn't exist for item");
 				}
 			}
 		}
 		return pmdtos;
 	}
-	
+
 	@Override
 	public List<NewRateDTO> getPharmaciesForRate(Long patient_id) {
 		List<Examination> examinations = examinationService.getPatientsFinishedEx(patient_id);
@@ -210,7 +220,7 @@ public class PharmacyService implements IPharmacyService {
 			if (!ret.contains(dto))
 				ret.add(dto);
 		}
-		
+
 		List<Pharmacy> pharmacies = pharmacyRepository.getPharmaciesFromERecipes(patient_id);
 		for (Pharmacy p : pharmacies) {
 			dto = new NewRateDTO(p.getId(), p.getName(), "PHARMACY", -1);
@@ -237,7 +247,7 @@ public class PharmacyService implements IPharmacyService {
 			} else
 				ret.put(examDate, 1);
 		}
-			return getExamStatsDtoFromMap(ret);
+		return getExamStatsDtoFromMap(ret);
 	}
 
 	@Override
@@ -245,7 +255,32 @@ public class PharmacyService implements IPharmacyService {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		if (admin == null)
 			return null;
-		return null;
+		Double ret = 0.0;
+		for (Examination exam : examRepository.getAllFinishedByPharmacyInTimeInterval(admin.getPharmacy().getId(),
+				interval.getStart(), interval.getEnd())) {
+			ret += exam.getPrice();
+			for (Medicine med : exam.getMedicines()) {
+				Double price = pricelistRepository.getPricelistForMedicineInPharmacyForDate(admin.getPharmacy().getId(),
+						med.getId(), exam.getDate());
+				if (price != null) {
+					ret += price;
+				}
+			}
+		}
+		for (Offer o : offerRepository.getAllAcceptedByPharmacyInTimeInterval(admin.getPharmacy().getId(),
+				interval.getStart(), interval.getEnd())) {
+			ret -= o.getFullPrice();
+		}
+		for (MedicineReservation mr : reservationRepository.getDoneByPharmacyInTimeInterval(admin.getPharmacy().getId(),
+				interval.getStart(), interval.getEnd())) {
+			Medicine med = mr.getMedicine();
+			Double price = pricelistRepository.getPricelistForMedicineInPharmacyForDate(admin.getPharmacy().getId(),
+					med.getId(), mr.getExpireDate());
+			if (price != null) {
+				ret += price;
+			}
+		}
+		return ret;
 	}
 
 	@Override
@@ -253,49 +288,70 @@ public class PharmacyService implements IPharmacyService {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
 		if (admin == null)
 			return null;
-		Map<MedicineDTO, Integer> ret = new HashMap<MedicineDTO, Integer>();
+		Map<Long, Integer> ret = new HashMap<Long, Integer>();
 		for (Examination exam : examRepository.getAllFinishedByPharmacyInTimeInterval(admin.getPharmacy().getId(),
 				interval.getStart(), interval.getEnd())) {
 			for (Medicine med : exam.getMedicines()) {
-				MedicineDTO dto = new MedicineDTO(med.getId(), med.getCode(), med.getName(), med.getContexture(),
-						med.getManufacturer());
-				if (ret.containsKey(dto)) {
-					Integer value = ret.get(dto);
+				if (ret.containsKey(med.getId())) {
+					Integer value = ret.get(med.getId());
 					value--;
-					ret.put(dto, value);
+					ret.put(med.getId(), value);
 				} else {
-					ret.put(dto, -1);
+					ret.put(med.getId(), -1);
 				}
 			}
 		}
 		for (MedicineWithQuantity mwq : mwqRepository.medicinesBoughtByPharmacyInTimeInterval(
 				admin.getPharmacy().getId(), interval.getStart(), interval.getEnd())) {
 			Medicine med = mwq.getMedicine();
-			MedicineDTO dto = new MedicineDTO(med.getId(), med.getCode(), med.getName(), med.getContexture(),
-					med.getManufacturer());
-			if(ret.containsKey(dto)) {
-				Integer value = ret.get(dto);
+			if (ret.containsKey(med.getId())) {
+				Integer value = ret.get(med.getId());
 				value += mwq.getQuantity();
-				ret.put(dto, value);
+				ret.put(med.getId(), value);
 			} else {
-				ret.put(dto, mwq.getQuantity());
+				ret.put(med.getId(), mwq.getQuantity());
+			}
+		}
+		for (MedicineReservation mr : reservationRepository.getDoneByPharmacyInTimeInterval(admin.getPharmacy().getId(),
+				interval.getStart(), interval.getEnd())) {
+			Medicine med = mr.getMedicine();
+			if (ret.containsKey(med.getId())) {
+				Integer value = ret.get(med.getId());
+				value--;
+				ret.put(med.getId(), value);
+			} else {
+				ret.put(med.getId(), -1);
+			}
+		}
+		for (MedicineWithQuantity mwq : mwqRepository.medicinesOnERecipeInPharmacyInTimeInterval(
+				admin.getPharmacy().getId(), interval.getStart(), interval.getEnd())) {
+			Medicine med = mwq.getMedicine();
+			if (ret.containsKey(med.getId())) {
+				Integer value = ret.get(med.getId());
+				value -= mwq.getQuantity();
+				ret.put(med.getId(), value);
+			} else {
+				ret.put(med.getId(), -mwq.getQuantity());
 			}
 		}
 		return getMedStatsDtoFromMap(ret);
 	}
-	
-	private List<MedStatsDTO> getMedStatsDtoFromMap (Map<MedicineDTO, Integer> map){
+
+	private List<MedStatsDTO> getMedStatsDtoFromMap(Map<Long, Integer> map) {
 		List<MedStatsDTO> ret = new ArrayList<MedStatsDTO>();
-		for(MedicineDTO med : map.keySet()) {
-			MedStatsDTO dto = new MedStatsDTO(med, map.get(med));
+		for (Long medId : map.keySet()) {
+			Medicine med = medicineRepository.findById(medId).orElse(null);
+			MedicineDTO medDto = new MedicineDTO(med.getId(), med.getCode(), med.getName(), med.getContexture(),
+					med.getManufacturer());
+			MedStatsDTO dto = new MedStatsDTO(medDto, map.get(medId));
 			ret.add(dto);
 		}
 		return ret;
 	}
-	
-	private List<ExamStatsDTO> getExamStatsDtoFromMap (Map<Date, Integer> map){
+
+	private List<ExamStatsDTO> getExamStatsDtoFromMap(Map<Date, Integer> map) {
 		List<ExamStatsDTO> ret = new ArrayList<ExamStatsDTO>();
-		for(Date date : map.keySet()) {
+		for (Date date : map.keySet()) {
 			ExamStatsDTO dto = new ExamStatsDTO(date, map.get(date));
 			ret.add(dto);
 		}
@@ -303,32 +359,39 @@ public class PharmacyService implements IPharmacyService {
 	}
 
 	private boolean checkERecipeValidity(String code) {
-		if(eRecipeRepository.findByCodeNotRejected(code).size()!=0) return false;
-		else return true;
+		if (eRecipeRepository.findByCodeNotRejected(code).size() != 0)
+			return false;
+		else
+			return true;
 	}
 	
 	@Override
 	public List<PharmacyWithPriceAndGradeDTO> getAllWhereAvailableWithERecipe(ERecipeDTO erdto) {
-		if(checkERecipeValidity(erdto.getCode()) == false) return null;
+		if (checkERecipeValidity(erdto.getCode()) == false)
+			return null;
 		List<PharmacyWithPriceAndGradeDTO> ret = new ArrayList<PharmacyWithPriceAndGradeDTO>();
 		List<Long> pharmacyIds = new ArrayList<Long>();
 		double discount = userService.getDiscountForPatient(erdto.getPatientId());
 		pharmacyIds.addAll(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(erdto.getMedicine().get(0).getId(), erdto.getMedicine().get(0).getQuantity()));
 		for (ERecipeMedicine ermed : erdto.getMedicine())
-			pharmacyIds = pharmacyIds.stream().distinct().filter(warehouseRepository.getAllPharmacyIdsWhereMedicineAmountIsAvailable(ermed.getId(), ermed.getQuantity())::contains).collect(Collectors.toList());
+			pharmacyIds = pharmacyIds.stream().distinct().filter(warehouseRepository
+					.getAllPharmacyIdsWhereMedicineAmountIsAvailable(ermed.getId(), ermed.getQuantity())::contains)
+					.collect(Collectors.toList());
 		for (Long pid : pharmacyIds) {
 			Pharmacy p = pharmacyRepository.findById(pid).get();
 			double price = 0.0;
-			for (ERecipeMedicine ermed : erdto.getMedicine()) 
+			for (ERecipeMedicine ermed : erdto.getMedicine())
 				price += pricelistRepository.getValidPricelistForMedicine(pid, ermed.getId()).get(0).getPrice();
-			ret.add(new PharmacyWithPriceAndGradeDTO(pid, p.getName(), p.getAddress(), price * (1.0 - discount/100.0), ratedPharmacyRepository.getAverageRateByPharmacyId(pid)));
+			ret.add(new PharmacyWithPriceAndGradeDTO(pid, p.getName(), p.getAddress(), price * (1.0 - discount / 100.0),
+					ratedPharmacyRepository.getAverageRateByPharmacyId(pid)));
 		}
 		return ret;
 	}
 
 	@Override
 	public ERecipe buyByERecipe(Long pharmacyId, ERecipeDTO erdto, Long patientId) {
-		if(checkERecipeValidity(erdto.getCode()) == false) return null;
+		if (checkERecipeValidity(erdto.getCode()) == false)
+			return null;
 		ERecipe e = new ERecipe();
 		e.setDate(erdto.getDate());
 		e.setCode(erdto.getCode());
@@ -346,18 +409,22 @@ public class PharmacyService implements IPharmacyService {
 			e.getMedicinesWithQuantity().add(mwq);
 		}
 		e = eRecipeRepository.save(e);
-		emailNotificationService.sendNotificationAsync(e.getPatient().getEmail(), "ERecipe reservation", "Your eRecipe reservation was successfull!");
+		emailNotificationService.sendNotificationAsync(e.getPatient().getEmail(), "ERecipe reservation",
+				"Your eRecipe reservation was successfully!");
 		return e;
 	}
+
 	@Override
 	public Boolean editPharmacy(EditPharmacyDTO editPharmacy, Long loggedUserId) {
 		PharmacyAdmin admin = (PharmacyAdmin) userRepository.findById(loggedUserId).orElse(null);
-		if(admin == null)
+		if (admin == null)
 			return false;
 		Pharmacy pharmacy = admin.getPharmacy();
 		pharmacy.setAddress(editPharmacy.getAddress());
 		pharmacy.setDescription(editPharmacy.getDescription());
 		pharmacy.setName(editPharmacy.getName());
+		pharmacy.setLongitude(editPharmacy.getLongitude());
+		pharmacy.setLatitude(editPharmacy.getLatitude());
 		pharmacyRepository.save(pharmacy);
 		return true;
 	}

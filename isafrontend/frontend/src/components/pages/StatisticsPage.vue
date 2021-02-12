@@ -6,6 +6,7 @@
             <div>
                 <button @click="showExamStats()" class="btn-outline-success">Examination statistics</button>
                 <button @click="showMedStats()" class="btn-outline-success">Medication statistics</button>
+                <button @click="showIncomeStats()" class="btn-outline-success">Pharmacy income statistics</button>
             </div>
             <div class="container">
                 <div class="row">
@@ -14,6 +15,9 @@
                     </div>
                     <div class="col">
                         <canvas id="med-stats" width="50" height="50"></canvas>
+                    </div>
+                    <div class="col">
+                        <canvas id="income-stats" width="50" height="50"></canvas>
                     </div>
                 </div>
             </div>
@@ -35,12 +39,14 @@ export default {
         return {
             startDate : new Date(),
             endDate : new Date(),
-            examStats: false,
             exams: null,
-            medStats: false,
             medications: null,
             statsData: [],
-            statsLabels: []
+            statsLabels: [],
+            income: 0.0,
+            examChart: null,
+            medChart: null,
+            incomeChart: null
         }
     },
     components: {
@@ -65,12 +71,11 @@ export default {
             axios.post('http://' + comm.server + '/api/pharmacies/exam-stats', request)
             .then(response => {
                 if(response.status == 200){
-                    this.examStats = true;
                     this.exams = response.data;
-                    this.medStats = false;
                     this.medications = null;
                     this.statsData = [];
                     this.statsLabels = [];
+                    this.income = 0.0;
                     this.formExamChart();
                 }
             })
@@ -90,13 +95,36 @@ export default {
             axios.post('http://' + comm.server + '/api/pharmacies/medicine-stats', request)
             .then(response => {
                 if(response.status == 200){
-                    this.examStats = false;
                     this.exams = null;
-                    this.medStats = true;
                     this.medications = response.data;
                     this.statsData = [];
                     this.statsLabels = [];
+                    this.income = 0.0;
                     this.formMedChart();
+                }
+            })
+        },
+        showIncomeStats : function(){
+            if(this.isInvalidInput()){
+                alert("Invalid input!");
+                return;
+            }
+            let sDate = this.ticksToYYYYMMDD(this.startDate.getTime()) + " " + "00:00:00";
+            let eDate = this.ticksToYYYYMMDD(this.endDate.getTime()) + " " + "00:00:00";
+            let request = {
+                start: this.dateWithoutZone(sDate),
+                end: this.dateWithoutZone(eDate),
+                pharmacyId: ""
+            }
+            axios.post('http://' + comm.server + '/api/pharmacies/income', request)
+            .then(response => {
+                if(response.status == 200){
+                    this.exams = null;
+                    this.medications = null;
+                    this.statsData = [];
+                    this.statsLabels = [];
+                    this.income = response.data;
+                    this.formIncomeChart();
                 }
             })
         },
@@ -117,7 +145,10 @@ export default {
                 this.statsData.push(e.number);
             }
             var ctx = document.getElementById('exam-stats');
-            var myChart = new Chart(ctx, {
+            if(this.examChart !== null) {
+                this.examChart.destroy(); 
+            }
+            this.examChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: this.statsLabels,
@@ -161,7 +192,10 @@ export default {
                 this.statsData.push(med.quantity);
             }
             var ctx = document.getElementById('med-stats');
-            var myChart = new Chart(ctx, {
+            if(this.medChart !== null) {
+                this.medChart.destroy(); 
+            }
+            this.medChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: this.statsLabels,
@@ -181,6 +215,49 @@ export default {
                     title: {
                         display: true,
                         text: 'Statistics for medicine income'
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                suggestedMin: 0
+                            },
+                            scaleLabel: {
+                                display: true,
+                            }
+                        }]
+                    }
+                }
+            });
+        },
+        formIncomeChart: function () {
+            var ctx = document.getElementById('income-stats');
+            if(this.incomeChart !== null) {
+                this.incomeChart.destroy(); 
+            }
+            this.incomeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['income'],
+                    datasets: [{
+                        label: 'pharmacy income',
+                        data: [this.income],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Pharmacy income'
                     },
                     legend: {
                         display: false

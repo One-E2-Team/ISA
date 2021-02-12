@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="this.pharmacy">
         <div>
             <label>Pharmacy name</label>
             <input type="text" v-model="pharmacy.name" :disabled="isPatient()">
@@ -12,12 +12,21 @@
             <label>Description</label>
             <input type="text" v-model="pharmacy.description">
         </div>
+        <div v-if="isPharmacyAdmin()">
+            <label>Latitude</label>
+            <input type="number" v-model="pharmacy.latitude">
+            <label>Longitude</label>
+            <input type="number" v-model="pharmacy.longitude">
+        </div>
         <div>
             <label>Rate</label>
             <input type="number" v-model="pharmacy.rate" disabled>
         </div>
         <div>
             <button @click="editPharmacy()" class="btn btn-primary" v-if="isPharmacyAdmin()">Save changes</button>
+        </div>
+        <div v-if="this.pharmacy">
+            <MyMap v-bind:latitude="this.pharmacy.latitude" v-bind:longitude="this.pharmacy.longitude"/>
         </div>
         <button name="toggleMedicines" class="btn btn-outline-success" @click="toggleMedicines">ToggleMedicines</button>
         <div v-if="this.showMedicines">
@@ -92,18 +101,20 @@
 
 import axios from 'axios';
 import AddPromotion from './AddPromotion';
+import MyMap from './Map'
 import * as comm from '../configuration/communication.js'
 import moment from 'moment'
 
 export default {
     name: "Pharmacy",
     components: {
-        AddPromotion
+        AddPromotion,
+        MyMap
     },
     data() {
         return {
             description : '',
-            pharmacy : {},
+            pharmacy : null,
             showDermatologists : false,
             showPharmacists : false,
             showMedicines : false,
@@ -136,6 +147,7 @@ export default {
                     .then(response => {
                     if (response.status == 200) {
                         this.pharmacy = response.data;
+                        window.location.reload();
                     }
             });
                 }else{
@@ -207,11 +219,14 @@ export default {
             let request = {
                 description: this.pharmacy.description,
                 name: this.pharmacy.name,
-                address: this.pharmacy.name
+                address: this.pharmacy.name,
+                latitude: this.pharmacy.latitude,
+                longitude: this.pharmacy.longitude
             }
             axios.put('http://' + comm.server + '/api/pharmacies/edit', request).then(response => {
                 if(response.status == 200 && response.data == true){
                     alert("Successfully edited!");
+                    window.location.reload();
                 }
             });
         },

@@ -13,6 +13,7 @@ import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.SearchedPatientDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Dermatologist;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Patient;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.Pharmacist;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.PharmacyAdmin;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.User;
 
 public interface IUserRepository extends JpaRepository<User, Long> {
@@ -81,4 +82,7 @@ public interface IUserRepository extends JpaRepository<User, Long> {
 	
 	@Query(value = "select * from all_users u where u.id = ?1 and u.user_type = 2", nativeQuery = true)
 	Dermatologist getDermatologistById(Long id);
+
+	@Query(value = "select * from all_users u where u.user_type = 3 and u.admins_pharmacy_id is NULL", nativeQuery = true)
+	List<PharmacyAdmin> getAllUnemployedPharmacyAdmins();
 }
