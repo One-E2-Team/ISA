@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.MedicineDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.NewRateDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.RequestReservationDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ReservedMedicineDTO;
@@ -179,11 +180,8 @@ public class MedicineReservationService implements IMedicineReservationService {
 	}
 
 	@Override
-	public Boolean takeReservationMedicine(Long reservationId,Long healthworkerId) {
+	public Boolean takeReservationMedicine(Long reservationId) {
 		MedicineReservation reservation = medicineReservationRepository.findById(reservationId).orElse(null);
-		if(pharmacyRepository.getIfHealthWorkerWorksInPharmacy(healthworkerId, reservation.getPharmacy().getId())==0) {
-			return false;
-		}
 		if(reservation == null || !reservation.getStatus().equals(MedicineReservationStatus.CREATED)) {
 			return false;
 		}
@@ -204,6 +202,15 @@ public class MedicineReservationService implements IMedicineReservationService {
 		
 		takeMedicine(reservation.getPatient().getId(), resMedDTO );
 		return true;
+	}
+
+	@Override
+	public MedicineDTO getMedicineDTOfromReservation(Long reservationId,Long healthworkerId) {
+		MedicineReservation medRes = medicineReservationRepository.findById(reservationId).orElse(null);
+		if(medRes == null || pharmacyRepository.getIfHealthWorkerWorksInPharmacy(healthworkerId, medRes.getPharmacy().getId())==0)
+			return null;
+		Medicine med = medRes.getMedicine();
+		return new MedicineDTO(med.getId(), med.getCode(), med.getName(), med.getContexture(), med.getManufacturer());
 	}
 
 }
