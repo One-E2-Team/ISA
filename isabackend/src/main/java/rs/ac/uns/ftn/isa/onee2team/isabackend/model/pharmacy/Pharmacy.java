@@ -33,6 +33,12 @@ public class Pharmacy {
 	@Column(name = "description", nullable = false)
 	private String description;
 	
+	@Column(name = "longitude", nullable = true)
+	private Double longitude;
+	
+	@Column(name = "latitude", nullable = true)
+	private Double latitude;
+	
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinTable(name = "subscriptions")
 	private Set<Patient> subscribedPatients;
@@ -75,5 +81,21 @@ public class Pharmacy {
 
 	public void setSubscribedPatients(Set<Patient> subscribedPatients) {
 		this.subscribedPatients = subscribedPatients;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
 	}
 }
