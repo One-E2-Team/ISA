@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.users.HealthWorker;
 
@@ -39,6 +40,9 @@ public class VacationRequest {
 
 	@Column(name = "type", nullable = false)
 	private VacationType type;
+	
+	@Version
+	private Long version;
 
 	public Long getId() {
 		return id;
@@ -86,5 +90,13 @@ public class VacationRequest {
 
 	public void setType(VacationType type) {
 		this.type = type;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }
