@@ -23,11 +23,14 @@ import org.springframework.test.context.jdbc.Sql;
 
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeDTO;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.ERecipeMedicine;
-import rs.ac.uns.ftn.isa.onee2team.isabackend.model.feedback.Complaint;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.dtos.LoyaltyDTO;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.model.promotions.CategoryType;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IComplaintRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.IERecipeRepository;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.repository.ILoyaltyRepository;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IFeedbackService;
 import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPharmacyService;
+import rs.ac.uns.ftn.isa.onee2team.isabackend.service.IPromotionService;
 
 @SpringBootTest
 @ContextConfiguration(classes = IsabackendApplication.class)
@@ -42,6 +45,10 @@ class IsabackendApplicationTests {
 	private IPharmacyService pharmacyService;
 	@Autowired
 	private IERecipeRepository eRecipeRepository;
+	@Autowired
+	private IPromotionService promotionService;
+	@Autowired
+	private ILoyaltyRepository loyaltyRepository;
 	
 	
 	//Student4 - integracioni
@@ -142,5 +149,57 @@ class IsabackendApplicationTests {
 		});
 		executor.shutdown();
 	}
+	
+	//Student4 - integracioni
+		@Test
+		@Sql(scripts = {"/loyaltydata.sql"})
+		void loyaltyTransactionAndWorkIntegrationTest() throws Throwable {
+			LoyaltyDTO ldto = new LoyaltyDTO();
+			ldto.setDiscount(1.0);
+			ldto.setMinPoints(12);
+			ldto.setExaminationPoints(1);
+			ldto.setType(CategoryType.GOLD);
+			ExecutorService executor = Executors.newFixedThreadPool(2);
+			executor.submit(new Runnable() {
+				
+				@Override
+				public void run() {
+					promotionService.save(ldto);
+				}
+			});
+			
+			
+			Future<?> future1 = executor.submit(new Runnable() {
+				
+				@Override
+				public void run() {
+			        try {
+			        	Thread.sleep(2000);
+			        } catch (InterruptedException e) {
+						e.printStackTrace();
+			        }
+			        ldto.setDiscount(1.0);
+			        promotionService.save(ldto);
+				}
+			});
+			executor.awaitTermination(10, TimeUnit.SECONDS);
+			assertAll(() -> {
+				assertThrows(ObjectOptimisticLockingFailureException.class, () -> {
+					try {
+					    future1.get();
+					} catch (ExecutionException e) {
+					    System.out.println("Exception from thread " + e.getCause().getClass());
+					    throw e.getCause();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				});
+			}, () -> {
+				assertEquals(1.0, loyaltyRepository.findById(3L).get().getDiscount());
+			});
+			executor.shutdown();
+		}
+		
+		
 
 }
