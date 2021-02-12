@@ -40,6 +40,7 @@ import PricelistPage from './components/pages/PricelistPage'
 import HireWorker from './components/pages/HireWorker'
 import DealerUpdateMedicinesQuantity from './components/pages/DealerUpdateMedicineQuantity'
 import SysAdminEmployPharmacyAdmin from './components/pages/SysAdminEmployPharmacyAdmin'
+import MyMap from './components/Map'
 
 
 Vue.use(VueRouter)
@@ -246,6 +247,11 @@ const router = new VueRouter({
       name: 'employPharmacyAdmin',
       component: SysAdminEmployPharmacyAdmin
     },
+    {
+      path: '/map',
+      name: 'myMap',
+      component: MyMap
+    }
   ]
 })
 
