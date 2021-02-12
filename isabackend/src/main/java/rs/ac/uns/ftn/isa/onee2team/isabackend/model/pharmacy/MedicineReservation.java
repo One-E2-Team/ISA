@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.isa.onee2team.isabackend.model.pharmacy;
 
 import java.util.Date;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
